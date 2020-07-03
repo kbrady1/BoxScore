@@ -179,7 +179,6 @@ struct GameView_Previews: PreviewProvider {
 struct Bench: View {
 	@EnvironmentObject var game: Game
 	
-	
 	var body: some View {
 		ScrollView(.horizontal, showsIndicators: false) {
 			HStack(spacing: 16) {

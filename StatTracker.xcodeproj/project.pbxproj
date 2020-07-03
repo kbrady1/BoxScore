@@ -16,6 +16,11 @@
 		0520404A246E498F008CEFBC /* ShotStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05204049246E498F008CEFBC /* ShotStatView.swift */; };
 		05204050247049D0008CEFBC /* click.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 0520404F247049CF008CEFBC /* click.m4a */; };
 		057149A124AAAE5A00228806 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057149A024AAAE5A00228806 /* SettingsView.swift */; };
+		05E1057D24AF8FEA00F39F0C /* Season.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1057C24AF8FEA00F39F0C /* Season.swift */; };
+		05E1057F24AF913B00F39F0C /* SeasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1057E24AF913B00F39F0C /* SeasonView.swift */; };
+		05E1058124AF91E900F39F0C /* FloatButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1058024AF91E900F39F0C /* FloatButtonView.swift */; };
+		05E1058324AF945C00F39F0C /* VisualEffectButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1058224AF945C00F39F0C /* VisualEffectButtonView.swift */; };
+		05E1058524AFA0D300F39F0C /* GameTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1058424AFA0D300F39F0C /* GameTitleView.swift */; };
 		05EF2A22246A0162004F4E09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05EF2A21246A0162004F4E09 /* AppDelegate.swift */; };
 		05EF2A24246A0162004F4E09 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05EF2A23246A0162004F4E09 /* SceneDelegate.swift */; };
 		05EF2A28246A0165004F4E09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05EF2A27246A0165004F4E09 /* Assets.xcassets */; };
@@ -62,6 +67,11 @@
 		05204049246E498F008CEFBC /* ShotStatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotStatView.swift; sourceTree = "<group>"; };
 		0520404F247049CF008CEFBC /* click.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = click.m4a; sourceTree = "<group>"; };
 		057149A024AAAE5A00228806 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		05E1057C24AF8FEA00F39F0C /* Season.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Season.swift; sourceTree = "<group>"; };
+		05E1057E24AF913B00F39F0C /* SeasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonView.swift; sourceTree = "<group>"; };
+		05E1058024AF91E900F39F0C /* FloatButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatButtonView.swift; sourceTree = "<group>"; };
+		05E1058224AF945C00F39F0C /* VisualEffectButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectButtonView.swift; sourceTree = "<group>"; };
+		05E1058424AFA0D300F39F0C /* GameTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTitleView.swift; sourceTree = "<group>"; };
 		05EF2A1E246A0162004F4E09 /* StatTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StatTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05EF2A21246A0162004F4E09 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		05EF2A23246A0162004F4E09 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -179,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				05EF2A53246A01F0004F4E09 /* HomeTeamView.swift */,
+				05E1057E24AF913B00F39F0C /* SeasonView.swift */,
 				05EF2A57246A0235004F4E09 /* GameView.swift */,
 				05FA4203246CC8AD00B2A2EC /* AddPlayerView.swift */,
 				05204043246E15E1008CEFBC /* TeamStatSummaryView.swift */,
@@ -197,6 +208,7 @@
 				05EF2A66246A3FB4004F4E09 /* Game.swift */,
 				051C7F17246B5D9A00057B44 /* Stat.swift */,
 				051C7F19246B978C00057B44 /* StatSettings.swift */,
+				05E1057C24AF8FEA00F39F0C /* Season.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -210,6 +222,9 @@
 				051C7F15246B589500057B44 /* StatInputView.swift */,
 				05FA4205246CCB4200B2A2EC /* ColorPickerView.swift */,
 				05204049246E498F008CEFBC /* ShotStatView.swift */,
+				05E1058024AF91E900F39F0C /* FloatButtonView.swift */,
+				05E1058224AF945C00F39F0C /* VisualEffectButtonView.swift */,
+				05E1058424AFA0D300F39F0C /* GameTitleView.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -352,19 +367,24 @@
 				05EF2A22246A0162004F4E09 /* AppDelegate.swift in Sources */,
 				05FA4206246CCB4200B2A2EC /* ColorPickerView.swift in Sources */,
 				057149A124AAAE5A00228806 /* SettingsView.swift in Sources */,
+				05E1058124AF91E900F39F0C /* FloatButtonView.swift in Sources */,
 				05EF2A5D246A0357004F4E09 /* PlayerView.swift in Sources */,
 				0520404A246E498F008CEFBC /* ShotStatView.swift in Sources */,
 				05204044246E15E1008CEFBC /* TeamStatSummaryView.swift in Sources */,
+				05E1058524AFA0D300F39F0C /* GameTitleView.swift in Sources */,
 				051C7F1A246B978C00057B44 /* StatSettings.swift in Sources */,
 				05204046246E15EE008CEFBC /* PlayerStatSummaryView.swift in Sources */,
 				05EF2A63246A0C82004F4E09 /* VisualEffectView.swift in Sources */,
 				05EF2A5F246A0373004F4E09 /* Player.swift in Sources */,
 				05EF2A67246A3FB4004F4E09 /* Game.swift in Sources */,
+				05E1058324AF945C00F39F0C /* VisualEffectButtonView.swift in Sources */,
 				05EF2A24246A0162004F4E09 /* SceneDelegate.swift in Sources */,
 				05EF2A65246A1FBD004F4E09 /* CourtPositionView.swift in Sources */,
 				051C7F18246B5D9A00057B44 /* Stat.swift in Sources */,
 				05EF2A54246A01F0004F4E09 /* HomeTeamView.swift in Sources */,
 				05EF2A58246A0235004F4E09 /* GameView.swift in Sources */,
+				05E1057F24AF913B00F39F0C /* SeasonView.swift in Sources */,
+				05E1057D24AF8FEA00F39F0C /* Season.swift in Sources */,
 				05FA4204246CC8AD00B2A2EC /* AddPlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

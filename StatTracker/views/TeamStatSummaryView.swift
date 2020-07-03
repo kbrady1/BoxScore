@@ -34,34 +34,7 @@ struct TeamStatSummaryView: View {
 		
 		List {
 			Section {
-				VStack {
-					VStack {
-						HStack {
-							Spacer()
-							VStack {
-								Text("\(game.team.name)")
-									.font(.caption)
-									.offset(x: 0, y: 10)
-								Text(String(game.teamScore))
-									.foregroundColor(game.team.primaryColor)
-									.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
-							}
-							Spacer()
-							Text("-")
-								.font(.largeTitle)
-							Spacer()
-							VStack {
-								Text("Opponent")
-									.font(.caption)
-									.offset(x: 0, y: 10)
-								Text(String(game.opponentScore))
-									.foregroundColor(game.team.primaryColor)
-									.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
-							}
-							Spacer()
-						}
-					}
-				}
+				GameTitleView(game: game)
 			}
 
 			Section(header: Text("Shot Chart")) {

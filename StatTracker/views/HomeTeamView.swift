@@ -66,6 +66,11 @@ struct HomeTeamView: View {
 							.padding(.bottom)
 						}
 							.buttonStyle(PlainButtonStyle())
+						NavigationLink(destination: SeasonView(season: Season(team: self.game.team))) {
+							Text("Past Games")
+								.font(.headline)
+								.padding(.leading)
+						}
 					}
 					Section(header: Text("Players")) {
 						ForEach(game.team.players, id: \.number) { (player) in
@@ -81,6 +86,10 @@ struct HomeTeamView: View {
 					
 				}
 				.listStyle(GroupedListStyle())
+				.onAppear {
+					//TODO: Can I do this for just one cell?
+					UITableView.appearance().separatorColor = .clear
+				}
 				
 				
 				//Once a game is complete, show restart and view stats buttons

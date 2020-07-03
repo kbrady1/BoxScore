@@ -9,19 +9,39 @@
 import Foundation
 import CoreGraphics
 
-class Game: ObservableObject {
+extension DateFormatter {
+	static func defaultDateFormat(_ format: String) -> DateFormatter {
+		let formatter = DateFormatter()
+		formatter.locale = Locale(identifier: "en_US")
+		formatter.dateFormat = format
+		return formatter
+	}
+}
+
+private let DATE_FORMATTER = DateFormatter.defaultDateFormat("MMM dd, yyyy")
+
+class Game: ObservableObject, Equatable {
 	init(team: Team) {
 		self.team = team
 		self.playersInGame = []
 		self.playersOnBench = team.players
+		self.date = Date()
+		self.id = UUID().uuidString
 	}
+	
+	let id: String
 	
 	@Published var teamScore = 0
 	@Published var opponentScore = 0
 	
+	var date: Date
 	@Published var team: Team
 	@Published var playersInGame: [Player]
 	@Published var playersOnBench: [Player]
+	
+	var dateText: String {
+		return DATE_FORMATTER.string(from: date)
+	}
 	
 	@Published var hasBegun: Bool = false {
 		didSet {
@@ -100,6 +120,12 @@ class Game: ObservableObject {
 		
 		game.opponentScore = 86
 		return game
+	}
+	
+	//MARK: Equatable
+	
+	static func == (lhs: Game, rhs: Game) -> Bool {
+		lhs.id == rhs.id
 	}
 }
 
