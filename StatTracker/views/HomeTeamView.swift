@@ -10,10 +10,9 @@ import SwiftUI
 
 ///The Add Team View will provide a way to name a team and add players (name, pos, number
 struct HomeTeamView: View {
-	//Uncomment this line to use test data
-	@ObservedObject var game: Game = Game.statTestData
-//	@ObservedObject var game: Game = Game()
 	@ObservedObject var settings = StatSettings()
+	//TODO: Get this from cached data
+	@ObservedObject var season: Season = Season.testData
 	@State var showModal: Bool = false
 	@State var showSettings: Bool = false
 	@State var showPrimaryColorSheet: Bool = false
@@ -28,7 +27,7 @@ struct HomeTeamView: View {
 							HStack {
 								Text("Team: ")
 									.padding([.vertical, .leading])
-								TextField("Team Name", text: $game.team.name)
+								TextField("Team Name", text: $season.team.name)
 									.font(.largeTitle)
 							}
 							.background(BlurView(style: .systemMaterial))
@@ -41,12 +40,12 @@ struct HomeTeamView: View {
 								}) {
 									RoundedRectangle(cornerRadius: 8.0)
 										.frame(width: 60, height: 60)
-										.foregroundColor(game.team.primaryColor)
+										.foregroundColor(season.team.primaryColor)
 										.overlay(RoundedRectangle(cornerRadius: 8.0).stroke(Color.white, lineWidth: 2.0))
 										.shadow(radius: 4)
 								}
 								.sheet(isPresented: $showPrimaryColorSheet) {
-									ColorPickerView(chosenColor: self.$game.team.primaryColor)
+									ColorPickerView(chosenColor: self.$season.team.primaryColor)
 								}
 								Spacer()
 								Button(action: {
@@ -54,26 +53,29 @@ struct HomeTeamView: View {
 								}) {
 									RoundedRectangle(cornerRadius: 8.0)
 										.frame(width: 60, height: 60)
-										.foregroundColor(self.game.team.secondaryColor)
+										.foregroundColor(self.season.team.secondaryColor)
 									.overlay(RoundedRectangle(cornerRadius: 8.0).stroke(Color.white, lineWidth: 2.0))
 									.shadow(radius: 4)
 								}
 								.sheet(isPresented: $showSecondaryColorSheet) {
-									ColorPickerView(chosenColor: self.$game.team.secondaryColor)
+									ColorPickerView(chosenColor: self.$season.team.secondaryColor)
 								}
 								Spacer()
 							}
 							.padding(.bottom)
 						}
 							.buttonStyle(PlainButtonStyle())
-						NavigationLink(destination: SeasonView(season: Season(team: self.game.team))) {
-							Text("Past Games")
+						NavigationLink(destination:
+							SeasonView(season: season)
+								.environmentObject(settings)
+						) {
+							Text("All Games")
 								.font(.headline)
 								.padding(.leading)
 						}
 					}
 					Section(header: Text("Players")) {
-						ForEach(game.team.players, id: \.number) { (player) in
+						ForEach(season.team.players, id: \.number) { (player) in
 							HStack(spacing: 16) {
 								Text(String(player.number))
 									.frame(width: 40, height: 40)
@@ -92,52 +94,23 @@ struct HomeTeamView: View {
 				}
 				
 				
-				//Once a game is complete, show restart and view stats buttons
-				HStack {
-					if !game.isComplete {
-						NavigationLink(destination: GameView().environmentObject(game).environmentObject(settings)) {
-							Text(game.hasBegun ? "Continue Game" : "Start Game")
-								.bold()
-								.font(.system(size: 28))
-								.frame(minWidth: 300, maxWidth: .infinity)
-								.padding(.vertical, 6.0)
-								.background(game.team.primaryColor)
-								.foregroundColor(Color.white)
-								.cornerRadius(8.0)
-								.shadow(radius: 4.0)
-								.animation(.default)
-						}
-					} else {
-						Button(action: {
-							self.game.restart()
-						}) {
-							Text("Restart")
-								.bold()
-								.font(.system(size: 28))
-								.frame(minWidth: 150, maxWidth: .infinity)
-								.padding(.vertical, 6.0)
-								.background(game.team.secondaryColor)
-								.foregroundColor(Color.white)
-								.cornerRadius(8.0)
-								.shadow(radius: 4.0)
-								.animation(.default)
-						}
-						NavigationLink(destination: TeamStatSummaryView().environmentObject(game)) {
-							Text("View Stats")
-								.bold()
-								.font(.system(size: 28))
-								.frame(minWidth: 150, maxWidth: .infinity)
-								.padding(.vertical, 6.0)
-								.background(game.team.primaryColor)
-								.foregroundColor(Color.white)
-								.cornerRadius(8.0)
-								.shadow(radius: 4.0)
-								.animation(.default)
-						}
-					}
-					
+				NavigationLink(destination: GameView()
+					//Create a new game if one does not exist
+					.environmentObject(season.currentGame ?? Game(team: season.team))
+					.environmentObject(settings)
+					.environmentObject(season)
+				) {
+					Text(season.currentGame == nil ? "New Game" : "Continue Game")
+						.bold()
+						.font(.system(size: 28))
+						.frame(minWidth: 300, maxWidth: .infinity)
+						.padding(.vertical, 6.0)
+						.background(season.team.primaryColor)
+						.foregroundColor(Color.white)
+						.cornerRadius(8.0)
+						.shadow(radius: 4.0)
+						.animation(.default)
 				}
-				.frame(minWidth: 0, maxWidth: .infinity)
 				.padding([.horizontal, .bottom])
 			}
 			.navigationBarTitle("StatTracker")
@@ -147,12 +120,12 @@ struct HomeTeamView: View {
 						self.showSettings.toggle()
 					}) {
 						Image(systemName: "gear")
-							.font(.system(size: 36))
-							.foregroundColor(game.team.primaryColor)
+							.font(.system(size: 28))
+							.foregroundColor(season.team.primaryColor)
 					}.sheet(isPresented: $showSettings) {
 						SettingsView(settings: self.settings,
-									 team: self.game.team,
-									 selectedTeam: self.game.team,
+									 team: self.season.team,
+									 selectedTeam: self.season.team,
 									 leftGesture: self.settings.leftGesture,
 									 rightGesture: self.settings.rightGesture,
 									 upGesture: self.settings.upGesture,
@@ -164,11 +137,11 @@ struct HomeTeamView: View {
 					}) {
 						Image(systemName: "plus.circle.fill")
 							.font(.system(size: 36))
-							.foregroundColor(game.hasBegun ? Color.gray : game.team.primaryColor)
+							.foregroundColor(season.currentGame != nil ? Color.gray : season.team.primaryColor)
 					}.sheet(isPresented: $showModal) {
-						AddPlayerView().environmentObject(self.game.team)
+						AddPlayerView().environmentObject(self.season.team)
 					}
-					.disabled(game.hasBegun)
+					.disabled(season.currentGame != nil)
 			)
 		}
 	}

@@ -20,6 +20,8 @@ struct GameView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var game: Game
 	@EnvironmentObject var settings: StatSettings
+	@EnvironmentObject var season: Season
+	
 	private var stats = StatType.all.filter { $0 != .shot }
 	
 	@State private var positionA: CourtPositionView? = nil
@@ -89,6 +91,8 @@ struct GameView: View {
 		.navigationBarTitle("", displayMode: .inline)
 		.navigationBarItems(trailing: Button(action: {
 			self.game.isComplete = true
+			self.season.currentGame = nil
+			self.season.previousGames.insert(self.game, at: 0)
 			self.presentationMode.wrappedValue.dismiss()
 		}, label: {
 			Text("End")
@@ -97,6 +101,7 @@ struct GameView: View {
 		.onAppear {
 			self.setUpCourtPositions()
 			self.game.hasBegun = true
+			self.season.currentGame = self.game
 		}
 		.onDisappear {
 			self.reorderLineup()

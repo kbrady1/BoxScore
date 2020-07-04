@@ -19,3 +19,17 @@ class Season: ObservableObject {
 		self.currentGame = currentGame
 	}
 }
+
+extension Season {
+	static var testData: Season {
+		return Season(
+			team: Team.testData,
+			currentGame: Game.statTestData,
+			previousGames: [
+				Game.testGame(opponentScore: 32),
+				Game.testGame(opponentScore: 45),
+				Game.testGame(opponentScore: 55)
+			]
+		)
+	}
+}

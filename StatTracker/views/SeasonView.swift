@@ -9,50 +9,55 @@
 import SwiftUI
 
 struct SeasonView: View {
+	@EnvironmentObject var settings: StatSettings
 	@State var season: Season
 	
     var body: some View {
-		NavigationView {
-			List {
-				if season.currentGame != nil {
-					Section(header:
-						//TODO: Make navigation link that takes to gameView
-						Text("Current Game")
-							.font(.largeTitle)
-							.fontWeight(.bold)
-					) {
-						EmptyView()
-					}
-					Section {
-						GameTitleView(game: season.currentGame!, showDate: false)
-					}
-				}
-				
+		List {
+			if season.currentGame != nil {
 				Section(header:
-					Text("Previous Games")
+					Text("Current Game")
 						.font(.largeTitle)
 						.fontWeight(.bold)
 				) {
-					if season.previousGames.isEmpty {
-						Text("No completed games")
-						.padding()
-					} else {
-						EmptyView()
-					}
+					EmptyView()
 				}
-				
-				ForEach(season.previousGames, id: \.id) { (game) in
-					Section (header: Text(game.dateText)) {
-						NavigationLink(destination: TeamStatSummaryView().environmentObject(game)) {
-							GameTitleView(game: game, showDate: false)
-						}
+				Section {
+					NavigationLink(destination:
+						GameView()
+							.environmentObject(season.currentGame!)
+							.environmentObject(settings)
+							.environmentObject(season)
+					) {
+						GameTitleView(game: season.currentGame!, showDate: false)
 					}
 				}
 			}
-			.environment(\.horizontalSizeClass, .regular)
-			.listStyle(GroupedListStyle())
+			
+			Section(header:
+				Text("All Games")
+					.font(.largeTitle)
+					.fontWeight(.bold)
+			) {
+				if season.previousGames.isEmpty {
+					Text("No completed games")
+					.padding()
+				} else {
+					EmptyView()
+				}
+			}
+			
+			ForEach(season.previousGames, id: \.id) { (game) in
+				Section (header: Text(game.dateText)) {
+					NavigationLink(destination: TeamStatSummaryView().environmentObject(game)) {
+						GameTitleView(game: game, showDate: false)
+					}
+				}
+			}
 		}
-		.navigationBarTitle("Past Games")
+		.environment(\.horizontalSizeClass, .regular)
+		.listStyle(GroupedListStyle())
+		.navigationBarTitle("Season")
     }
 }
 

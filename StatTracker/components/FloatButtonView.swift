@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct FloatButtonView: View {
-	@State var text: String
+	@Binding var text: String
 	@State var backgroundColor: Color
 	@State var textColor: Color = .white
 	
@@ -29,6 +29,6 @@ struct FloatButtonView: View {
 
 struct ButtonView_Previews: PreviewProvider {
     static var previews: some View {
-		FloatButtonView(text: "Click Me", backgroundColor: .blue)
+		FloatButtonView(text: Binding.constant("Click Me"), backgroundColor: .blue)
     }
 }

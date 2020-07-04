@@ -122,6 +122,19 @@ class Game: ObservableObject, Equatable {
 		return game
 	}
 	
+	static func testGame(opponentScore: Int) -> Game {
+		let team = Team.testData
+		
+		let game = Game(team: team)
+		[team.kukoc, team.pippen, team.buechler,
+		 team.wennington]
+			.reduce(into: [Stat]()) { $0.append(contentsOf: $1) }
+			.forEach { game.recordStat($0) }
+		
+		game.opponentScore = opponentScore
+		return game
+	}
+	
 	//MARK: Equatable
 	
 	static func == (lhs: Game, rhs: Game) -> Bool {
