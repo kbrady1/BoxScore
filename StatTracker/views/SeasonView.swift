@@ -35,7 +35,7 @@ struct SeasonView: View {
 			}
 			
 			Section(header:
-				Text("All Games")
+				Text("Past Games")
 					.font(.largeTitle)
 					.fontWeight(.bold)
 			) {

@@ -147,3 +147,15 @@ extension Game {
 		return Game(team: Team.testData)
 	}
 }
+
+class GameList: ObservableObject {
+	@Published var games: [Game]
+	
+	init(_ games: [Game]) {
+		self.games = games
+	}
+	
+	init(_ game: Game) {
+		self.games = [game]
+	}
+}

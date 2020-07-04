@@ -10,7 +10,8 @@ import SwiftUI
 
 struct PlayerStatSummaryView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-	@EnvironmentObject var game: Game
+	@EnvironmentObject var games: GameList
+	@EnvironmentObject var team: Team
 	
 	var player: Player
 	@State private var totals = [StatRow]()
@@ -33,7 +34,7 @@ struct PlayerStatSummaryView: View {
 						.frame(minWidth: 80, maxWidth: .infinity)
 						.padding()
 						.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-						.background(LinearGradient(gradient: Gradient(colors: [self.game.team.primaryColor, self.game.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+						.background(LinearGradient(gradient: Gradient(colors: [team.primaryColor, team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
 						.cornerRadius(4)
 						.padding(8.0)
 					}
@@ -78,22 +79,24 @@ struct PlayerStatSummaryView: View {
 		}
 		.frame(minWidth: 55, maxWidth: .infinity)
 		.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-		.background(LinearGradient(gradient: Gradient(colors: [self.game.team.primaryColor, self.game.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+		.background(LinearGradient(gradient: Gradient(colors: [team.primaryColor, team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
 		.cornerRadius(4)
 		.padding(8.0)
 	}
 	
 	private func setup() {
 		var tempTotals = [StatCount]()
-		game.statDictionary.keys.forEach {
-			if let stats = game.statDictionary[$0]?.filter({ $0.player.number == player.number }) {
-				if $0 == .shot {
-					self.shots = stats
+		games.games.forEach { (game) in
+			game.statDictionary.keys.forEach {
+				if let stats = game.statDictionary[$0]?.filter({ $0.player.number == player.number }) {
+					if $0 == .shot {
+						self.shots = stats
+						
+						self.points = shots.sumPoints()
+					}
 					
-					self.points = shots.sumPoints()
+					tempTotals.append(StatCount(stat: $0, total: stats.count))
 				}
-				
-				tempTotals.append(StatCount(stat: $0, total: stats.count))
 			}
 		}
 		
@@ -112,9 +115,9 @@ struct PlayerStatSummaryView: View {
 
 struct PlayerStatSummaryView_Previews: PreviewProvider {
     static var previews: some View {
-		let game = Game.statTestData
-		let player = game.team.players[0]
-		let view = PlayerStatSummaryView(player: player).environmentObject(game)
+		let games = GameList(Game.statTestData)
+		let player = games.games[0].team.players[0]
+		let view = PlayerStatSummaryView(player: player).environmentObject(games)
 		
 		return view
     }

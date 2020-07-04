@@ -72,11 +72,15 @@ struct TeamStatSummaryView: View {
 				ScrollView(.horizontal, showsIndicators: false) {
 					HStack() {
 						ForEach(game.team.players) { (player) in
-							NavigationLink(destination: PlayerStatSummaryView(player: player).environmentObject(self.game)) {
+							NavigationLink(destination:
+								PlayerStatSummaryView(player: player)
+								 	.environmentObject(GameList(self.game))
+									.environmentObject(self.game.team)
+							) {
 								PlayerView(player: player, shadow: false)
-								.background(LinearGradient(gradient: Gradient(colors: [self.game.team.primaryColor, self.game.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
-								.clipShape(Circle())
-								.padding([.vertical, .trailing])
+									.background(LinearGradient(gradient: Gradient(colors: [self.game.team.primaryColor, self.game.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+									.clipShape(Circle())
+									.padding([.vertical, .trailing])
 							}
 							.foregroundColor(Color(UIColor.label))
 						}
