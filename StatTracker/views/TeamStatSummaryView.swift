@@ -132,6 +132,7 @@ struct TeamStatSummaryView: View {
 	}
 	
 	private func getTopPerfomers() {
+		//TODO: Fix duplicate player key found in dictionary
 		StatType.all.forEach { (statType) in
 			let byPlayer = Dictionary(grouping: gameList.games
 				.compactMap { $0.statDictionary[statType] }

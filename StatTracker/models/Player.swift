@@ -51,6 +51,10 @@ class Player: NSObject, NSItemProviderWriting, NSItemProviderReading, Codable, I
 			number == object.number
 	}
 	
+	static func == (lhs: Player, rhs: Player) -> Bool {
+		return lhs.isEqual(rhs)
+	}
+	
 	//MARK: NSItemProvider Methods
 	
 	static var writableTypeIdentifiersForItemProvider: [String] = ["player"]

@@ -61,6 +61,14 @@ struct SeasonView: View {
 		.environment(\.horizontalSizeClass, .regular)
 		.listStyle(GroupedListStyle())
 		.navigationBarTitle("Season")
+		.navigationBarItems(trailing:
+			NavigationLink(destination:
+				TeamStatSummaryView()
+					.environmentObject(GameList(season.previousGames))
+					.environmentObject(season.team)
+			) {
+			Text("Stats")
+		})
     }
 }
 
