@@ -114,7 +114,7 @@ struct CourtPositionView: View {
 					if dragDirection == .down { Spacer() }
 					HStack {
 						if dragDirection == .right { Spacer() }
-						PlayerView(player: player!)
+						PlayerInGameView(player: player!)
 						.if(hasPlayer) {
 							$0.contextMenu {
 								ForEach(settings.statsNotInDirection, id: \.0) { (typePair) in

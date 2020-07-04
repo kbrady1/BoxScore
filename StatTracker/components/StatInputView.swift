@@ -52,7 +52,6 @@ struct StatInputView: View {
 			VStack(spacing: 16) {
 				VStack {
 					PlayerView(player: stat.player)
-						.environmentObject(game)
 						.frame(width: 80, height: 80)
 						.background(Color.white)
 						.clipShape(Circle())
@@ -142,7 +141,7 @@ struct StatInputView: View {
 								.animation(.default)
 								
 								ForEach(game.playersInGame, id: \.number) { (player) in
-									PlayerView(player: player, shadow: false).environmentObject(self.game)
+									PlayerView(player: player, shadow: false)
 										.if(self.otherPlayer == player) {
 											$0.background(CircleView(color: self.$game.team.primaryColor, shadow: false))
 										}

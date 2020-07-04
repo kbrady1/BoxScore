@@ -49,7 +49,10 @@ struct SeasonView: View {
 			
 			ForEach(season.previousGames, id: \.id) { (game) in
 				Section (header: Text(game.dateText)) {
-					NavigationLink(destination: TeamStatSummaryView().environmentObject(game)) {
+					NavigationLink(destination: TeamStatSummaryView()
+						.environmentObject(GameList(game))
+						.environmentObject(self.season.team)
+					) {
 						GameTitleView(game: game, showDate: false)
 					}
 				}

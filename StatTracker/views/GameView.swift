@@ -188,7 +188,7 @@ struct Bench: View {
 		ScrollView(.horizontal, showsIndicators: false) {
 			HStack(spacing: 16) {
 				ForEach(game.playersOnBench, id: \.number) {
-					PlayerView(player: $0)
+					PlayerInGameView(player: $0)
 				}
 			}
 			.padding(.leading, 10)

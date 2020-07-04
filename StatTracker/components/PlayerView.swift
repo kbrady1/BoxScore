@@ -8,8 +8,24 @@
 
 import SwiftUI
 
-struct PlayerView: View {
+struct PlayerInGameView: View {
 	@EnvironmentObject var game: Game
+	var player: Player
+	var shadow: Bool = true
+	var color: Color = .clear
+	var height: CGFloat = 80
+	
+	var body: some View {
+		PlayerView(player: player, shadow: shadow, color: color, height: height)
+			.if(game.playersOnBench.contains(player)) {
+				$0.onDrag {
+					return NSItemProvider(object: self.player)
+				}
+			}
+	}
+}
+
+struct PlayerView: View {
 	var player: Player
 	var shadow: Bool = true
 	var color: Color = .clear
@@ -27,12 +43,6 @@ struct PlayerView: View {
 		}
 		.frame(width: height, height: height, alignment: .center)
 		.background(DefaultCircleView(color: color, shadow: shadow))
-		.if(game.playersOnBench.contains(player)) {
-			$0.onDrag {
-				return NSItemProvider(object: self.player)
-			}
-		}
-
 	}
 }
 

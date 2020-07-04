@@ -13,7 +13,7 @@ enum ShotFilter: Hashable {
 }
 
 struct ShotStatView: View {
-	@EnvironmentObject var game: Game
+	@EnvironmentObject var team: Team
 	@State private var filterMakes = ShotFilter.all
 	@State var shotsToDisplay: [Stat]
 	@State private var data: [Row] = []
@@ -77,7 +77,7 @@ struct ShotStatView: View {
 					}
 					
 					.background(BlurView(style: .systemThinMaterial).cornerRadius(4.0))
-					.background(LinearGradient(gradient: Gradient(colors: [self.game.team.primaryColor, self.game.team.secondaryColor]), startPoint: .bottom, endPoint: .top).cornerRadius(4.0))
+					.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottom, endPoint: .top).cornerRadius(4.0))
 					.padding(.horizontal, 4.0)
 				}
 			}

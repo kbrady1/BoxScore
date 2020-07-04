@@ -22,7 +22,9 @@ struct StatCount: Identifiable {
 }
 
 struct TeamStatSummaryView: View {
-	@EnvironmentObject var game: Game
+	//TODO: Differentiate data if showing multiple games (averages)
+	@EnvironmentObject var gameList: GameList
+	@EnvironmentObject var team: Team
 	
 	@State private var topPerformers = [TopPlayer]()
 	@State private var teamTotals = [StatCount]()
@@ -33,8 +35,10 @@ struct TeamStatSummaryView: View {
 		//Show shot chart, filter by misses and make
 		
 		List {
-			Section {
-				GameTitleView(game: game)
+			if gameList.games.count == 1 {
+				Section {
+					GameTitleView(game: gameList.games[0])
+				}
 			}
 
 			Section(header: Text("Shot Chart")) {
@@ -51,11 +55,11 @@ struct TeamStatSummaryView: View {
 								VStack {
 									Text(topPlayer.total)
 									.font(.system(size: 40))
-									PlayerView(player: topPlayer.player, shadow: true, height: 60).environmentObject(self.game)
+									PlayerView(player: topPlayer.player, shadow: true, height: 60)
 								}
 								.padding()
 								.background(BlurView(style: .systemThinMaterial).cornerRadius(8))
-									.background(LinearGradient(gradient: Gradient(colors: [self.game.team.primaryColor, self.game.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+									.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
 								.cornerRadius(8)
 							}
 							.padding(8.0)
@@ -71,14 +75,14 @@ struct TeamStatSummaryView: View {
 			Section(header: Text("Individual Stats")) {
 				ScrollView(.horizontal, showsIndicators: false) {
 					HStack() {
-						ForEach(game.team.players) { (player) in
+						ForEach(team.players) { (player) in
 							NavigationLink(destination:
 								PlayerStatSummaryView(player: player)
-								 	.environmentObject(GameList(self.game))
-									.environmentObject(self.game.team)
+									.environmentObject(self.gameList)
+									.environmentObject(self.team)
 							) {
 								PlayerView(player: player, shadow: false)
-									.background(LinearGradient(gradient: Gradient(colors: [self.game.team.primaryColor, self.game.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+									.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
 									.clipShape(Circle())
 									.padding([.vertical, .trailing])
 							}
@@ -109,7 +113,7 @@ struct TeamStatSummaryView: View {
 					.frame(width: 60)
 					.padding()
 					.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-					.background(LinearGradient(gradient: Gradient(colors: [self.game.team.primaryColor, self.game.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+					.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
 				.cornerRadius(4)
 					.padding(8.0)
 				}
@@ -124,47 +128,46 @@ struct TeamStatSummaryView: View {
 	}
 	
 	private func getShots() {
-		if let shots = game.statDictionary[.shot] {
-			self.shots = shots
-		}
+		self.shots = gameList.games.compactMap { $0.statDictionary[.shot] }.flatMap { $0 }
 	}
 	
 	private func getTopPerfomers() {
 		StatType.all.forEach { (statType) in
-			if let stats = game.statDictionary[statType] {
-				let byPlayer = Dictionary(grouping: stats) { $0.player }.values
-				var sorted = [[Stat]]()
-				var description: Int?
-				
-				//For negative stats, reverse sorting order
-				switch statType {
-				case .foul, .turnover:
-					sorted = byPlayer.sorted { $0.count < $1.count }
-					description = sorted.first?.count
-				case .assist, .block, .rebound, .steal:
-					sorted = byPlayer.sorted { $0.count > $1.count }
-					description = sorted.first?.count
-				case .shot:
-					sorted = byPlayer.sorted { $0.sumPoints() > $1.sumPoints() }
-					description = sorted.first?.sumPoints()
-				}
-				
-				guard let player = sorted.first?.first?.player, let desc = description else { return }
-				
-				self.topPerformers.append(
-					TopPlayer(player: player, title: statType == .shot ? "PTS" : statType.abbreviation(), total: String(desc))
-				)
+			let byPlayer = Dictionary(grouping: gameList.games
+				.compactMap { $0.statDictionary[statType] }
+				.flatMap { $0 }
+			) { $0.player }.values
+			var sorted = [[Stat]]()
+			var description: Int?
+			
+			//For negative stats, reverse sorting order
+			switch statType {
+			case .foul, .turnover:
+				sorted = byPlayer.sorted { $0.count < $1.count }
+				description = sorted.first?.count
+			case .assist, .block, .rebound, .steal:
+				sorted = byPlayer.sorted { $0.count > $1.count }
+				description = sorted.first?.count
+			case .shot:
+				sorted = byPlayer.sorted { $0.sumPoints() > $1.sumPoints() }
+				description = sorted.first?.sumPoints()
 			}
+			
+			guard let player = sorted.first?.first?.player, let desc = description else { return }
+			
+			self.topPerformers.append(
+				TopPlayer(player: player, title: statType == .shot ? "PTS" : statType.abbreviation(), total: String(desc))
+			)
 		}
 	}
 	
 	private func getTeamTotals() {
-		teamTotals = StatType.all.map {
-			if $0 == .shot {
-				return StatCount(stat: $0, total: game.statDictionary[$0]?.sumPoints() ?? 0)
+		teamTotals = StatType.all.map { (type) in
+			if type == .shot {
+				return StatCount(stat: type, total: gameList.games.compactMap { $0.statDictionary[type] }.flatMap { $0 }.sumPoints())
 			}
 			
-			return StatCount(stat: $0, total: game.statCounter[$0] ?? 0)
+			return StatCount(stat: type, total: gameList.games.compactMap { $0.statCounter[type] }.reduce(0,+))
 		}
 	}
 }
