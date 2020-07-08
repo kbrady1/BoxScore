@@ -17,36 +17,45 @@ struct PlayerStatSummaryView: View {
 	var player: Player
 	@State private var totals = [StatRow]()
 	@State private var shots = [Stat]()
-	@State private var points = 0
+	@State private var points = 0.0
+	
+	private var showingSingleGame: Bool { games.games.count == 1 }
 	
 	var body: some View {
 			List {
 				Section {
-					HStack {
-						PlayerView(player: player, shadow: true, color: .white, height: 100)
-						Spacer()
-						
-						VStack {
-							Text("POINTS")
-								.font(.headline)
-							Text(String(points))
-								.font(.system(size: 60))
+					VStack {
+						if !showingSingleGame {
+							Text("Showing data for \(games.games.count) games")
+								.font(.caption)
+								.foregroundColor(.secondary)
 						}
-						.frame(minWidth: 80, maxWidth: .infinity)
-						.padding()
-						.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-						.background(LinearGradient(gradient: Gradient(colors: [team.primaryColor, team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
-						.cornerRadius(4)
-						.padding(8.0)
+						HStack {
+							PlayerView(player: player, shadow: true, color: .white, height: 100)
+							Spacer()
+							
+							VStack {
+								Text(getText("POINTS", "PTS PER GAME"))
+									.font(.headline)
+								Text(points.formatted(decimal: 1))
+									.font(.system(size: 60))
+							}
+							.frame(minWidth: 80, maxWidth: .infinity)
+							.padding()
+							.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
+							.background(LinearGradient(gradient: Gradient(colors: [team.primaryColor, team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+							.cornerRadius(4)
+							.padding(8.0)
+						}
+							.padding()
 					}
-					.padding()
 				}
 				
 				Section(header: Text("Shot Chart")) {
 					ShotStatView(shotsToDisplay: shots)
 				}
 				
-				Section(header: Text("Totals")) {
+				Section(header: Text(getText("Totals", "Averages Per Game"))) {
 					VStack(spacing: 12) {
 						ForEach(totals) { row in
 							HStack {
@@ -75,7 +84,7 @@ struct PlayerStatSummaryView: View {
 			Text(stat.stat.abbreviation())
 				.font(.headline)
 				.padding([.top])
-			Text(String(stat.total))
+			Text(stat.totalText)
 				.font(.system(size: 40))
 		}
 		.frame(minWidth: 55, maxWidth: .infinity)
@@ -87,17 +96,19 @@ struct PlayerStatSummaryView: View {
 	
 	private func setup() {
 		var tempTotals = [StatCount]()
-		games.games.forEach { (game) in
-			game.statDictionary.keys.forEach {
-				if let stats = game.statDictionary[$0]?.filter({ $0.player.number == player.number }) {
-					if $0 == .shot {
-						self.shots = stats
-						
-						self.points = shots.sumPoints()
-					}
+		var statDictionary = [StatType: [Stat]]()
+		games.games.forEach {
+			statDictionary.merge($0.statDictionary) { $0 + $1 }
+		}
+		statDictionary.keys.forEach {
+			if let stats = statDictionary[$0]?.filter({ $0.player.number == player.number }) {
+				if $0 == .shot {
+					self.shots = stats
 					
-					tempTotals.append(StatCount(stat: $0, total: stats.count))
+					self.points = Double(shots.sumPoints()) / Double(games.games.count)
 				}
+				
+				tempTotals.append(StatCount(stat: $0, total: Double(stats.count) / Double(games.games.count)))
 			}
 		}
 		
@@ -111,6 +122,10 @@ struct PlayerStatSummaryView: View {
 			tempTotals = Array(tempTotals.dropFirst(toRemove.count))
 			totals.append(StatRow(cells: Array(toRemove)))
 		}
+	}
+	
+	private func getText(_ single: String, _ season: String) -> String {
+		showingSingleGame ? single : season
 	}
 }
 

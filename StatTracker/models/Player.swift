@@ -14,11 +14,13 @@ class Player: NSObject, NSItemProviderWriting, NSItemProviderReading, Codable, I
 		self.lastName = lastName
 		self.firstName = firstName
 		self.number = number
+		self.id = UUID().uuidString
 	}
 	
 	var lastName: String
 	var firstName: String
 	var number: Int
+	let id: String
 	
 	var nameFirstLast: String { [firstName, lastName].joined(separator: " ") }
 	var nameLastFirst: String { [lastName, firstName].joined(separator: " ") }
@@ -29,16 +31,19 @@ class Player: NSObject, NSItemProviderWriting, NSItemProviderReading, Codable, I
 		coder.encode(lastName, forKey: "last")
 		coder.encode(firstName, forKey: "first")
 		coder.encode(number, forKey: "number")
+		coder.encode(id, forKey: "id")
 	}
 	
 	required init?(coder: NSCoder) {
 		guard let num = coder.decodeObject(forKey: "number") as? Int,
 			let firstName = coder.decodeObject(forKey: "first") as? String,
-			let lastName = coder.decodeObject(forKey: "last") as? String else { return nil }
+			let lastName = coder.decodeObject(forKey: "last") as? String,
+			let id = coder.decodeObject(forKey: "id") as? String else { return nil }
 		
 		self.number = num
 		self.firstName = firstName
 		self.lastName = lastName
+		self.id = id
 	}
 	
 	//MARK: Equatable
@@ -46,13 +51,11 @@ class Player: NSObject, NSItemProviderWriting, NSItemProviderReading, Codable, I
 	override func isEqual(_ object: Any?) -> Bool {
 		guard let object = object as? Player else { return false }
 		
-		return lastName == object.lastName &&
-			firstName == object.firstName &&
-			number == object.number
+		return id == object.id
 	}
 	
 	static func == (lhs: Player, rhs: Player) -> Bool {
-		return lhs.isEqual(rhs)
+		return lhs.id == rhs.id
 	}
 	
 	//MARK: NSItemProvider Methods

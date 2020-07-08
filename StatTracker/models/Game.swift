@@ -140,6 +140,10 @@ class Game: ObservableObject, Equatable {
 	static func == (lhs: Game, rhs: Game) -> Bool {
 		lhs.id == rhs.id
 	}
+	
+	//MARK: Hashable
+	
+	
 }
 
 extension Game {

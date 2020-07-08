@@ -16,7 +16,11 @@ struct TopPlayer {
 
 struct StatCount: Identifiable {
 	var stat: StatType
-	var total: Int
+	var total: Double
+	
+	var totalText: String {
+		total.formatted(decimal: 1)
+	}
 	
 	public var id = UUID()
 }
@@ -93,7 +97,7 @@ struct TeamStatSummaryView: View {
 			}
 		}.listStyle(GroupedListStyle())
 		.environment(\.horizontalSizeClass, .regular)
-		.navigationBarTitle("Game Summary")
+		.navigationBarTitle(getText("Game Summary", "Season Summary"))
 		.onAppear {
 			self.setup()
 		}
@@ -106,7 +110,7 @@ struct TeamStatSummaryView: View {
 					VStack {
 						Text(stat.stat == .shot ? "PTS" : stat.stat.abbreviation())
 							.font(.headline)
-						Text(String(stat.total))
+						Text(stat.totalText)
 							.font(.system(size: 40))
 							
 					}
@@ -132,8 +136,8 @@ struct TeamStatSummaryView: View {
 	}
 	
 	private func getTopPerfomers() {
-		//TODO: Fix duplicate player key found in dictionary
 		StatType.all.forEach { (statType) in
+			//TODO: Fix this with multiple games. Same Players have different ids.
 			let byPlayer = Dictionary(grouping: gameList.games
 				.compactMap { $0.statDictionary[statType] }
 				.flatMap { $0 }
@@ -164,12 +168,21 @@ struct TeamStatSummaryView: View {
 	
 	private func getTeamTotals() {
 		teamTotals = StatType.all.map { (type) in
-			if type == .shot {
-				return StatCount(stat: type, total: gameList.games.compactMap { $0.statDictionary[type] }.flatMap { $0 }.sumPoints())
+			var statDict = [StatType: [Stat]]()
+			gameList.games.forEach {
+				statDict.merge($0.statDictionary) { $0 + $1 }
 			}
 			
-			return StatCount(stat: type, total: gameList.games.compactMap { $0.statCounter[type] }.reduce(0,+))
+			if type == .shot, let shots = statDict[type]?.sumPoints() {
+				return StatCount(stat: type, total: shots.asDouble / gameList.games.count.asDouble)
+			}
+			
+			return StatCount(stat: type, total: (statDict[type]?.count ?? 0).asDouble / gameList.games.count.asDouble)
 		}
+	}
+	
+	private func getText(_ single: String, _ season: String) -> String {
+		gameList.games.count == 1 ? single : season
 	}
 }
 
