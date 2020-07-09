@@ -11,12 +11,18 @@ import Foundation
 class Season: ObservableObject {
 	@Published var team: Team
 	@Published var previousGames: [Game]
-	@Published var currentGame: Game?
+	@Published var currentGame: Game? {
+		didSet {
+			currentlyInGame = currentGame != nil
+		}
+	}
+	@Published var currentlyInGame: Bool = false
 	
 	init(team: Team, currentGame: Game? = nil, previousGames: [Game] = []) {
 		self.team = team
 		self.previousGames = previousGames
 		self.currentGame = currentGame
+		self.currentlyInGame = currentGame != nil
 	}
 }
 

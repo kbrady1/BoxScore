@@ -11,10 +11,11 @@ import SwiftUI
 struct SeasonView: View {
 	@EnvironmentObject var settings: StatSettings
 	@State var season: Season
+	@State var currentGame: Game?
 	
     var body: some View {
 		List {
-			if season.currentGame != nil {
+			if currentGame != nil {
 				Section(header:
 					Text("Current Game")
 						.font(.largeTitle)
@@ -25,7 +26,7 @@ struct SeasonView: View {
 				Section {
 					NavigationLink(destination:
 						GameView()
-							.environmentObject(season.currentGame!)
+							.environmentObject(currentGame!)
 							.environmentObject(settings)
 							.environmentObject(season)
 					) {
@@ -69,6 +70,9 @@ struct SeasonView: View {
 			) {
 			Text("Stats")
 		})
+		.onAppear {
+			self.currentGame = self.season.currentGame
+		}
     }
 }
 

@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-private let SCORE_BOARD_HEIGHT: CGFloat = 120
+private let SCORE_BOARD_HEIGHT: CGFloat = 125
 
 ///This view is for active games to track each player's stats
 struct GameView: View {
@@ -89,6 +89,7 @@ struct GameView: View {
 			}
 		}
 		.navigationBarTitle("", displayMode: .inline)
+		//TODO: Cannot use nav bar items and presentationMode together SwiftUI bug. Move to button?
 		.navigationBarItems(trailing: Button(action: {
 			self.game.isComplete = true
 			self.season.currentGame = nil
