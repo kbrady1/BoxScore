@@ -14,7 +14,7 @@ class Player: NSObject, NSItemProviderWriting, NSItemProviderReading, Codable, I
 		self.lastName = lastName
 		self.firstName = firstName
 		self.number = number
-		self.id = UUID().uuidString
+		self.id = (firstName + lastName + String(number)).hashValue.asString//UUID().uuidString
 	}
 	
 	var lastName: String

@@ -72,7 +72,7 @@ struct TeamStatSummaryView: View {
 				}
 			}
 			
-			Section(header: Text("Team Totals")) {
+			Section(header: Text(getText("Team Totals", "Team Averages"))) {
 				totalScrollView(list: teamTotals)
 			}
 			
@@ -137,11 +137,10 @@ struct TeamStatSummaryView: View {
 	
 	private func getTopPerfomers() {
 		StatType.all.forEach { (statType) in
-			//TODO: Fix this with multiple games. Same Players have different ids.
 			let byPlayer = Dictionary(grouping: gameList.games
 				.compactMap { $0.statDictionary[statType] }
 				.flatMap { $0 }
-			) { $0.player }.values
+			) { $0.player.id }.values
 			var sorted = [[Stat]]()
 			var description: Int?
 			
@@ -161,7 +160,7 @@ struct TeamStatSummaryView: View {
 			guard let player = sorted.first?.first?.player, let desc = description else { return }
 			
 			self.topPerformers.append(
-				TopPlayer(player: player, title: statType == .shot ? "PTS" : statType.abbreviation(), total: String(desc))
+				TopPlayer(player: player, title: statType == .shot ? "PTS" : statType.abbreviation(), total: (desc.asDouble / gameList.games.count.asDouble).formatted(decimal: 1))
 			)
 		}
 	}
