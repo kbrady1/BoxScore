@@ -87,7 +87,7 @@ struct SettingsView: View {
 	
 	private func gestureButton(for direction: MoveDirection, selection: Binding<StatType>) -> some View {
 		VStack(spacing: 8) {
-			Text("\(direction.rawValue.capitalized):")
+			Text("\(direction.rawValue.capitalized)")
 				.bold()
 			ScrollView(.horizontal, showsIndicators: false) {
 				HStack(spacing: 16) {
@@ -95,7 +95,12 @@ struct SettingsView: View {
 						Text(stat.abbreviation())
 							.if(selection.wrappedValue.id == stat.id) { $0.bold() }
 							.frame(width: 60, height: 60)
-							.background(DefaultCircleView(color: selection.wrappedValue.id == stat.id ? self.team.primaryColor : Color.white, shadow: false))
+							.if(selection.wrappedValue.id == stat.id) {
+								$0.background(CircleView(color: Binding.constant(self.team.primaryColor), shadow: false))
+							}
+							.if(selection.wrappedValue.id != stat.id) {
+								$0.background(CircleView(color: Binding.constant(Color.white), shadow: false))
+							}
 							.onTapGesture {
 								selection.wrappedValue = stat
 								switch direction {
