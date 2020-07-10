@@ -3,7 +3,7 @@
 //  StatTracker
 //
 //  Created by Kent Brady on 5/11/20.
-//  Copyright © 2020 Brigham Young University. All rights reserved.
+//  Copyright © 2020 Kent Brady. All rights reserved.
 //
 
 import UIKit
@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		// This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
 		// Create the SwiftUI view that provides the window contents.
-		let contentView = HomeTeamView(league: League.testData)
+		let contentView = RootNavigationView()
 
 		// Use a UIHostingController as window root view controller.
 		if let windowScene = scene as? UIWindowScene {

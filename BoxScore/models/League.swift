@@ -3,7 +3,7 @@
 //  StatTracker
 //
 //  Created by Kent Brady on 7/9/20.
-//  Copyright © 2020 Brigham Young University. All rights reserved.
+//  Copyright © 2020 Kent Brady. All rights reserved.
 //
 
 import Foundation
@@ -18,6 +18,7 @@ class League: ObservableObject, Equatable, CloudCreatable {
 	
 	var cancellable: AnyCancellable?
 	
+	//TODO: Save preferred team in user defaults and look up to populate
 	init(seasons: [Season]) {
 		self.seasons = seasons
 		self.currentSeason = seasons.first ?? Season(team: Team())

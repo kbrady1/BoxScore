@@ -3,18 +3,32 @@
 //  StatTracker
 //
 //  Created by Kent Brady on 5/11/20.
-//  Copyright © 2020 Brigham Young University. All rights reserved.
+//  Copyright © 2020 Kent Brady. All rights reserved.
 //
 
 import Foundation
+import CloudKit
 
 class Player: NSObject, NSItemProviderWriting, NSItemProviderReading, Codable, Identifiable {
 	
-	init(lastName: String, firstName: String, number: Int) {
+	init(lastName: String, firstName: String, number: Int, id: String = UUID().uuidString) {
 		self.lastName = lastName
 		self.firstName = firstName
 		self.number = number
-		self.id = (firstName + lastName + String(number)).hashValue.asString//UUID().uuidString
+		self.id = id
+	}
+	
+	convenience init(record: CKRecord) throws {
+		guard let firstName = record.value(forKey: "firstName") as? String,
+			let lastName = record.value(forKey: "lastName") as? String,
+			let number = record.value(forKey: "number") as? Int else {
+				throw BoxScoreError.invalidModelError()
+		}
+		
+		self.init(lastName: lastName,
+				  firstName: firstName,
+				  number: number,
+				  id: record.recordID.recordName)
 	}
 	
 	var lastName: String

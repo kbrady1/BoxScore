@@ -3,7 +3,7 @@
 //  BoxScore
 //
 //  Created by Kent Brady on 7/10/20.
-//  Copyright © 2020 Brigham Young University. All rights reserved.
+//  Copyright © 2020 Kent Brady. All rights reserved.
 //
 
 import Foundation

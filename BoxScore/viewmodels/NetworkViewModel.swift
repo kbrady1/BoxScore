@@ -3,7 +3,7 @@
 //  BoxScore
 //
 //  Created by Kent Brady on 7/10/20.
-//  Copyright © 2020 Brigham Young University. All rights reserved.
+//  Copyright © 2020 Kent Brady. All rights reserved.
 //
 
 import Foundation
@@ -14,7 +14,7 @@ protocol NetworkViewModel: ObservableObject {
 	associatedtype CloudResource: CloudCreatable
 
 	var objectWillChange: ObservableObjectPublisher { get }
-	var loadable: Loadable<CloudCreatable> { get set }
+	var loadable: Loadable<CloudResource> { get set }
 	var manager: CloudManager { get set }
 	var request: Request { get set }
 	var bag: Set<AnyCancellable> { get set }
@@ -45,8 +45,8 @@ extension NetworkViewModel {
 						} catch {
 							self.loadable = .error(DisplayableError(error: response.error))
 						}
-				} else {
-					self.loadable = .error(DisplayableError(error: response.error))
+				} else if let error = response.error {
+					self.loadable = .error(DisplayableError(error: error))
 				}
 				
 				self.objectWillChange.send()
