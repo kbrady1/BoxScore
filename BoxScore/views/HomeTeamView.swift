@@ -117,7 +117,7 @@ struct HomeTeamView: View {
 				}
 				.padding([.horizontal, .bottom])
 			}
-			.navigationBarTitle("StatTracker")
+			.navigationBarTitle("BoxScore")
 			.navigationBarItems(
 				leading:
 					Button(action: {

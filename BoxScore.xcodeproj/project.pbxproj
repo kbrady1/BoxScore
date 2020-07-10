@@ -14,7 +14,6 @@
 		05204046246E15EE008CEFBC /* PlayerStatSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05204045246E15EE008CEFBC /* PlayerStatSummaryView.swift */; };
 		05204048246E15FF008CEFBC /* StatSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05204047246E15FF008CEFBC /* StatSetupView.swift */; };
 		0520404A246E498F008CEFBC /* ShotStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05204049246E498F008CEFBC /* ShotStatView.swift */; };
-		05204050247049D0008CEFBC /* click.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 0520404F247049CF008CEFBC /* click.m4a */; };
 		0549FDE224B55F8100720DDF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0549FDE124B55F8100720DDF /* Extensions.swift */; };
 		0549FDE624B80EC500720DDF /* League.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0549FDE524B80EC500720DDF /* League.swift */; };
 		057149A124AAAE5A00228806 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057149A024AAAE5A00228806 /* SettingsView.swift */; };
@@ -67,7 +66,6 @@
 		05204045246E15EE008CEFBC /* PlayerStatSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStatSummaryView.swift; sourceTree = "<group>"; };
 		05204047246E15FF008CEFBC /* StatSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatSetupView.swift; sourceTree = "<group>"; };
 		05204049246E498F008CEFBC /* ShotStatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotStatView.swift; sourceTree = "<group>"; };
-		0520404F247049CF008CEFBC /* click.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = click.m4a; sourceTree = "<group>"; };
 		0549FDE124B55F8100720DDF /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		0549FDE524B80EC500720DDF /* League.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = League.swift; sourceTree = "<group>"; };
 		057149A024AAAE5A00228806 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -76,17 +74,17 @@
 		05E1058024AF91E900F39F0C /* FloatButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatButtonView.swift; sourceTree = "<group>"; };
 		05E1058224AF945C00F39F0C /* VisualEffectButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectButtonView.swift; sourceTree = "<group>"; };
 		05E1058424AFA0D300F39F0C /* GameTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameTitleView.swift; sourceTree = "<group>"; };
-		05EF2A1E246A0162004F4E09 /* StatTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StatTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		05EF2A1E246A0162004F4E09 /* BoxScore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoxScore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		05EF2A21246A0162004F4E09 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		05EF2A23246A0162004F4E09 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		05EF2A27246A0165004F4E09 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		05EF2A2A246A0165004F4E09 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		05EF2A2D246A0165004F4E09 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		05EF2A2F246A0165004F4E09 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		05EF2A34246A0165004F4E09 /* StatTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StatTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		05EF2A34246A0165004F4E09 /* BoxScoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BoxScoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		05EF2A38246A0165004F4E09 /* StatTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatTrackerTests.swift; sourceTree = "<group>"; };
 		05EF2A3A246A0166004F4E09 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		05EF2A3F246A0166004F4E09 /* StatTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StatTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		05EF2A3F246A0166004F4E09 /* BoxScoreUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BoxScoreUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		05EF2A43246A0166004F4E09 /* StatTrackerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatTrackerUITests.swift; sourceTree = "<group>"; };
 		05EF2A45246A0166004F4E09 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		05EF2A53246A01F0004F4E09 /* HomeTeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTeamView.swift; sourceTree = "<group>"; };
@@ -129,9 +127,9 @@
 		05EF2A15246A0162004F4E09 = {
 			isa = PBXGroup;
 			children = (
-				05EF2A20246A0162004F4E09 /* StatTracker */,
-				05EF2A37246A0165004F4E09 /* StatTrackerTests */,
-				05EF2A42246A0166004F4E09 /* StatTrackerUITests */,
+				05EF2A20246A0162004F4E09 /* BoxScore */,
+				05EF2A37246A0165004F4E09 /* BoxScoreTests */,
+				05EF2A42246A0166004F4E09 /* BoxScoreUITests */,
 				05EF2A1F246A0162004F4E09 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -139,17 +137,16 @@
 		05EF2A1F246A0162004F4E09 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				05EF2A1E246A0162004F4E09 /* StatTracker.app */,
-				05EF2A34246A0165004F4E09 /* StatTrackerTests.xctest */,
-				05EF2A3F246A0166004F4E09 /* StatTrackerUITests.xctest */,
+				05EF2A1E246A0162004F4E09 /* BoxScore.app */,
+				05EF2A34246A0165004F4E09 /* BoxScoreTests.xctest */,
+				05EF2A3F246A0166004F4E09 /* BoxScoreUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		05EF2A20246A0162004F4E09 /* StatTracker */ = {
+		05EF2A20246A0162004F4E09 /* BoxScore */ = {
 			isa = PBXGroup;
 			children = (
-				0520404F247049CF008CEFBC /* click.m4a */,
 				05EF2A5B246A0345004F4E09 /* components */,
 				05EF2A5A246A0329004F4E09 /* models */,
 				05EF2A59246A031C004F4E09 /* views */,
@@ -161,7 +158,7 @@
 				05EF2A2F246A0165004F4E09 /* Info.plist */,
 				05EF2A29246A0165004F4E09 /* Preview Content */,
 			);
-			path = StatTracker;
+			path = BoxScore;
 			sourceTree = "<group>";
 		};
 		05EF2A29246A0165004F4E09 /* Preview Content */ = {
@@ -172,22 +169,22 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		05EF2A37246A0165004F4E09 /* StatTrackerTests */ = {
+		05EF2A37246A0165004F4E09 /* BoxScoreTests */ = {
 			isa = PBXGroup;
 			children = (
 				05EF2A38246A0165004F4E09 /* StatTrackerTests.swift */,
 				05EF2A3A246A0166004F4E09 /* Info.plist */,
 			);
-			path = StatTrackerTests;
+			path = BoxScoreTests;
 			sourceTree = "<group>";
 		};
-		05EF2A42246A0166004F4E09 /* StatTrackerUITests */ = {
+		05EF2A42246A0166004F4E09 /* BoxScoreUITests */ = {
 			isa = PBXGroup;
 			children = (
 				05EF2A43246A0166004F4E09 /* StatTrackerUITests.swift */,
 				05EF2A45246A0166004F4E09 /* Info.plist */,
 			);
-			path = StatTrackerUITests;
+			path = BoxScoreUITests;
 			sourceTree = "<group>";
 		};
 		05EF2A59246A031C004F4E09 /* views */ = {
@@ -238,9 +235,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		05EF2A1D246A0162004F4E09 /* StatTracker */ = {
+		05EF2A1D246A0162004F4E09 /* BoxScore */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 05EF2A48246A0166004F4E09 /* Build configuration list for PBXNativeTarget "StatTracker" */;
+			buildConfigurationList = 05EF2A48246A0166004F4E09 /* Build configuration list for PBXNativeTarget "BoxScore" */;
 			buildPhases = (
 				05EF2A1A246A0162004F4E09 /* Sources */,
 				05EF2A1B246A0162004F4E09 /* Frameworks */,
@@ -250,14 +247,14 @@
 			);
 			dependencies = (
 			);
-			name = StatTracker;
+			name = BoxScore;
 			productName = StatTracker;
-			productReference = 05EF2A1E246A0162004F4E09 /* StatTracker.app */;
+			productReference = 05EF2A1E246A0162004F4E09 /* BoxScore.app */;
 			productType = "com.apple.product-type.application";
 		};
-		05EF2A33246A0165004F4E09 /* StatTrackerTests */ = {
+		05EF2A33246A0165004F4E09 /* BoxScoreTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 05EF2A4B246A0166004F4E09 /* Build configuration list for PBXNativeTarget "StatTrackerTests" */;
+			buildConfigurationList = 05EF2A4B246A0166004F4E09 /* Build configuration list for PBXNativeTarget "BoxScoreTests" */;
 			buildPhases = (
 				05EF2A30246A0165004F4E09 /* Sources */,
 				05EF2A31246A0165004F4E09 /* Frameworks */,
@@ -268,14 +265,14 @@
 			dependencies = (
 				05EF2A36246A0165004F4E09 /* PBXTargetDependency */,
 			);
-			name = StatTrackerTests;
+			name = BoxScoreTests;
 			productName = StatTrackerTests;
-			productReference = 05EF2A34246A0165004F4E09 /* StatTrackerTests.xctest */;
+			productReference = 05EF2A34246A0165004F4E09 /* BoxScoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		05EF2A3E246A0166004F4E09 /* StatTrackerUITests */ = {
+		05EF2A3E246A0166004F4E09 /* BoxScoreUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 05EF2A4E246A0166004F4E09 /* Build configuration list for PBXNativeTarget "StatTrackerUITests" */;
+			buildConfigurationList = 05EF2A4E246A0166004F4E09 /* Build configuration list for PBXNativeTarget "BoxScoreUITests" */;
 			buildPhases = (
 				05EF2A3B246A0166004F4E09 /* Sources */,
 				05EF2A3C246A0166004F4E09 /* Frameworks */,
@@ -286,9 +283,9 @@
 			dependencies = (
 				05EF2A41246A0166004F4E09 /* PBXTargetDependency */,
 			);
-			name = StatTrackerUITests;
+			name = BoxScoreUITests;
 			productName = StatTrackerUITests;
-			productReference = 05EF2A3F246A0166004F4E09 /* StatTrackerUITests.xctest */;
+			productReference = 05EF2A3F246A0166004F4E09 /* BoxScoreUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -314,7 +311,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 05EF2A19246A0162004F4E09 /* Build configuration list for PBXProject "StatTracker" */;
+			buildConfigurationList = 05EF2A19246A0162004F4E09 /* Build configuration list for PBXProject "BoxScore" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -327,9 +324,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				05EF2A1D246A0162004F4E09 /* StatTracker */,
-				05EF2A33246A0165004F4E09 /* StatTrackerTests */,
-				05EF2A3E246A0166004F4E09 /* StatTrackerUITests */,
+				05EF2A1D246A0162004F4E09 /* BoxScore */,
+				05EF2A33246A0165004F4E09 /* BoxScoreTests */,
+				05EF2A3E246A0166004F4E09 /* BoxScoreUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -342,7 +339,6 @@
 				05EF2A2E246A0165004F4E09 /* LaunchScreen.storyboard in Resources */,
 				05EF2A2B246A0165004F4E09 /* Preview Assets.xcassets in Resources */,
 				05EF2A28246A0165004F4E09 /* Assets.xcassets in Resources */,
-				05204050247049D0008CEFBC /* click.m4a in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,12 +414,12 @@
 /* Begin PBXTargetDependency section */
 		05EF2A36246A0165004F4E09 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 05EF2A1D246A0162004F4E09 /* StatTracker */;
+			target = 05EF2A1D246A0162004F4E09 /* BoxScore */;
 			targetProxy = 05EF2A35246A0165004F4E09 /* PBXContainerItemProxy */;
 		};
 		05EF2A41246A0166004F4E09 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 05EF2A1D246A0162004F4E09 /* StatTracker */;
+			target = 05EF2A1D246A0162004F4E09 /* BoxScore */;
 			targetProxy = 05EF2A40246A0166004F4E09 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -559,16 +555,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"StatTracker/Preview Content\"";
-				DEVELOPMENT_TEAM = X4Z5HF2BAJ;
+				DEVELOPMENT_ASSET_PATHS = "\"BoxScore/Preview Content\"";
+				DEVELOPMENT_TEAM = 4YZHCN2XQC;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = StatTracker/Info.plist;
+				INFOPLIST_FILE = BoxScore/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = edu.byu.byuSuite.StatTracker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kentbrady.BoxScore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -580,16 +576,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"StatTracker/Preview Content\"";
-				DEVELOPMENT_TEAM = X4Z5HF2BAJ;
+				DEVELOPMENT_ASSET_PATHS = "\"BoxScore/Preview Content\"";
+				DEVELOPMENT_TEAM = 4YZHCN2XQC;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = StatTracker/Info.plist;
+				INFOPLIST_FILE = BoxScore/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = edu.byu.byuSuite.StatTracker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kentbrady.BoxScore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -614,7 +610,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StatTracker.app/StatTracker";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BoxScore.app/BoxScore";
 			};
 			name = Debug;
 		};
@@ -636,7 +632,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StatTracker.app/StatTracker";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BoxScore.app/BoxScore";
 			};
 			name = Release;
 		};
@@ -683,7 +679,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		05EF2A19246A0162004F4E09 /* Build configuration list for PBXProject "StatTracker" */ = {
+		05EF2A19246A0162004F4E09 /* Build configuration list for PBXProject "BoxScore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				05EF2A46246A0166004F4E09 /* Debug */,
@@ -692,7 +688,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		05EF2A48246A0166004F4E09 /* Build configuration list for PBXNativeTarget "StatTracker" */ = {
+		05EF2A48246A0166004F4E09 /* Build configuration list for PBXNativeTarget "BoxScore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				05EF2A49246A0166004F4E09 /* Debug */,
@@ -701,7 +697,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		05EF2A4B246A0166004F4E09 /* Build configuration list for PBXNativeTarget "StatTrackerTests" */ = {
+		05EF2A4B246A0166004F4E09 /* Build configuration list for PBXNativeTarget "BoxScoreTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				05EF2A4C246A0166004F4E09 /* Debug */,
@@ -710,7 +706,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		05EF2A4E246A0166004F4E09 /* Build configuration list for PBXNativeTarget "StatTrackerUITests" */ = {
+		05EF2A4E246A0166004F4E09 /* Build configuration list for PBXNativeTarget "BoxScoreUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				05EF2A4F246A0166004F4E09 /* Debug */,
