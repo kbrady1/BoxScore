@@ -43,6 +43,7 @@ struct SettingsView: View {
 							}
 						}
 					}
+					.onDelete(perform: self.deleteRow)
 					Button(action: {
 						//TODO: This should send you back home to the HomeTeamView with empty data
 						self.league.newTeam()
@@ -79,6 +80,12 @@ struct SettingsView: View {
 				Text("Done")
 					.bold()
 			})
+		}
+    }
+	
+	private func deleteRow(at indexSet: IndexSet) {
+		indexSet.forEach {
+			self.league.deleteTeam(self.league.seasons[$0].team)
 		}
     }
 	

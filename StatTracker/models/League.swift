@@ -40,13 +40,23 @@ class League: ObservableObject {
 	}
 	
 	func deleteTeam(_ team: Team) {
-		seasons.removeAll {
-			$0.team.name == team.name
+		seasons.removeAll { $0.team.name == team.name }
+		
+		//If the current season was deleted
+		if !seasons.contains(where: { $0.team.name == currentSeason.team.name }) {
+			currentSeason = seasons.first ?? Season(team: Team())
+			
+			if seasons.isEmpty {
+				seasons.append(currentSeason)
+			}
 		}
 	}
 	
 	func deleteAll() {
 		seasons.removeAll()
+		
+		currentSeason = Season(team: Team())
+		seasons.append(currentSeason)
 	}
 }
 
