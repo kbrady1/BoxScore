@@ -76,13 +76,19 @@ struct HomeTeamView: View {
 					}
 					Section(header: Text("Players")) {
 						ForEach(season.team.players, id: \.number) { (player) in
-							HStack(spacing: 16) {
-								Text(String(player.number))
-									.frame(width: 40, height: 40)
-									.background(DefaultCircleView())
-								Text(player.nameFirstLast)
+							NavigationLink(
+								destination: PlayerStatSummaryView(player: player)
+									.environmentObject(GameList(self.season.previousGames))
+									.environmentObject(self.season.team)
+							) {
+								HStack(spacing: 16) {
+									Text(String(player.number))
+										.frame(width: 40, height: 40)
+										.background(DefaultCircleView())
+									Text(player.nameFirstLast)
+								}
+								.padding(.vertical, 4.0)
 							}
-							.padding(.vertical, 4.0)
 						}
 					}
 					

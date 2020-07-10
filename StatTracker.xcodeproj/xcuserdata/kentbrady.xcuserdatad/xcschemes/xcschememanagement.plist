@@ -7,7 +7,30 @@
 		<key>StatTracker.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>StatTrackerRelease.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>05EF2A1D246A0162004F4E09</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>05EF2A33246A0165004F4E09</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>05EF2A3E246A0166004F4E09</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>
