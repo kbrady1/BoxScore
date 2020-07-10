@@ -35,7 +35,7 @@ struct GameView: View {
 			ZStack {
 				Rectangle()
 				.stroke(Color.clear, lineWidth: 0)
-				.background(game.team.primaryColor)
+				.background(season.team.primaryColor)
 				.frame(minWidth: 0, maxWidth: .infinity)
 				.frame(height: SCORE_BOARD_HEIGHT + 85 + UIApplication.safeAreaOffset)
 				.shadow(radius: 5)
@@ -45,11 +45,11 @@ struct GameView: View {
 				VStack {
 					HStack(spacing: 24) {
 						VStack {
-							Text("\(game.team.name)")
+							Text("\(season.team.name)")
 								.font(.caption)
 								.offset(x: 0, y: 10)
 							Text(String(game.teamScore))
-								.foregroundColor(game.team.primaryColor)
+								.foregroundColor(season.team.primaryColor)
 							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 						}
 						Text("Game Score")
@@ -62,7 +62,7 @@ struct GameView: View {
 							Button(String(game.opponentScore)) {
 								self.game.opponentScore += 1
 							}
-							.foregroundColor(game.team.primaryColor)
+							.foregroundColor(season.team.primaryColor)
 							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 						}
 					}
@@ -91,9 +91,7 @@ struct GameView: View {
 		.navigationBarTitle("", displayMode: .inline)
 		//TODO: Cannot use nav bar items and presentationMode together SwiftUI bug. Move to button?
 		.navigationBarItems(trailing: Button(action: {
-			self.game.isComplete = true
-			self.season.currentGame = nil
-			self.season.previousGames.insert(self.game, at: 0)
+			self.season.completeGame()
 			self.presentationMode.wrappedValue.dismiss()
 		}, label: {
 			Text("End")
@@ -101,8 +99,8 @@ struct GameView: View {
 		}))
 		.onAppear {
 			self.setUpCourtPositions()
-			self.game.hasBegun = true
 			self.season.currentGame = self.game
+			self.season.currentGame?.hasBegun = true
 		}
 		.onDisappear {
 			self.reorderLineup()

@@ -30,7 +30,9 @@ struct SeasonView: View {
 							.environmentObject(settings)
 							.environmentObject(season)
 					) {
-						GameTitleView(game: season.currentGame!, showDate: false)
+						GameTitleView(showDate: false)
+							.environmentObject(season.currentGame!)
+							.environmentObject(season.team)
 					}
 				}
 			}
@@ -54,7 +56,9 @@ struct SeasonView: View {
 						.environmentObject(GameList(game))
 						.environmentObject(self.season.team)
 					) {
-						GameTitleView(game: game, showDate: false)
+						GameTitleView(showDate: false)
+							.environmentObject(game)
+							.environmentObject(self.season.team)
 					}
 				}
 			}

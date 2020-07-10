@@ -9,7 +9,8 @@
 import SwiftUI
 
 struct GameTitleView: View {
-	@State var game: Game
+	@EnvironmentObject var game: Game
+	@EnvironmentObject var team: Team
 	@State var showDate: Bool = true
 	
     var body: some View {
@@ -23,11 +24,11 @@ struct GameTitleView: View {
 				HStack {
 					Spacer()
 					VStack {
-						Text("\(game.team.name)")
+						Text("\(team.name)")
 							.font(.caption)
 							.offset(x: 0, y: 10)
 						Text(String(game.teamScore))
-							.foregroundColor(game.team.primaryColor)
+							.foregroundColor(team.primaryColor)
 							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 					}
 					Spacer()
@@ -39,7 +40,7 @@ struct GameTitleView: View {
 							.font(.caption)
 							.offset(x: 0, y: 10)
 						Text(String(game.opponentScore))
-							.foregroundColor(game.team.primaryColor)
+							.foregroundColor(team.primaryColor)
 							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 					}
 					Spacer()
@@ -51,6 +52,9 @@ struct GameTitleView: View {
 
 struct GameTitleView_Previews: PreviewProvider {
     static var previews: some View {
-		GameTitleView(game: Game(team: Team(name: "BYU Cougars", primaryColor: .blue, secondaryColor: .gray)))
+		let team = Team(name: "BYU Cougars", primaryColor: .blue, secondaryColor: .gray)
+		return GameTitleView()
+			.environmentObject(Game(team: team))
+			.environmentObject(team)
     }
 }

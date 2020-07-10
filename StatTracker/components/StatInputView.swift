@@ -11,8 +11,10 @@ import SwiftUI
 struct StatInputView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	
+	//TODO: These should be observed objects
 	@State var stat: Stat
 	@State var game: Game
+	
 	@State private var shotWasMake: Bool = false {
 		didSet {
 			stat.shotWasMake = shotWasMake

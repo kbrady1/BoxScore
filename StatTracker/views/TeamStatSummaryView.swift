@@ -26,7 +26,6 @@ struct StatCount: Identifiable {
 }
 
 struct TeamStatSummaryView: View {
-	//TODO: Differentiate data if showing multiple games (averages)
 	@EnvironmentObject var gameList: GameList
 	@EnvironmentObject var team: Team
 	
@@ -41,7 +40,9 @@ struct TeamStatSummaryView: View {
 		List {
 			if gameList.games.count == 1 {
 				Section {
-					GameTitleView(game: gameList.games[0])
+					GameTitleView()
+						.environmentObject(gameList.games[0])
+						.environmentObject(team)
 				}
 			}
 

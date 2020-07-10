@@ -24,6 +24,14 @@ class Season: ObservableObject {
 		self.currentGame = currentGame
 		self.currentlyInGame = currentGame != nil
 	}
+	
+	func completeGame() {
+		guard let currentGame = currentGame else { return }
+		
+		currentGame.isComplete = true
+		previousGames.insert(currentGame, at: 0)
+		self.currentGame = nil
+	}
 }
 
 extension Season {

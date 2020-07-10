@@ -16,6 +16,7 @@
 		0520404A246E498F008CEFBC /* ShotStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05204049246E498F008CEFBC /* ShotStatView.swift */; };
 		05204050247049D0008CEFBC /* click.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 0520404F247049CF008CEFBC /* click.m4a */; };
 		0549FDE224B55F8100720DDF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0549FDE124B55F8100720DDF /* Extensions.swift */; };
+		0549FDE624B80EC500720DDF /* League.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0549FDE524B80EC500720DDF /* League.swift */; };
 		057149A124AAAE5A00228806 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057149A024AAAE5A00228806 /* SettingsView.swift */; };
 		05E1057D24AF8FEA00F39F0C /* Season.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1057C24AF8FEA00F39F0C /* Season.swift */; };
 		05E1057F24AF913B00F39F0C /* SeasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1057E24AF913B00F39F0C /* SeasonView.swift */; };
@@ -68,6 +69,7 @@
 		05204049246E498F008CEFBC /* ShotStatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotStatView.swift; sourceTree = "<group>"; };
 		0520404F247049CF008CEFBC /* click.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = click.m4a; sourceTree = "<group>"; };
 		0549FDE124B55F8100720DDF /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		0549FDE524B80EC500720DDF /* League.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = League.swift; sourceTree = "<group>"; };
 		057149A024AAAE5A00228806 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		05E1057C24AF8FEA00F39F0C /* Season.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Season.swift; sourceTree = "<group>"; };
 		05E1057E24AF913B00F39F0C /* SeasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonView.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				051C7F17246B5D9A00057B44 /* Stat.swift */,
 				051C7F19246B978C00057B44 /* StatSettings.swift */,
 				05E1057C24AF8FEA00F39F0C /* Season.swift */,
+				0549FDE524B80EC500720DDF /* League.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -365,6 +368,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				051C7F16246B589500057B44 /* StatInputView.swift in Sources */,
+				0549FDE624B80EC500720DDF /* League.swift in Sources */,
 				05EF2A61246A0426004F4E09 /* Team.swift in Sources */,
 				05204048246E15FF008CEFBC /* StatSetupView.swift in Sources */,
 				05EF2A22246A0162004F4E09 /* AppDelegate.swift in Sources */,

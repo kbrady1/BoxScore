@@ -11,18 +11,13 @@ import SwiftUI
 struct SettingsView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	
-	@State var settings: StatSettings
-	@State var team: Team
-	@State var selectedTeam: Team
+	@ObservedObject var league: League
 	
+	@State var settings: StatSettings
 	@State var leftGesture: StatType
 	@State var rightGesture: StatType
 	@State var upGesture: StatType
 	@State var downGesture: StatType
-	
-	var teams: [Team] {
-		return [team]
-	}
 	
     var body: some View {
 		NavigationView {
@@ -32,24 +27,26 @@ struct SettingsView: View {
 						.font(Font.system(size: 32))
 						.bold()
 				) {
-					ForEach(teams, id: \.name) { (team) in
+					ForEach(league.seasons, id: \.team.name) { (season) in
 						Button(action: {
-							self.selectedTeam = team
+							self.league.currentSeason = season
 						}) {
 							HStack {
-								Text(team.name)
+								Text(season.team.name)
 									.bold()
-									.foregroundColor(team.name == self.selectedTeam.name ? team.primaryColor : Color.gray)
+									.foregroundColor(season.team.name == self.league.currentSeason.team.name ? season.team.primaryColor : Color.gray)
 								Spacer()
-								if team.name == self.selectedTeam.name {
+								if season.team.name == self.league.currentSeason.team.name {
 									Image(systemName: "checkmark.circle.fill")
-										.foregroundColor(team.secondaryColor)
+										.foregroundColor(season.team.secondaryColor)
 								}
 							}
 						}
 					}
 					Button(action: {
 						//TODO: This should send you back home to the HomeTeamView with empty data
+						self.league.newTeam()
+						self.presentationMode.wrappedValue.dismiss()
 					}) {
 						Text("Add Team")
 					}
@@ -64,14 +61,14 @@ struct SettingsView: View {
 					gestureButton(for: .right, selection: $settings.rightGesture)
 					gestureButton(for: .down, selection: $settings.downGesture)
 				}
-				
+
 				Button(action: {
-					//TODO:
+					self.league.deleteAll()
 				}) {
 					Text("Delete Data")
 						.foregroundColor(.red)
 				}
-				
+
 			}
 			.listStyle(GroupedListStyle())
 			.environment(\.horizontalSizeClass, .regular)
@@ -96,7 +93,7 @@ struct SettingsView: View {
 							.if(selection.wrappedValue.id == stat.id) { $0.bold() }
 							.frame(width: 60, height: 60)
 							.if(selection.wrappedValue.id == stat.id) {
-								$0.background(CircleView(color: Binding.constant(self.team.primaryColor), shadow: false))
+								$0.background(CircleView(color: Binding.constant(self.league.currentSeason.team.primaryColor), shadow: false))
 							}
 							.if(selection.wrappedValue.id != stat.id) {
 								$0.background(CircleView(color: Binding.constant(Color.white), shadow: false))
@@ -126,9 +123,8 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
 		SettingsView(
+			league: League.testData,
 			settings: StatSettings(),
-			team: Team(name: "Cougars", primaryColor: .blue, secondaryColor: .black),
-			selectedTeam: Team(name: "Cougars", primaryColor: .blue, secondaryColor: .black),
 			leftGesture: .shot,
 			rightGesture: .rebound,
 			upGesture: .steal,

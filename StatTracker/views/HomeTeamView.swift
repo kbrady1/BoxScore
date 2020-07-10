@@ -11,8 +11,8 @@ import SwiftUI
 ///The Add Team View will provide a way to name a team and add players (name, pos, number
 struct HomeTeamView: View {
 	@ObservedObject var settings = StatSettings()
+	@ObservedObject var league: League
 	//TODO: Get this from cached data
-	@ObservedObject var season: Season = Season.testData
 	@State var showModal: Bool = false
 	@State var showSettings: Bool = false
 	@State var showPrimaryColorSheet: Bool = false
@@ -27,7 +27,7 @@ struct HomeTeamView: View {
 							HStack {
 								Text("Team: ")
 									.padding([.vertical, .leading])
-								TextField("Team Name", text: $season.team.name)
+								TextField("Team Name", text: $league.currentSeason.team.name)
 									.font(.largeTitle)
 							}
 							.background(BlurView(style: .systemMaterial))
@@ -40,12 +40,12 @@ struct HomeTeamView: View {
 								}) {
 									RoundedRectangle(cornerRadius: 8.0)
 										.frame(width: 60, height: 60)
-										.foregroundColor(season.team.primaryColor)
+										.foregroundColor(league.currentSeason.team.primaryColor)
 										.overlay(RoundedRectangle(cornerRadius: 8.0).stroke(Color.white, lineWidth: 2.0))
 										.shadow(radius: 4)
 								}
 								.sheet(isPresented: $showPrimaryColorSheet) {
-									ColorPickerView(chosenColor: self.$season.team.primaryColor)
+									ColorPickerView(chosenColor: self.$league.currentSeason.team.primaryColor)
 								}
 								Spacer()
 								Button(action: {
@@ -53,12 +53,12 @@ struct HomeTeamView: View {
 								}) {
 									RoundedRectangle(cornerRadius: 8.0)
 										.frame(width: 60, height: 60)
-										.foregroundColor(self.season.team.secondaryColor)
+										.foregroundColor(league.currentSeason.team.secondaryColor)
 									.overlay(RoundedRectangle(cornerRadius: 8.0).stroke(Color.white, lineWidth: 2.0))
 									.shadow(radius: 4)
 								}
 								.sheet(isPresented: $showSecondaryColorSheet) {
-									ColorPickerView(chosenColor: self.$season.team.secondaryColor)
+									ColorPickerView(chosenColor: self.$league.currentSeason.team.secondaryColor)
 								}
 								Spacer()
 							}
@@ -66,7 +66,7 @@ struct HomeTeamView: View {
 						}
 							.buttonStyle(PlainButtonStyle())
 						NavigationLink(destination:
-							SeasonView(season: season)
+							SeasonView(season: league.currentSeason)
 								.environmentObject(settings)
 						) {
 							Text("All Games")
@@ -75,11 +75,11 @@ struct HomeTeamView: View {
 						}
 					}
 					Section(header: Text("Players")) {
-						ForEach(season.team.players, id: \.number) { (player) in
+						ForEach(league.currentSeason.team.players, id: \.number) { (player) in
 							NavigationLink(
 								destination: PlayerStatSummaryView(player: player)
-									.environmentObject(GameList(self.season.previousGames))
-									.environmentObject(self.season.team)
+									.environmentObject(GameList(self.league.currentSeason.previousGames))
+									.environmentObject(self.league.currentSeason.team)
 							) {
 								HStack(spacing: 16) {
 									Text(String(player.number))
@@ -95,23 +95,21 @@ struct HomeTeamView: View {
 				}
 				.listStyle(GroupedListStyle())
 				.onAppear {
-					//TODO: Can I do this for just one cell?
 					UITableView.appearance().separatorColor = .clear
 				}
 				
-				
 				NavigationLink(destination: GameView()
 					//Create a new game if one does not exist
-					.environmentObject(season.currentGame ?? Game(team: season.team))
+					.environmentObject(league.currentSeason.currentGame ?? Game(team: league.currentSeason.team))
 					.environmentObject(settings)
-					.environmentObject(season)
+					.environmentObject(league.currentSeason)
 				) {
-					Text(season.currentGame == nil ? "New Game" : "Continue Game")
+					Text(league.currentSeason.currentGame == nil ? "New Game" : "Continue Game")
 						.bold()
 						.font(.system(size: 28))
 						.frame(minWidth: 300, maxWidth: .infinity)
 						.padding(.vertical, 6.0)
-						.background(season.team.primaryColor)
+						.background(league.currentSeason.team.primaryColor)
 						.foregroundColor(Color.white)
 						.cornerRadius(8.0)
 						.shadow(radius: 4.0)
@@ -127,11 +125,10 @@ struct HomeTeamView: View {
 					}) {
 						Image(systemName: "gear")
 							.font(.system(size: 28))
-							.foregroundColor(season.team.primaryColor)
+							.foregroundColor(league.currentSeason.team.primaryColor)
 					}.sheet(isPresented: $showSettings) {
-						SettingsView(settings: self.settings,
-									 team: self.season.team,
-									 selectedTeam: self.season.team,
+						SettingsView(league: self.league,
+									 settings: self.settings,
 									 leftGesture: self.settings.leftGesture,
 									 rightGesture: self.settings.rightGesture,
 									 upGesture: self.settings.upGesture,
@@ -143,11 +140,11 @@ struct HomeTeamView: View {
 					}) {
 						Image(systemName: "plus.circle.fill")
 							.font(.system(size: 36))
-							.foregroundColor(season.currentGame != nil ? Color.gray : season.team.primaryColor)
+							.foregroundColor(league.currentSeason.currentGame != nil ? Color.gray : league.currentSeason.team.primaryColor)
 					}.sheet(isPresented: $showModal) {
-						AddPlayerView().environmentObject(self.season.team)
+						AddPlayerView().environmentObject(self.league.currentSeason.team)
 					}
-					.disabled(season.currentGame != nil)
+					.disabled(league.currentSeason.currentGame != nil)
 			)
 		}
 	}
@@ -155,6 +152,7 @@ struct HomeTeamView: View {
 
 struct AddTeamView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeTeamView().previewDevice(PreviewDevice(rawValue: "iPhone SE"))
+		return HomeTeamView(league: League.testData)
+			.previewDevice(PreviewDevice(rawValue: "iPhone SE"))
     }
 }
