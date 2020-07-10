@@ -17,6 +17,11 @@
 		0549FDE224B55F8100720DDF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0549FDE124B55F8100720DDF /* Extensions.swift */; };
 		0549FDE624B80EC500720DDF /* League.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0549FDE524B80EC500720DDF /* League.swift */; };
 		057149A124AAAE5A00228806 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057149A024AAAE5A00228806 /* SettingsView.swift */; };
+		05B140C124B8E81700936738 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05B140C024B8E81700936738 /* CloudKit.framework */; };
+		05B140C424B8EDC700936738 /* CloudManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C324B8EDC700936738 /* CloudManager.swift */; };
+		05B140C624B8FEE900936738 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C524B8FEE900936738 /* Networking.swift */; };
+		05B140C824B9093800936738 /* NetworkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C724B9093800936738 /* NetworkViewModel.swift */; };
+		05B140CA24B90B5C00936738 /* LeagueViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C924B90B5C00936738 /* LeagueViewModel.swift */; };
 		05E1057D24AF8FEA00F39F0C /* Season.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1057C24AF8FEA00F39F0C /* Season.swift */; };
 		05E1057F24AF913B00F39F0C /* SeasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1057E24AF913B00F39F0C /* SeasonView.swift */; };
 		05E1058124AF91E900F39F0C /* FloatButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1058024AF91E900F39F0C /* FloatButtonView.swift */; };
@@ -69,6 +74,12 @@
 		0549FDE124B55F8100720DDF /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		0549FDE524B80EC500720DDF /* League.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = League.swift; sourceTree = "<group>"; };
 		057149A024AAAE5A00228806 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		05B140BE24B8E81300936738 /* BoxScore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BoxScore.entitlements; sourceTree = "<group>"; };
+		05B140C024B8E81700936738 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		05B140C324B8EDC700936738 /* CloudManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudManager.swift; sourceTree = "<group>"; };
+		05B140C524B8FEE900936738 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		05B140C724B9093800936738 /* NetworkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkViewModel.swift; sourceTree = "<group>"; };
+		05B140C924B90B5C00936738 /* LeagueViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeagueViewModel.swift; sourceTree = "<group>"; };
 		05E1057C24AF8FEA00F39F0C /* Season.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Season.swift; sourceTree = "<group>"; };
 		05E1057E24AF913B00F39F0C /* SeasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonView.swift; sourceTree = "<group>"; };
 		05E1058024AF91E900F39F0C /* FloatButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatButtonView.swift; sourceTree = "<group>"; };
@@ -104,6 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05B140C124B8E81700936738 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,6 +136,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		05B140BF24B8E81700936738 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				05B140C024B8E81700936738 /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		05B140C224B8ED8A00936738 /* service */ = {
+			isa = PBXGroup;
+			children = (
+				05B140C324B8EDC700936738 /* CloudManager.swift */,
+				05B140C524B8FEE900936738 /* Networking.swift */,
+				05B140C724B9093800936738 /* NetworkViewModel.swift */,
+				05B140C924B90B5C00936738 /* LeagueViewModel.swift */,
+			);
+			path = service;
+			sourceTree = "<group>";
+		};
 		05EF2A15246A0162004F4E09 = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +162,7 @@
 				05EF2A37246A0165004F4E09 /* BoxScoreTests */,
 				05EF2A42246A0166004F4E09 /* BoxScoreUITests */,
 				05EF2A1F246A0162004F4E09 /* Products */,
+				05B140BF24B8E81700936738 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -147,6 +179,8 @@
 		05EF2A20246A0162004F4E09 /* BoxScore */ = {
 			isa = PBXGroup;
 			children = (
+				05B140BE24B8E81300936738 /* BoxScore.entitlements */,
+				05B140C224B8ED8A00936738 /* service */,
 				05EF2A5B246A0345004F4E09 /* components */,
 				05EF2A5A246A0329004F4E09 /* models */,
 				05EF2A59246A031C004F4E09 /* views */,
@@ -370,11 +404,14 @@
 				05EF2A22246A0162004F4E09 /* AppDelegate.swift in Sources */,
 				05FA4206246CCB4200B2A2EC /* ColorPickerView.swift in Sources */,
 				057149A124AAAE5A00228806 /* SettingsView.swift in Sources */,
+				05B140C424B8EDC700936738 /* CloudManager.swift in Sources */,
+				05B140CA24B90B5C00936738 /* LeagueViewModel.swift in Sources */,
 				05E1058124AF91E900F39F0C /* FloatButtonView.swift in Sources */,
 				05EF2A5D246A0357004F4E09 /* PlayerView.swift in Sources */,
 				0520404A246E498F008CEFBC /* ShotStatView.swift in Sources */,
 				05204044246E15E1008CEFBC /* TeamStatSummaryView.swift in Sources */,
 				05E1058524AFA0D300F39F0C /* GameTitleView.swift in Sources */,
+				05B140C824B9093800936738 /* NetworkViewModel.swift in Sources */,
 				051C7F1A246B978C00057B44 /* StatSettings.swift in Sources */,
 				05204046246E15EE008CEFBC /* PlayerStatSummaryView.swift in Sources */,
 				05EF2A63246A0C82004F4E09 /* VisualEffectView.swift in Sources */,
@@ -388,6 +425,7 @@
 				0549FDE224B55F8100720DDF /* Extensions.swift in Sources */,
 				05EF2A58246A0235004F4E09 /* GameView.swift in Sources */,
 				05E1057F24AF913B00F39F0C /* SeasonView.swift in Sources */,
+				05B140C624B8FEE900936738 /* Networking.swift in Sources */,
 				05E1057D24AF8FEA00F39F0C /* Season.swift in Sources */,
 				05FA4204246CC8AD00B2A2EC /* AddPlayerView.swift in Sources */,
 			);
@@ -554,6 +592,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BoxScore/BoxScore.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"BoxScore/Preview Content\"";
 				DEVELOPMENT_TEAM = 4YZHCN2XQC;
@@ -566,6 +606,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.kentbrady.BoxScore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -575,6 +616,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BoxScore/BoxScore.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"BoxScore/Preview Content\"";
 				DEVELOPMENT_TEAM = 4YZHCN2XQC;
@@ -587,6 +630,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.kentbrady.BoxScore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

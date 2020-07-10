@@ -11,7 +11,9 @@ import SwiftUI
 ///The Add Team View will provide a way to name a team and add players (name, pos, number
 struct HomeTeamView: View {
 	@ObservedObject var settings = StatSettings()
+	
 	@ObservedObject var league: League
+	
 	//TODO: Get this from cached data
 	@State var showModal: Bool = false
 	@State var showSettings: Bool = false

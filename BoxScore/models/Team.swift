@@ -9,23 +9,40 @@
 import Foundation
 import UIKit.UIColor
 import SwiftUI
+import CloudKit
 
 class Team: ObservableObject {
-	init(name: String, primaryColor: Color, secondaryColor: Color) {
+	init(id: String = UUID().uuidString, name: String, primaryColor: Color, secondaryColor: Color) {
+		self.id = id
 		self.name = name
 		self.primaryColor = primaryColor
 		self.secondaryColor = secondaryColor
 	}
 	
-	init() {
-		self.name = ""
-		self.primaryColor = .blue
-		self.secondaryColor = .red
+	convenience init() {
+		self.init(id: UUID().uuidString,
+				  name: "",
+				  primaryColor: .blue,
+				  secondaryColor: .red)
 	}
 	
+	convenience init(record: CKRecord) throws {
+		guard let name = record.value(forKey: "name") as? String else {
+			throw BoxScoreError.invalidModelError()
+		}
+		
+		//TODO: Add colors
+		self.init(id: record.recordID.recordName,
+				  name: name,
+				  primaryColor: .blue,
+				  secondaryColor: .red)
+	}
+	
+	let id: String
 	@Published var name: String
 	@Published var primaryColor: Color
 	@Published var secondaryColor: Color
+	
 	var players = [Player]()
 	
 	func addPlayer(_ player: Player) {
