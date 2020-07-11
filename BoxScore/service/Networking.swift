@@ -10,10 +10,21 @@ import Foundation
 import CloudKit
 import SwiftUI
 
-protocol Request {
+protocol GenericRequest {
 	var database: CKDatabase { get }
-	var query: CKQuery { get }
 	var zone: CKRecordZone.ID? { get }
+}
+
+protocol FetchRequest: GenericRequest {
+	var query: CKQuery { get }
+}
+
+protocol SaveRequest: GenericRequest {
+	var recordModel: RecordModel { get set }
+}
+
+protocol DeleteRequest: GenericRequest {
+	var recordId: CKRecord.ID { get }
 }
 
 enum Loadable<T> {
@@ -47,17 +58,6 @@ enum Loadable<T> {
             return nil
         }
     }
-	
-//    func transform<S>(_ t: @escaping (T) -> S) -> Loadable<S> {
-//        switch self {
-//        case .loading:
-//            return .loading
-//        case .error(let error):
-//            return .error(error)
-//        case .success(let value):
-//            return .success(t(value))
-//        }
-//    }
 
     func isLoading<Content: View>(@ViewBuilder content: @escaping () -> Content) -> Content? {
 

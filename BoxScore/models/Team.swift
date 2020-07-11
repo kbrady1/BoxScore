@@ -11,12 +11,15 @@ import UIKit.UIColor
 import SwiftUI
 import CloudKit
 
-class Team: ObservableObject {
-	init(id: String = UUID().uuidString, name: String, primaryColor: Color, secondaryColor: Color) {
+class Team: ObservableObject, RecordModel {
+	
+	//TODO: Remove default
+	init(id: String = UUID().uuidString, name: String, primaryColor: Color, secondaryColor: Color, record: CKRecord = CKRecord(recordType: CKRecord.RecordType("team"))) {
 		self.id = id
 		self.name = name
 		self.primaryColor = primaryColor
 		self.secondaryColor = secondaryColor
+		self.record = record
 	}
 	
 	convenience init() {
@@ -26,7 +29,7 @@ class Team: ObservableObject {
 				  secondaryColor: .red)
 	}
 	
-	convenience init(record: CKRecord) throws {
+	required convenience init(record: CKRecord) throws {
 		guard let name = record.value(forKey: "name") as? String else {
 			throw BoxScoreError.invalidModelError()
 		}
@@ -35,10 +38,12 @@ class Team: ObservableObject {
 		self.init(id: record.recordID.recordName,
 				  name: name,
 				  primaryColor: .blue,
-				  secondaryColor: .red)
+				  secondaryColor: .red,
+				  record: record)
 	}
 	
 	let id: String
+	var record: CKRecord
 	@Published var name: String
 	@Published var primaryColor: Color
 	@Published var secondaryColor: Color
@@ -49,22 +54,13 @@ class Team: ObservableObject {
 		players.append(player)
 	}
 	
-	static var testData: Team {
-		let team = Team(name: "Chicago Bulls", primaryColor: .bullsRed, secondaryColor:.bullsGray )
-		team.addPlayer(Player(lastName: "Kukoc", firstName: "Toni", number: 7))
-		team.addPlayer(Player(lastName: "Pippen", firstName: "Scottie", number: 33))
-		team.addPlayer(Player(lastName: "Longley", firstName: "Luc", number: 13))
-		team.addPlayer(Player(lastName: "Jordan", firstName: "Michael", number: 23))
-		team.addPlayer(Player(lastName: "Harper", firstName: "Ron", number: 9))
-		team.addPlayer(Player(lastName: "Rodman", firstName: "Dennis", number: 91))
-		team.addPlayer(Player(lastName: "Kerr", firstName: "Steve", number: 25))
-		team.addPlayer(Player(lastName: "Burrell", firstName: "Scott", number: 24))
-		team.addPlayer(Player(lastName: "Buechler", firstName: "Jud", number: 30))
-		team.addPlayer(Player(lastName: "Wennington", firstName: "Bill", number: 34))
-		team.addPlayer(Player(lastName: "Brown", firstName: "Randy", number: 1))
-		team.addPlayer(Player(lastName: "Simpkins", firstName: "Dickey", number: 8))
+	//MARK: RecordModel
+	
+	func recordToSave() -> CKRecord {
+		record.setValue(name, forKey: "name")
+		//TODO: Add colors
 		
-		return team
+		return record
 	}
 }
 
@@ -75,6 +71,26 @@ extension Color {
 	
 	static var bullsGray: Color {
 		Color(UIColor(red: 149/255.0, green: 149/255.0, blue: 149/255.0, alpha: 1.0))
+	}
+}
+
+extension Team {
+	static var testData: Team {
+		let team = Team(name: "Chicago Bulls", primaryColor: .bullsRed, secondaryColor:.bullsGray )
+		team.addPlayer(Player(lastName: "Kukoc", firstName: "Toni", number: 7, teamId: ""))
+		team.addPlayer(Player(lastName: "Pippen", firstName: "Scottie", number: 33, teamId: ""))
+		team.addPlayer(Player(lastName: "Longley", firstName: "Luc", number: 13, teamId: ""))
+		team.addPlayer(Player(lastName: "Jordan", firstName: "Michael", number: 23, teamId: ""))
+		team.addPlayer(Player(lastName: "Harper", firstName: "Ron", number: 9, teamId: ""))
+		team.addPlayer(Player(lastName: "Rodman", firstName: "Dennis", number: 91, teamId: ""))
+		team.addPlayer(Player(lastName: "Kerr", firstName: "Steve", number: 25, teamId: ""))
+		team.addPlayer(Player(lastName: "Burrell", firstName: "Scott", number: 24, teamId: ""))
+		team.addPlayer(Player(lastName: "Buechler", firstName: "Jud", number: 30, teamId: ""))
+		team.addPlayer(Player(lastName: "Wennington", firstName: "Bill", number: 34, teamId: ""))
+		team.addPlayer(Player(lastName: "Brown", firstName: "Randy", number: 1, teamId: ""))
+		team.addPlayer(Player(lastName: "Simpkins", firstName: "Dickey", number: 8, teamId: ""))
+		
+		return team
 	}
 }
 

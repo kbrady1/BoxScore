@@ -11,71 +11,82 @@ import SwiftUI
 struct AddPlayerView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var team: Team
+	@ObservedObject var teamViewModel: PlayersViewModel
 	
 	@State private var firstName: String = ""
 	@State private var lastName: String = ""
 	@State private var number: Int = 0
+	
+	@State private var showLoadingView: Bool = false
 	
 	//Get unused numbers
 	@State private var listOfNumbers = [Int]()
 	@State private var listOfCollectionRows = [CollectionRow]()
 	
 	var body: some View {
-		ZStack(alignment: .bottom) {
-			ScrollView(.vertical, showsIndicators: true) {
-				VStack(alignment: .center) {
-					Text(String(number))
-						.font(.largeTitle)
-						.multilineTextAlignment(.center)
-						.frame(width: 120, height: 120)
-						.background(DefaultCircleView())
-					
-					HStack {
-						Text("First: ")
-							.padding()
-						TextField("First Name", text: $firstName)
+		ZStack {
+			ZStack(alignment: .bottom) {
+				ScrollView(.vertical, showsIndicators: true) {
+					VStack(alignment: .center) {
+						Text(String(number))
 							.font(.largeTitle)
-					}
-					.background(BlurView(style: .systemMaterial))
-					.cornerRadius(8)
-					.padding(.horizontal)
-					
-					HStack {
-						Text("Last: ")
-						.padding()
-						TextField("Last Name", text: $lastName)
-							.font(.largeTitle)
-					}
-					.background(BlurView(style: .systemMaterial))
-					.cornerRadius(8)
-					.padding(.horizontal)
-					VStack(spacing: 16) {
-						ForEach(self.listOfCollectionRows) {
-							self.rowForIndex($0)
+							.multilineTextAlignment(.center)
+							.frame(width: 120, height: 120)
+							.background(DefaultCircleView())
+						
+						HStack {
+							Text("First: ")
+								.padding()
+							TextField("First Name", text: $firstName)
+								.font(.largeTitle)
 						}
+						.background(BlurView(style: .systemMaterial))
+						.cornerRadius(8)
+						.padding(.horizontal)
+						
+						HStack {
+							Text("Last: ")
+							.padding()
+							TextField("Last Name", text: $lastName)
+								.font(.largeTitle)
+						}
+						.background(BlurView(style: .systemMaterial))
+						.cornerRadius(8)
+						.padding(.horizontal)
+						VStack(spacing: 16) {
+							ForEach(self.listOfCollectionRows) {
+								self.rowForIndex($0)
+							}
+						}
+						.padding()
+						Spacer()
 					}
-					.padding()
-					Spacer()
+					.padding(.top)
 				}
-				.padding(.top)
+				Button(action: {
+					self.showLoadingView.toggle()
+				}) {
+					Text("Add Player")
+						.bold()
+						.font(.system(size: 28))
+						.frame(minWidth: 0, maxWidth: .infinity)
+						.padding(.vertical, 6.0)
+						.background(firstName.isEmpty || lastName.isEmpty ? Color.gray : team.primaryColor)
+						.foregroundColor(Color.white)
+						.cornerRadius(8.0)
+						.shadow(radius: 4.0)
+						.animation(.default)
+				}
+				.disabled(firstName.isEmpty || lastName.isEmpty)
+				.padding([.horizontal, .bottom])
 			}
-			Button(action: {
-				self.team.addPlayer(Player(lastName: self.firstName, firstName: self.lastName, number: self.number))
-				self.presentationMode.wrappedValue.dismiss()
-			}) {
-				Text("Add Player")
-					.bold()
-					.font(.system(size: 28))
-					.frame(minWidth: 0, maxWidth: .infinity)
-					.padding(.vertical, 6.0)
-					.background(firstName.isEmpty || lastName.isEmpty ? Color.gray : team.primaryColor)
-					.foregroundColor(Color.white)
-					.cornerRadius(8.0)
-					.shadow(radius: 4.0)
-					.animation(.default)
+			
+			if showLoadingView {
+				AddPlayerLoadingView(viewModel: AddPlayerViewModel(player: Player(lastName: self.firstName, firstName: self.lastName, number: self.number, teamId: team.id)), visible: $showLoadingView, action: {
+					self.teamViewModel.update()
+					self.presentationMode.wrappedValue.dismiss()
+				})
 			}
-			.disabled(firstName.isEmpty || lastName.isEmpty)
-			.padding([.horizontal, .bottom])
 		}
 		.onAppear {
 			self.setUpCollection()
@@ -123,7 +134,7 @@ struct AddPlayerView: View {
 
 struct AddPlayerView_Previews: PreviewProvider {
 	static var previews: some View {
-		let view = AddPlayerView().environmentObject(Team())
+		let view = AddPlayerView(teamViewModel: PlayersViewModel(teamId: "")).environmentObject(Team())
 		return view
 	}
 }

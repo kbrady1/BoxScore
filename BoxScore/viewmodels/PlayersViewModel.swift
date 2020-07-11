@@ -10,7 +10,7 @@ import Foundation
 import Combine
 import CloudKit
 
-struct TeamPlayersRequest: Request {
+struct TeamPlayersRequest: FetchRequest {
 	var database = CKContainer.default().privateCloudDatabase
 	var query: CKQuery
 	var zone: CKRecordZone.ID? = CKRecordZone.default().zoneID
@@ -30,15 +30,21 @@ class TeamPlayers: CloudCreatable {
 	}
 }
 
-class PlayersViewModel: NetworkViewModel, ObservableObject {
+class PlayersViewModel: NetworkReadViewModel, ObservableObject {
 	typealias CloudResource = TeamPlayers
 
 	var loadable: Loadable<CloudResource> = .loading
 	var manager: CloudManager = CloudManager()
-	var request: Request
+	var request: FetchRequest
 	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
 	
 	init(teamId: String) {
 		self.request = TeamPlayersRequest(teamId: teamId)
+	}
+	
+	//Investigate the latency of new records showing up
+	func update() {
+		loadable = .loading
+		self.fetch(request: request)
 	}
 }

@@ -9,16 +9,34 @@
 import Foundation
 import CloudKit
 
-class Player: NSObject, NSItemProviderWriting, NSItemProviderReading, Codable, Identifiable {
+struct SavePlayerRequest: SaveRequest {
+	var recordModel: RecordModel
+	var database = CKContainer.default().privateCloudDatabase
+	var zone: CKRecordZone.ID? = nil
+}
+
+class Player: Identifiable, RecordModel, Equatable {
 	
-	init(lastName: String, firstName: String, number: Int, id: String = UUID().uuidString) {
+	//TODO: Remove defaults
+	private init(lastName: String, firstName: String, number: Int, record: CKRecord) {
 		self.lastName = lastName
 		self.firstName = firstName
 		self.number = number
-		self.id = id
+		self.record = record
 	}
 	
-	convenience init(record: CKRecord) throws {
+	//This is for creating players in the app
+	convenience init(lastName: String, firstName: String, number: Int, teamId: String) {
+		let record = CKRecord(recordType: CKRecord.RecordType("Player"))
+		record.setValue(CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf), forKey: "teamId")
+		
+		self.init(lastName: lastName,
+				  firstName: firstName,
+				  number: number,
+				  record: record)
+	}
+	
+	required convenience init(record: CKRecord) throws {
 		guard let firstName = record.value(forKey: "firstName") as? String,
 			let lastName = record.value(forKey: "lastName") as? String,
 			let number = record.value(forKey: "number") as? Int else {
@@ -28,48 +46,59 @@ class Player: NSObject, NSItemProviderWriting, NSItemProviderReading, Codable, I
 		self.init(lastName: lastName,
 				  firstName: firstName,
 				  number: number,
-				  id: record.recordID.recordName)
+				  record: record)
 	}
 	
 	var lastName: String
 	var firstName: String
 	var number: Int
-	let id: String
+	var record: CKRecord
 	
 	var nameFirstLast: String { [firstName, lastName].joined(separator: " ") }
 	var nameLastFirst: String { [lastName, firstName].joined(separator: " ") }
+	var id: String { record.recordID.recordName }
 	
-	//MARK: Codable Methods
-	
-	func encode(with coder: NSCoder) {
-		coder.encode(lastName, forKey: "last")
-		coder.encode(firstName, forKey: "first")
-		coder.encode(number, forKey: "number")
-		coder.encode(id, forKey: "id")
-	}
-	
-	required init?(coder: NSCoder) {
-		guard let num = coder.decodeObject(forKey: "number") as? Int,
-			let firstName = coder.decodeObject(forKey: "first") as? String,
-			let lastName = coder.decodeObject(forKey: "last") as? String,
-			let id = coder.decodeObject(forKey: "id") as? String else { return nil }
-		
-		self.number = num
-		self.firstName = firstName
-		self.lastName = lastName
-		self.id = id
+	var draggableReference: DraggablePlayerReference {
+		DraggablePlayerReference(id: id)
 	}
 	
 	//MARK: Equatable
 	
-	override func isEqual(_ object: Any?) -> Bool {
-		guard let object = object as? Player else { return false }
-		
-		return id == object.id
-	}
-	
 	static func == (lhs: Player, rhs: Player) -> Bool {
 		return lhs.id == rhs.id
+	}
+	
+	//MARK: RecordModel Methods
+	
+	func recordToSave() -> CKRecord {
+		record.setValue(firstName, forKey: "firstName")
+		record.setValue(lastName, forKey: "lastName")
+		record.setValue(number, forKey: "number")
+		
+		return record
+	}
+	
+}
+
+//Use this in the drag and drop view
+
+class DraggablePlayerReference: NSObject, NSItemProviderWriting, NSItemProviderReading, Codable {
+	var id: String
+	
+	init(id: String) {
+		self.id = id
+	}
+	
+	//MARK: Codable Methods
+	
+	func encode(with coder: NSCoder) {
+		coder.encode(id, forKey: "id")
+	}
+	
+	required init?(coder: NSCoder) {
+		guard let id = coder.decodeObject(forKey: "id") as? String else { return nil }
+		
+		self.id = id
 	}
 	
 	//MARK: NSItemProvider Methods
@@ -95,5 +124,4 @@ class Player: NSObject, NSItemProviderWriting, NSItemProviderReading, Codable, I
 	static func object(withItemProviderData data: Data, typeIdentifier: String) throws -> Self {
 		return try JSONDecoder().decode(self, from: data)
 	}
-	
 }

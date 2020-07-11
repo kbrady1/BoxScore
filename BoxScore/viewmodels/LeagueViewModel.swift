@@ -10,17 +10,17 @@ import Foundation
 import Combine
 import CloudKit
 
-struct AllTeamsRequest: Request {
+struct AllTeamsRequest: FetchRequest {
 	var database = CKContainer.default().privateCloudDatabase
 	var query = CKQuery(recordType: "Team", predicate: NSPredicate(value: true))
 	var zone: CKRecordZone.ID? = nil
 }
 
-class LeagueViewModel: NetworkViewModel, ObservableObject {
+class LeagueViewModel: NetworkReadViewModel, ObservableObject {
 	typealias CloudResource = League
 	
 	var loadable: Loadable<CloudResource> = .loading
 	var manager: CloudManager = CloudManager()
-	var request: Request = AllTeamsRequest()
+	var request: FetchRequest = AllTeamsRequest()
 	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
 }

@@ -10,8 +10,36 @@ import Foundation
 import CloudKit
 import Combine
 
-protocol CloudCreatable {
+protocol RecordModel {
+	init(record: CKRecord) throws
+	var record: CKRecord { get set }
+	func recordToSave() -> CKRecord
+}
+
+protocol GenericCloudType {}
+
+protocol CloudCreatable: GenericCloudType {
 	init(records: [CKRecord]) throws
+}
+
+protocol CloudUpdated: GenericCloudType {
+	var error: Error? { get set }
+	var complete: Bool { get set }
+	var record: CKRecord? { get set }
+	
+	init(error: Error?, complete: Bool, record: CKRecord?)
+}
+
+struct CloudUpdateResponse: CloudUpdated {
+	var error: Error?
+	var complete: Bool
+	var record: CKRecord?
+	
+	init(error: Error? = nil, complete: Bool = false, record: CKRecord? = nil) {
+		self.error = error
+		self.complete = complete
+		self.record = record
+	}
 }
 
 struct CloudResponse {
@@ -20,11 +48,47 @@ struct CloudResponse {
 }
 
 class CloudManager {
-	func fetch(request: Request) -> CurrentValueSubject<CloudResponse, Error> {
+	func fetch(request: FetchRequest) -> CurrentValueSubject<CloudResponse, Error> {
 		let publisher = CurrentValueSubject<CloudResponse,Error>(CloudResponse(records: nil, error: nil))
 		
 		request.database.perform(request.query, inZoneWith: request.zone) { (records, error) in
 			let _ = publisher.send(CloudResponse(records: records, error: error))
+			
+			let _ = publisher.send(completion: .finished)
+		}
+		
+		return publisher
+	}
+	
+	func save(request: SaveRequest) -> CurrentValueSubject<CloudUpdateResponse, Error> {
+		let publisher = CurrentValueSubject<CloudUpdateResponse,Error>(CloudUpdateResponse())
+		
+		//For updates you need to use fetchRecordWithID before updating
+		
+//		let op = CKModifyRecordsOperation(recordsToSave: [request.recordModel.recordToSave()])
+//		op.savePolicy = .changedKeys
+//		op.perRecordCompletionBlock = { (record, error) in
+//			let _ = publisher.send(CloudUpdateResponse(error: error, complete: true, record: record))
+//			
+//			let _ = publisher.send(completion: .finished)
+//		}
+//		
+//		request.database.add(op)
+		
+		request.database.save(request.recordModel.recordToSave()) { (record, error) in
+			let _ = publisher.send(CloudUpdateResponse(error: error, complete: true, record: record))
+
+			let _ = publisher.send(completion: .finished)
+		}
+		
+		return publisher
+	}
+	
+	func delete(request: DeleteRequest) -> CurrentValueSubject<CloudUpdateResponse, Error> {
+		let publisher = CurrentValueSubject<CloudUpdateResponse,Error>(CloudUpdateResponse())
+		
+		request.database.delete(withRecordID: request.recordId) { (id, error) in
+			let _ = publisher.send(CloudUpdateResponse(error: error, complete: true))
 			
 			let _ = publisher.send(completion: .finished)
 		}

@@ -20,10 +20,12 @@
 		05B140C124B8E81700936738 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05B140C024B8E81700936738 /* CloudKit.framework */; };
 		05B140C424B8EDC700936738 /* CloudManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C324B8EDC700936738 /* CloudManager.swift */; };
 		05B140C624B8FEE900936738 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C524B8FEE900936738 /* Networking.swift */; };
-		05B140C824B9093800936738 /* NetworkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C724B9093800936738 /* NetworkViewModel.swift */; };
+		05B140C824B9093800936738 /* NetworkViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C724B9093800936738 /* NetworkViewModels.swift */; };
 		05B140CA24B90B5C00936738 /* LeagueViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C924B90B5C00936738 /* LeagueViewModel.swift */; };
 		05B140CC24B91A9000936738 /* RootNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140CB24B91A9000936738 /* RootNavigationView.swift */; };
 		05B140D024B9215900936738 /* PlayersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140CF24B9215900936738 /* PlayersViewModel.swift */; };
+		05B140D224B9544F00936738 /* AddPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D124B9544F00936738 /* AddPlayerViewModel.swift */; };
+		05B140D424B95ED000936738 /* AddPlayerLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D324B95ED000936738 /* AddPlayerLoadingView.swift */; };
 		05E1057D24AF8FEA00F39F0C /* Season.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1057C24AF8FEA00F39F0C /* Season.swift */; };
 		05E1057F24AF913B00F39F0C /* SeasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1057E24AF913B00F39F0C /* SeasonView.swift */; };
 		05E1058124AF91E900F39F0C /* FloatButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1058024AF91E900F39F0C /* FloatButtonView.swift */; };
@@ -80,10 +82,12 @@
 		05B140C024B8E81700936738 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		05B140C324B8EDC700936738 /* CloudManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudManager.swift; sourceTree = "<group>"; };
 		05B140C524B8FEE900936738 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
-		05B140C724B9093800936738 /* NetworkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkViewModel.swift; sourceTree = "<group>"; };
+		05B140C724B9093800936738 /* NetworkViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkViewModels.swift; sourceTree = "<group>"; };
 		05B140C924B90B5C00936738 /* LeagueViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeagueViewModel.swift; sourceTree = "<group>"; };
 		05B140CB24B91A9000936738 /* RootNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootNavigationView.swift; sourceTree = "<group>"; };
 		05B140CF24B9215900936738 /* PlayersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayersViewModel.swift; sourceTree = "<group>"; };
+		05B140D124B9544F00936738 /* AddPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlayerViewModel.swift; sourceTree = "<group>"; };
+		05B140D324B95ED000936738 /* AddPlayerLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlayerLoadingView.swift; sourceTree = "<group>"; };
 		05E1057C24AF8FEA00F39F0C /* Season.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Season.swift; sourceTree = "<group>"; };
 		05E1057E24AF913B00F39F0C /* SeasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonView.swift; sourceTree = "<group>"; };
 		05E1058024AF91E900F39F0C /* FloatButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatButtonView.swift; sourceTree = "<group>"; };
@@ -160,9 +164,10 @@
 		05B140CE24B920F900936738 /* viewmodels */ = {
 			isa = PBXGroup;
 			children = (
-				05B140C724B9093800936738 /* NetworkViewModel.swift */,
+				05B140C724B9093800936738 /* NetworkViewModels.swift */,
 				05B140CF24B9215900936738 /* PlayersViewModel.swift */,
 				05B140C924B90B5C00936738 /* LeagueViewModel.swift */,
+				05B140D124B9544F00936738 /* AddPlayerViewModel.swift */,
 			);
 			path = viewmodels;
 			sourceTree = "<group>";
@@ -276,6 +281,7 @@
 				05E1058024AF91E900F39F0C /* FloatButtonView.swift */,
 				05E1058224AF945C00F39F0C /* VisualEffectButtonView.swift */,
 				05E1058424AFA0D300F39F0C /* GameTitleView.swift */,
+				05B140D324B95ED000936738 /* AddPlayerLoadingView.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -412,6 +418,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				051C7F16246B589500057B44 /* StatInputView.swift in Sources */,
+				05B140D424B95ED000936738 /* AddPlayerLoadingView.swift in Sources */,
 				0549FDE624B80EC500720DDF /* League.swift in Sources */,
 				05B140CC24B91A9000936738 /* RootNavigationView.swift in Sources */,
 				05B140D024B9215900936738 /* PlayersViewModel.swift in Sources */,
@@ -427,7 +434,7 @@
 				0520404A246E498F008CEFBC /* ShotStatView.swift in Sources */,
 				05204044246E15E1008CEFBC /* TeamStatSummaryView.swift in Sources */,
 				05E1058524AFA0D300F39F0C /* GameTitleView.swift in Sources */,
-				05B140C824B9093800936738 /* NetworkViewModel.swift in Sources */,
+				05B140C824B9093800936738 /* NetworkViewModels.swift in Sources */,
 				051C7F1A246B978C00057B44 /* StatSettings.swift in Sources */,
 				05204046246E15EE008CEFBC /* PlayerStatSummaryView.swift in Sources */,
 				05EF2A63246A0C82004F4E09 /* VisualEffectView.swift in Sources */,
@@ -438,6 +445,7 @@
 				05EF2A65246A1FBD004F4E09 /* CourtPositionView.swift in Sources */,
 				051C7F18246B5D9A00057B44 /* Stat.swift in Sources */,
 				05EF2A54246A01F0004F4E09 /* HomeTeamView.swift in Sources */,
+				05B140D224B9544F00936738 /* AddPlayerViewModel.swift in Sources */,
 				0549FDE224B55F8100720DDF /* Extensions.swift in Sources */,
 				05EF2A58246A0235004F4E09 /* GameView.swift in Sources */,
 				05E1057F24AF913B00F39F0C /* SeasonView.swift in Sources */,

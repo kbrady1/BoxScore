@@ -137,7 +137,7 @@ struct HomeTeamView: View {
 					.font(.system(size: 36))
 					.foregroundColor(league.currentSeason.currentGame != nil ? Color.gray : league.currentSeason.team.primaryColor)
 			}.sheet(isPresented: $showModal) {
-				AddPlayerView().environmentObject(self.league.currentSeason.team)
+				AddPlayerView(teamViewModel: self.viewModel).environmentObject(self.league.currentSeason.team)
 			}
 			.disabled(league.currentSeason.currentGame != nil)
 		)

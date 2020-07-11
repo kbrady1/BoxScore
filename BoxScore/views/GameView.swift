@@ -114,8 +114,6 @@ struct GameView: View {
 		.frame(minWidth: 300, maxWidth: .infinity)
 		.frame(height: 300)
 		
-		
-		
 		return ZStack {
 			image
 			if positionA != nil {

@@ -146,9 +146,9 @@ struct CourtPositionView: View {
 		.offset(offset)
 		.position(position)
 		.onDrop(of: ["player"], isTargeted: nil) { (providers) -> Bool in
-			providers.first?.loadObject(ofClass: Player.self, completionHandler: { (reading, error) in
+			providers.first?.loadObject(ofClass: DraggablePlayerReference.self, completionHandler: { (reading, error) in
 				DispatchQueue.main.async {
-					self.addPlayer(player: reading as? Player)
+					self.addPlayer(reading as? DraggablePlayerReference)
 				}
 			})
 			
@@ -159,9 +159,11 @@ struct CourtPositionView: View {
 		.if(hasPlayer) { $0.gesture(statGesture) }
 	}
 	
-	func addPlayer(player: Player?) {
-		game.swapPlayers(fromBench: player, toLineUp: self.player)
-		self.player = player
+	func addPlayer(_ playerReference: DraggablePlayerReference?) {
+		if let player = game.playersOnBench.first(where: { $0.id == playerReference?.id }) {
+			game.swapPlayers(fromBench: player, toLineUp: self.player)
+			self.player = player
+		}
 	}
 	
 	private func trackStat() {

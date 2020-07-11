@@ -19,7 +19,7 @@ struct PlayerInGameView: View {
 		PlayerView(player: player, shadow: shadow, color: color, height: height)
 			.if(game.playersOnBench.contains(player)) {
 				$0.onDrag {
-					return NSItemProvider(object: self.player)
+					return NSItemProvider(object: self.player.draggableReference)
 				}
 			}
 	}
@@ -48,7 +48,7 @@ struct PlayerView: View {
 
 struct PlayerView_Previews: PreviewProvider {
     static var previews: some View {
-		let view = PlayerView(player: Player(lastName: "Brady", firstName: "Kent", number: 12))
+		let view = PlayerView(player: Player(lastName: "Brady", firstName: "Kent", number: 12, teamId: ""))
 			.environmentObject(Game.previewData)
 			.previewLayout(.fixed(width: 120, height: 120))
 		
