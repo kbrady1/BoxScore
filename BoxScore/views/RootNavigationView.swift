@@ -11,6 +11,10 @@ import SwiftUI
 struct RootNavigationView: View {
 	@ObservedObject var viewModel = LeagueViewModel()
 	
+	init() {
+		UINavigationBar.appearance().shadowImage = UIImage()
+	}
+	
 	var body: some View {
 		NavigationView {
 			VStack {

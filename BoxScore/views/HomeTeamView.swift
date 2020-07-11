@@ -26,6 +26,7 @@ struct HomeTeamView: View {
 					VStack(alignment: .center) {
 						HStack {
 							Text("Team: ")
+								.font(.caption)
 								.padding([.vertical, .leading])
 							TextField("Team Name", text: $league.currentSeason.team.name)
 								.font(.largeTitle)

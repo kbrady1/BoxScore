@@ -15,8 +15,21 @@ struct ColorPickerView: View {
 	
 	private let hues = Array(0...359).map { Color(UIColor(hue: CGFloat($0) / 359.0, saturation: 1.0, brightness: 1.0, alpha: 1.0)) }
 	private var currentColor: Color {
-		Color(UIColor(hue: adjustDrag() / LINEAR_GRADIENT_HEIGHT, saturation: 1.0, brightness: adjustShade() / LINEAR_GRADIENT_HEIGHT, alpha: 1.0))
+		let s = 1.01 - (adjustSaturation() / LINEAR_GRADIENT_HEIGHT)
+		let b = adjustShade() / LINEAR_GRADIENT_HEIGHT
+		print("h: \(h) s: \(s) b: \(b)")
+		return Color(UIColor(hue: h,
+					  saturation: s,
+					  brightness: b,
+					  alpha: 1.0))
 	}
+	
+	private var h: CGFloat {
+		return adjustDrag() / LINEAR_GRADIENT_HEIGHT
+	}
+	
+	@State private var offsetLeft: CGSize = .zero
+	@State private var startLocationLeft: CGFloat = LINEAR_GRADIENT_HEIGHT / 2
 	
 	@State private var offset: CGSize = .zero
 	@State private var startLocation: CGFloat = LINEAR_GRADIENT_HEIGHT / 2
@@ -26,7 +39,6 @@ struct ColorPickerView: View {
 	
 	@Binding var chosenColor: Color
 	@State private var circleBackground = Color.clear
-	
 	
 	var body: some View {
 		NavigationView {
@@ -38,12 +50,28 @@ struct ColorPickerView: View {
 					.overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.white, lineWidth: 4))
 				HStack(spacing: 80) {
 					ZStack(alignment: .top) {
+						LinearGradient(gradient: Gradient(colors: [currentColor.withSaturation(1.0), currentColor.withSaturation(0.0)]), startPoint: .top, endPoint: .bottom)
+							.frame(width: 20, height: LINEAR_GRADIENT_HEIGHT, alignment: .leading)
+							.cornerRadius(5)
+							.shadow(radius: 8)
+							.overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.white, lineWidth: 4.0))
+						CircleView(color: $circleBackground, style: .systemUltraThinMaterial)
+							.frame(width: 36, height: 36)
+							.offset(x:0.0, y: self.adjustSaturation() - 18)
+							.gesture(DragGesture().onChanged { (gesture) in
+								self.offsetLeft = CGSize(width: self.offsetLeft.width, height: gesture.translation.height)
+								self.startLocationLeft = gesture.startLocation.y
+								self.chosenColor = self.currentColor
+							})
+						
+					}
+					ZStack(alignment: .top) {
 						LinearGradient(gradient: Gradient(colors: hues), startPoint: .top, endPoint: .bottom)
 							.frame(width: 20, height: LINEAR_GRADIENT_HEIGHT, alignment: .leading)
 							.cornerRadius(5)
 							.shadow(radius: 8)
 							.overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.white, lineWidth: 4.0))
-						CircleView(color: $circleBackground)
+						CircleView(color: $circleBackground, style: .systemUltraThinMaterial)
 							.frame(width: 36, height: 36)
 							.offset(x:0.0, y: self.adjustDrag() - 18)
 							.gesture(DragGesture().onChanged { (gesture) in
@@ -51,7 +79,6 @@ struct ColorPickerView: View {
 								self.startLocation = gesture.startLocation.y
 								self.chosenColor = self.currentColor
 							})
-						
 					}
 					ZStack(alignment: .top) {
 						LinearGradient(gradient: Gradient(colors: [.black, .white]), startPoint: .top, endPoint: .bottom)
@@ -59,7 +86,7 @@ struct ColorPickerView: View {
 							.cornerRadius(5)
 							.shadow(radius: 8)
 							.overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.white, lineWidth: 4.0))
-						CircleView(color: $circleBackground)
+						CircleView(color: $circleBackground, style: .systemUltraThinMaterial)
 							.frame(width: 36, height: 36)
 							.offset(x:0.0, y: self.adjustShade() - 18)
 							.gesture(DragGesture().onChanged { (gesture) in
@@ -78,7 +105,12 @@ struct ColorPickerView: View {
 				Text("Done")
 					.bold()
 			}))
-			
+		}
+		.onAppear {
+			let components = self.chosenColor.hueSatBrightAlpha()
+			self.startLocationLeft = LINEAR_GRADIENT_HEIGHT - (components.s * LINEAR_GRADIENT_HEIGHT)
+			self.startLocation = components.h * LINEAR_GRADIENT_HEIGHT
+			self.startLocationRight = components.b * LINEAR_GRADIENT_HEIGHT
 		}
 	}
 	
@@ -88,6 +120,10 @@ struct ColorPickerView: View {
 	
 	private func adjustShade() -> CGFloat {
 		return min(max(0, startLocationRight + offsetRight.height), LINEAR_GRADIENT_HEIGHT)
+	}
+	
+	private func adjustSaturation() -> CGFloat {
+		return min(max(0, startLocationLeft + offsetLeft.height), LINEAR_GRADIENT_HEIGHT)
 	}
 }
 

@@ -69,18 +69,20 @@ extension View {
 struct DefaultCircleView: View {
 	@State var color = Color.white
 	var shadow: Bool = true
+	var style: UIBlurEffect.Style = .systemThinMaterial
 	
 	var body: some View {
-		CircleView(color: $color, shadow: shadow)
+		CircleView(color: $color, shadow: shadow, style: style)
 	}
 }
 
 struct CircleView: View {
 	@Binding var color: Color
 	var shadow: Bool = true
+	var style: UIBlurEffect.Style = .systemThinMaterial
 	
 	var body: some View {
-		BlurView(style: .systemThinMaterial)
+		BlurView(style: style)
 			.background(color)
 			.clipShape(Circle())
 			.shadow(radius: shadow ? 3 : 0)

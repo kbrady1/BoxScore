@@ -55,7 +55,7 @@ class Player: Identifiable, RecordModel, Equatable {
 	var record: CKRecord
 	
 	var nameFirstLast: String { [firstName, lastName].joined(separator: " ") }
-	var nameLastFirst: String { [lastName, firstName].joined(separator: " ") }
+	var nameLastFirst: String { [lastName, firstName].joined(separator: ", ") }
 	var id: String { record.recordID.recordName }
 	
 	var draggableReference: DraggablePlayerReference {

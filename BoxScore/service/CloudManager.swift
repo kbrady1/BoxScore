@@ -48,6 +48,63 @@ struct CloudResponse {
 }
 
 class CloudManager {
+	static var shared = CloudManager(batchUpdates: true)
+	
+	init(batchUpdates: Bool = false) {
+		if batchUpdates {
+			//Batch send groups of updates every 15 seconds
+			//TODO: Make this time a little longer
+			//TODO: Build mechanism to finish pushing before exiting app
+			timer = Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(processBatch), userInfo: nil, repeats: true)
+		}
+	}
+	
+	deinit {
+		timer?.invalidate()
+	}
+	
+	//Mark Grouped Operations
+	
+	private var timer: Timer?
+	
+	private var db = CKContainer.default().privateCloudDatabase
+	private var recordsToSave = [CKRecord]()
+	private var recordsToDelete = [CKRecord]()
+	
+	func addRecordToSave(record: CKRecord) {
+		recordsToSave.removeAll { $0.recordID == record.recordID }
+		
+		recordsToSave.append(record)
+	}
+	
+	@objc private func processBatch() {
+		if !recordsToDelete.isEmpty || !recordsToSave.isEmpty {
+			let _ = process()
+		}
+	}
+	
+	private func process() -> CurrentValueSubject<CloudUpdateResponse, Error> {
+		let publisher = CurrentValueSubject<CloudUpdateResponse,Error>(CloudUpdateResponse())
+		
+		let op = CKModifyRecordsOperation(recordsToSave: recordsToSave, recordIDsToDelete: recordsToDelete.map { $0.recordID })
+		
+		//Remove batch of updates
+		recordsToDelete.removeAll()
+		recordsToSave.removeAll()
+		
+		op.modifyRecordsCompletionBlock = { (saved, deleted, error) in
+			let _ = publisher.send(CloudUpdateResponse(error: error, complete: true, record: nil))
+			
+			let _ = publisher.send(completion: .finished)
+		}
+		
+		db.add(op)
+		
+		return publisher
+	}
+	
+	//Single Operations
+	
 	func fetch(request: FetchRequest) -> CurrentValueSubject<CloudResponse, Error> {
 		let publisher = CurrentValueSubject<CloudResponse,Error>(CloudResponse(records: nil, error: nil))
 		
@@ -63,18 +120,7 @@ class CloudManager {
 	func save(request: SaveRequest) -> CurrentValueSubject<CloudUpdateResponse, Error> {
 		let publisher = CurrentValueSubject<CloudUpdateResponse,Error>(CloudUpdateResponse())
 		
-		//For updates you need to use fetchRecordWithID before updating
-		
-//		let op = CKModifyRecordsOperation(recordsToSave: [request.recordModel.recordToSave()])
-//		op.savePolicy = .changedKeys
-//		op.perRecordCompletionBlock = { (record, error) in
-//			let _ = publisher.send(CloudUpdateResponse(error: error, complete: true, record: record))
-//			
-//			let _ = publisher.send(completion: .finished)
-//		}
-//		
-//		request.database.add(op)
-		
+		//For updates you may need to use fetchRecordWithID before updating
 		request.database.save(request.recordModel.recordToSave()) { (record, error) in
 			let _ = publisher.send(CloudUpdateResponse(error: error, complete: true, record: record))
 

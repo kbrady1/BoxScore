@@ -12,11 +12,8 @@ import CloudKit.CKRecord
 struct AddPlayerLoadingView: View {
 	@ObservedObject var viewModel: AddPlayerViewModel
 	@Binding var visible: Bool
-	
-	@State private var timer: Timer?
-	@State private var timeUntilDismissal = 1
-	
-	var action:	 () -> ()
+		
+	var action:	 (Player) -> ()
 	
     var body: some View {
 		VStack {
@@ -40,9 +37,6 @@ struct AddPlayerLoadingView: View {
 		.background(BlurView(style: .systemUltraThinMaterial))
 		.cornerRadius(24.0)
 		.onAppear(perform: viewModel.beginSave)
-		.onDisappear {
-			self.timer?.invalidate()
-		}
     }
 	
 	private func errorView(_ error: DisplayableError) -> some View {
@@ -54,16 +48,11 @@ struct AddPlayerLoadingView: View {
 	}
 	
 	private func hideLoader(_ andDismiss: Bool) {
-		//Error here with modifying view during update
-		timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { (_) in
-			self.timeUntilDismissal -= 1
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
+			self.visible.toggle()
 			
-			if self.timeUntilDismissal == 0 {
-				self.visible.toggle()
-				
-				if andDismiss {
-					self.action()
-				}
+			if andDismiss {
+				self.action(self.viewModel.player)
 			}
 		}
 	}
@@ -79,6 +68,6 @@ struct AddPlayerLoadingView: View {
 
 struct AddPlayerLoadingView_Previews: PreviewProvider {
     static var previews: some View {
-		AddPlayerLoadingView(viewModel: AddPlayerViewModel(player: Player(lastName: "", firstName: "", number: 1, teamId: "123")), visible: Binding.constant(true), action: {}).previewLayout(.fixed(width: 300, height: 300))
+		AddPlayerLoadingView(viewModel: AddPlayerViewModel(player: Player(lastName: "", firstName: "", number: 1, teamId: "123")), visible: Binding.constant(true), action: { (_) in }).previewLayout(.fixed(width: 300, height: 300))
     }
 }

@@ -25,6 +25,10 @@ struct TeamPlayersRequest: FetchRequest {
 class TeamPlayers: CloudCreatable {
 	var players = [Player]()
 	
+	init(players: [Player]) {
+		self.players = players
+	}
+	
 	required init(records: [CKRecord]) throws {
 		self.players = try records.map { try Player(record: $0) }
 	}
@@ -43,8 +47,8 @@ class PlayersViewModel: NetworkReadViewModel, ObservableObject {
 	}
 	
 	//Investigate the latency of new records showing up
-	func update() {
-		loadable = .loading
-		self.fetch(request: request)
+	func update(team: Team) {
+		loadable = .success(TeamPlayers(players: team.players))
+		self.objectWillChange.send()
 	}
 }

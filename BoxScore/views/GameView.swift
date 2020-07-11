@@ -12,11 +12,6 @@ private let SCORE_BOARD_HEIGHT: CGFloat = 125
 
 ///This view is for active games to track each player's stats
 struct GameView: View {
-	
-	init() {
-		UINavigationBar.appearance().shadowImage = UIImage()
-	}
-	
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var game: Game
 	@EnvironmentObject var settings: StatSettings
