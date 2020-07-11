@@ -12,19 +12,22 @@ import SwiftUI
 import CloudKit
 
 class Team: ObservableObject, RecordModel {
-	
-	//TODO: Remove default
-	init(id: String = UUID().uuidString, name: String, primaryColor: Color, secondaryColor: Color, record: CKRecord = CKRecord(recordType: CKRecord.RecordType("Team"))) {
-		self.id = id
+	init(name: String, primaryColor: Color, secondaryColor: Color, record: CKRecord = CKRecord(recordType: CKRecord.RecordType("Team"))) {
 		self.name = name
 		self.primaryColor = primaryColor
 		self.secondaryColor = secondaryColor
 		self.record = record
 	}
 	
+	static func createNewRecord() -> Team {
+		let team = Team()
+		CloudManager.shared.addRecordToSave(record: team.record, instantSave: true)
+		
+		return team
+	}
+	
 	convenience init() {
-		self.init(id: UUID().uuidString,
-				  name: "",
+		self.init(name: "",
 				  primaryColor: .blue,
 				  secondaryColor: .red)
 	}
@@ -38,14 +41,13 @@ class Team: ObservableObject, RecordModel {
 			throw BoxScoreError.invalidModelError()
 		}
 		
-		self.init(id: record.recordID.recordName,
-				  name: name,
+		self.init(name: name,
 				  primaryColor: try Color(doubleList: primaryColorList),
 				  secondaryColor: try Color(doubleList: secondaryColorList),
 				  record: record)
 	}
 	
-	let id: String
+	var id: String { record.recordID.recordName }
 	var record: CKRecord
 	@Published var name: String {
 		didSet {

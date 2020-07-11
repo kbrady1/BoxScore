@@ -15,7 +15,10 @@ struct TeamPlayersRequest: FetchRequest {
 	var query: CKQuery
 	var zone: CKRecordZone.ID? = CKRecordZone.default().zoneID
 	
+	var teamId: String
+	
 	init(teamId: String) {
+		self.teamId = teamId
 		let recordToMatch = CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf)
 		query = CKQuery(recordType: "Player",
 		predicate: NSPredicate(format: "teamId == %@", recordToMatch))
@@ -48,7 +51,16 @@ class PlayersViewModel: NetworkReadViewModel, ObservableObject {
 	
 	//Investigate the latency of new records showing up
 	func update(team: Team) {
-		loadable = .success(TeamPlayers(players: team.players))
+		if let request = request as? TeamPlayersRequest,
+			team.id == request.teamId {
+			//If updating on the same team, just get the new players
+			loadable = .success(TeamPlayers(players: team.players))
+		} else {
+			//If this update is with a new team, go get players for that new team
+			loadable = .loading
+			request = TeamPlayersRequest(teamId: team.id)
+			fetch(request: request)
+		}
 		self.objectWillChange.send()
 	}
 }

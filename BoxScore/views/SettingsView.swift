@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SettingsView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+	@EnvironmentObject var viewModel: PlayersViewModel
 	
 	@ObservedObject var league: League
 	
@@ -27,9 +28,10 @@ struct SettingsView: View {
 						.font(Font.system(size: 32))
 						.bold()
 				) {
-					ForEach(league.seasons, id: \.team.name) { (season) in
+					ForEach(league.seasons, id: \.team.id) { (season) in
 						Button(action: {
 							self.league.currentSeason = season
+							self.viewModel.update(team: season.team)
 						}) {
 							HStack {
 								Text(season.team.name)
@@ -45,8 +47,8 @@ struct SettingsView: View {
 					}
 					.onDelete(perform: self.deleteRow)
 					Button(action: {
-						//TODO: This should send you back home to the HomeTeamView with empty data
-						self.league.newTeam()
+						let team = self.league.newTeam()
+						self.viewModel.update(team: team)
 						self.presentationMode.wrappedValue.dismiss()
 					}) {
 						Text("Add Team")

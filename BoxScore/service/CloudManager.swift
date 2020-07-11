@@ -71,10 +71,14 @@ class CloudManager {
 	private var recordsToSave = [CKRecord]()
 	private var recordsToDelete = [CKRecord]()
 	
-	func addRecordToSave(record: CKRecord) {
+	func addRecordToSave(record: CKRecord, instantSave: Bool = false) {
 		recordsToSave.removeAll { $0.recordID == record.recordID }
 		
 		recordsToSave.append(record)
+		
+		if instantSave {
+			processBatch()
+		}
 	}
 	
 	@objc private func processBatch() {
