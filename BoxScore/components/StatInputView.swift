@@ -34,9 +34,13 @@ struct StatInputView: View {
 			stat.pointsOfShot = pointsOfShot
 		}
 	}
-	@State private var shotLocation: CGPoint = .zero {
+	//Use this for coordination on this same view
+	@State private var shotLocation: CGPoint = .zero
+	
+	//Use this for saving to use on other views with increased accuracy
+	@State private var adjustedShotLocation: CGPoint = .zero {
 		didSet {
-			stat.shotLocation = shotLocation
+			stat.shotLocation = adjustedShotLocation
 		}
 	}
 	@State private var offensiveRebound: Bool = false {
@@ -68,15 +72,23 @@ struct StatInputView: View {
 					VStack {
 						InstructionView(number: "1", title: "Tap Shot Location", accentColor: game.team.secondaryColor)
 						ZStack {
-							Image("BasketballCourt")
+							GeometryReader { geometry in
+								Image("BasketballCourt")
 								.resizable()
 								.frame(minWidth: 300, maxWidth: .infinity)
 								.frame(minHeight: 200, maxHeight: 200)
 								.gesture(DragGesture(minimumDistance: 0)
 									.onEnded { (gesture) in
-										self.shotLocation = gesture.startLocation
+										//Save the shot location for use on this screen
+										self.shotLocation = gesture.predictedEndLocation
+										
+										//Save the adjust shot location to standardize these coordinates
+										self.adjustedShotLocation = CGPoint(x: (gesture.predictedEndLocation.x / geometry.size.width),
+																			y: (gesture.predictedEndLocation.y / geometry.size.height))
 									}
 								)
+							}
+							.frame(minHeight: 200, maxHeight: 200)
 								
 							if shotLocation != .zero {
 								CircleView(color: $game.team.primaryColor)

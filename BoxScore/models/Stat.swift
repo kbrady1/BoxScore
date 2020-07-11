@@ -56,6 +56,8 @@ class Stat: Identifiable {
 	var joinedStats = [Stat]()
 	
 	@Published var shotWasMake: Bool = false
+	
+	//This is a standardized location for distance percentage from origin
 	var shotLocation: CGPoint?
 	var assistedBy: Player? {
 		didSet {

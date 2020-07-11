@@ -27,24 +27,26 @@ struct ShotStatView: View {
 					Text("Misses").tag(ShotFilter.misses)
 				}.pickerStyle(SegmentedPickerStyle())
 				ZStack {
-					Image("BasketballCourt")
-						.resizable()
-						.frame(minWidth: 300, maxWidth: .infinity)
-						.frame(minHeight: 200, maxHeight: 200)
-					ForEach(shotsToDisplay.filter {
-						switch (filterMakes) {
-						case .all:
-							return true
-						case .makes:
-							return $0.shotWasMake
-						case .misses:
-							return !$0.shotWasMake
+					GeometryReader { (geometry) in
+						Image("BasketballCourt")
+							.resizable()
+							.frame(minWidth: 300, maxWidth: .infinity)
+							.frame(minHeight: 200, maxHeight: 200)
+						ForEach(self.shotsToDisplay.filter {
+							switch (self.filterMakes) {
+							case .all:
+								return true
+							case .makes:
+								return $0.shotWasMake
+							case .misses:
+								return !$0.shotWasMake
+							}
+						}) {
+							ShotView(make: $0.shotWasMake)
+								.position(CGPoint(x: $0.shotLocation!.x * geometry.size.width, y: $0.shotLocation!.y * geometry.size.height))
 						}
-					}) {
-						ShotView(make: $0.shotWasMake)
-							.position($0.shotLocation!)
+						.animation(.default)
 					}
-					.animation(.default)
 				}
 				.frame(minWidth: 300, maxWidth: .infinity)
 				.frame(minHeight: 200, maxHeight: 200)

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -353,7 +353,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1140;
 				LastUpgradeCheck = 1140;
-				ORGANIZATIONNAME = "Brigham Young University";
+				ORGANIZATIONNAME = "Kent Brady";
 				TargetAttributes = {
 					05EF2A1D246A0162004F4E09 = {
 						CreatedOnToolsVersion = 11.4.1;
@@ -369,7 +369,7 @@
 				};
 			};
 			buildConfigurationList = 05EF2A19246A0162004F4E09 /* Build configuration list for PBXProject "BoxScore" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 11.4";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
