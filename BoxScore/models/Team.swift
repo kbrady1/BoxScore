@@ -12,7 +12,7 @@ import SwiftUI
 import CloudKit
 
 class Team: ObservableObject, RecordModel {
-	init(name: String, primaryColor: Color, secondaryColor: Color, record: CKRecord = CKRecord(recordType: CKRecord.RecordType("Team"))) {
+	init(name: String, primaryColor: Color, secondaryColor: Color, record: CKRecord = CKRecord(recordType: TeamSchema.TYPE)) {
 		self.name = name
 		self.primaryColor = primaryColor
 		self.secondaryColor = secondaryColor
@@ -33,9 +33,9 @@ class Team: ObservableObject, RecordModel {
 	}
 	
 	required convenience init(record: CKRecord) throws {
-		guard let name = record.value(forKey: "name") as? String,
-			let primaryColorList = record.value(forKey: "primaryColor") as? [Double],
-			let secondaryColorList = record.value(forKey: "secondaryColor") as? [Double],
+		guard let name = record.value(forKey: TeamSchema.NAME) as? String,
+			let primaryColorList = record.value(forKey: TeamSchema.PRIMARY_COLOR) as? [Double],
+			let secondaryColorList = record.value(forKey: TeamSchema.SECONDARY_COLOR) as? [Double],
 			primaryColorList.count == 4,
 			secondaryColorList.count == 4 else {
 			throw BoxScoreError.invalidModelError()
@@ -76,9 +76,9 @@ class Team: ObservableObject, RecordModel {
 	//MARK: RecordModel
 	
 	func recordToSave() -> CKRecord {
-		record.setValue(name, forKey: "name")
-		record.setValue(primaryColor.toRGBList, forKey: "primaryColor")
-		record.setValue(secondaryColor.toRGBList, forKey: "secondaryColor")
+		record.setValue(name, forKey: TeamSchema.NAME)
+		record.setValue(primaryColor.toRGBList, forKey: TeamSchema.PRIMARY_COLOR)
+		record.setValue(secondaryColor.toRGBList, forKey: TeamSchema.SECONDARY_COLOR)
 		
 		return record
 	}

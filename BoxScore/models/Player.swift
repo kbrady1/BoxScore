@@ -27,8 +27,8 @@ class Player: Identifiable, RecordModel, Equatable {
 	
 	//This is for creating players in the app
 	convenience init(lastName: String, firstName: String, number: Int, teamId: String) {
-		let record = CKRecord(recordType: CKRecord.RecordType("Player"))
-		record.setValue(CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf), forKey: "teamId")
+		let record = CKRecord(recordType: PlayerSchema.TYPE)
+		record.setValue(CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf), forKey: PlayerSchema.TEAM_ID_REF)
 		
 		self.init(lastName: lastName,
 				  firstName: firstName,
@@ -37,9 +37,9 @@ class Player: Identifiable, RecordModel, Equatable {
 	}
 	
 	required convenience init(record: CKRecord) throws {
-		guard let firstName = record.value(forKey: "firstName") as? String,
-			let lastName = record.value(forKey: "lastName") as? String,
-			let number = record.value(forKey: "number") as? Int else {
+		guard let firstName = record.value(forKey: PlayerSchema.FIRST_NAME) as? String,
+			let lastName = record.value(forKey: PlayerSchema.LAST_NAME) as? String,
+			let number = record.value(forKey: PlayerSchema.NUMBER) as? Int else {
 				throw BoxScoreError.invalidModelError()
 		}
 		
@@ -71,9 +71,9 @@ class Player: Identifiable, RecordModel, Equatable {
 	//MARK: RecordModel Methods
 	
 	func recordToSave() -> CKRecord {
-		record.setValue(firstName, forKey: "firstName")
-		record.setValue(lastName, forKey: "lastName")
-		record.setValue(number, forKey: "number")
+		record.setValue(firstName, forKey: PlayerSchema.FIRST_NAME)
+		record.setValue(lastName, forKey: PlayerSchema.LAST_NAME)
+		record.setValue(number, forKey: PlayerSchema.NUMBER)
 		
 		return record
 	}

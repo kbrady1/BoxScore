@@ -12,8 +12,12 @@ import CloudKit
 
 struct AllTeamsRequest: FetchRequest {
 	var database = CKContainer.default().privateCloudDatabase
-	var query = CKQuery(recordType: "Team", predicate: NSPredicate(value: true))
+	var query = CKQuery(recordType: TeamSchema.TYPE, predicate: NSPredicate(value: true))
 	var zone: CKRecordZone.ID? = nil
+	
+	init() {
+		query.sortDescriptors?.append(NSSortDescriptor(key: TeamSchema.NAME, ascending: false))
+	}
 }
 
 class LeagueViewModel: NetworkReadViewModel, ObservableObject {

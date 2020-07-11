@@ -20,8 +20,8 @@ struct TeamPlayersRequest: FetchRequest {
 	init(teamId: String) {
 		self.teamId = teamId
 		let recordToMatch = CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf)
-		query = CKQuery(recordType: "Player",
-		predicate: NSPredicate(format: "teamId == %@", recordToMatch))
+		query = CKQuery(recordType: PlayerSchema.TYPE,
+						predicate: NSPredicate(format: "\(PlayerSchema.TEAM_ID_REF) == %@", recordToMatch))
 	}
 }
 
