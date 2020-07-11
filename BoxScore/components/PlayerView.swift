@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct PlayerInGameView: View {
-	@EnvironmentObject var game: Game
+	@EnvironmentObject var game: LiveGame
 	var player: Player
 	var shadow: Bool = true
 	var color: Color = .clear

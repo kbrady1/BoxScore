@@ -22,11 +22,12 @@ struct TeamPlayersRequest: FetchRequest {
 		let recordToMatch = CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf)
 		query = CKQuery(recordType: PlayerSchema.TYPE,
 						predicate: NSPredicate(format: "\(PlayerSchema.TEAM_ID_REF) == %@", recordToMatch))
+		query.sortDescriptors?.append(NSSortDescriptor(key: PlayerSchema.LAST_NAME, ascending: false))
 	}
 }
 
 class TeamPlayers: CloudCreatable {
-	var players = [Player]()
+	var players: [Player]
 	
 	init(players: [Player]) {
 		self.players = players

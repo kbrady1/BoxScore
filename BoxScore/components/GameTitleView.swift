@@ -15,8 +15,8 @@ struct GameTitleView: View {
 	
     var body: some View {
         VStack {
-			if showDate {
-				Text(game.dateText)
+			if showDate && game.dateText != nil {
+				Text(game.dateText ?? "")
 				.font(.caption)
 				.foregroundColor(.gray)
 			}

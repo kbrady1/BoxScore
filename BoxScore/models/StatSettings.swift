@@ -46,13 +46,16 @@ class StatSettings: ObservableObject {
 	   }
 	
 	var statsNotInDirection: [(String, StatType)] {
-		return StatType.all
-			.filter { $0 != leftGesture }
-			.filter { $0 != rightGesture }
-			.filter { $0 != upGesture }
-			.filter { $0 != downGesture }
+		allStats
+			.filter { $0.1 != leftGesture }
+			.filter { $0.1 != rightGesture }
+			.filter { $0.1 != upGesture }
+			.filter { $0.1 != downGesture }
+	}
+	
+	var allStats: [(String, StatType)] {
+		StatType.all
 			.map { ($0.abbreviation(), $0) }
-//		return StatType.all.filter { !statsInDirection.contains($0) }.map { ($0.abbreviation(), $0) }
 	}
 	
 	func getStat(for direction: MoveDirection) -> StatType {

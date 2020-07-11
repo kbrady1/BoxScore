@@ -16,7 +16,7 @@ enum MoveDirection: String {
 }
 
 struct CourtPositionView: View {
-	@EnvironmentObject var game: Game
+	@EnvironmentObject var game: LiveGame
 	@EnvironmentObject var settings: StatSettings
 	@State var position: CGPoint
 	
@@ -117,7 +117,7 @@ struct CourtPositionView: View {
 						PlayerInGameView(player: player!)
 						.if(hasPlayer) {
 							$0.contextMenu {
-								ForEach(settings.statsNotInDirection, id: \.0) { (typePair) in
+								ForEach(settings.allStats, id: \.0) { (typePair) in
 									Button(action: {
 										self.statType = typePair.1
 										self.showingAlert = true

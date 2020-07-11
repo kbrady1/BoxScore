@@ -29,3 +29,15 @@ class TeamSchema: Schema {
 	static var PRIMARY_COLOR = "primaryColor"
 	static var SECONDARY_COLOR = "secondaryColor"
 }
+
+class GameSchema: Schema {
+	static var TYPE = CKRecord.RecordType("Game")
+	
+	static var DATE = "endDate"
+	static var HAS_ENDED = "hasEnded"
+	static var OPPONENT = "opponentName"
+	static var OPPONENT_SCORE = "opponentScore"
+	static var SCORE = "teamScore"
+	static var PLAYERS_IN_GAME = "playersInGame"
+	static var TEAM = "teamId"
+}

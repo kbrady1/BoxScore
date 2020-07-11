@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SeasonView: View {
 	@EnvironmentObject var settings: StatSettings
+	
 	@State var season: Season
 	@State var currentGame: Game?
 	
@@ -25,7 +26,7 @@ struct SeasonView: View {
 				}
 				Section {
 					NavigationLink(destination:
-						GameView()
+						LiveGameView()
 							.environmentObject(currentGame!)
 							.environmentObject(settings)
 							.environmentObject(season)
@@ -51,7 +52,7 @@ struct SeasonView: View {
 			}
 			
 			ForEach(season.previousGames, id: \.id) { (game) in
-				Section (header: Text(game.dateText)) {
+				Section (header: Text(game.dateText ?? "")) {
 					NavigationLink(destination: TeamStatSummaryView()
 						.environmentObject(GameList(game))
 						.environmentObject(self.season.team)
@@ -89,18 +90,8 @@ struct SeasonView_Previews: PreviewProvider {
 	static let pastGame2 = Game(team: team)
 	
     static var previews: some View {
-		game.opponentScore = 23
-		game.teamScore = 25
-		
-		pastGame.opponentScore = 77
-		pastGame.teamScore = 58
-		
-		pastGame2.opponentScore = 49
-		pastGame2.teamScore = 100
-		
         return SeasonView(season: Season(team: team,
 										 currentGame: game,
-										 previousGames: [pastGame, pastGame2])
-		)
+										 previousGames: [pastGame, pastGame2]))
     }
 }

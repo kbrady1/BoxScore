@@ -10,7 +10,8 @@ import SwiftUI
 
 ///The Add Team View will provide a way to name a team and add players (name, pos, number
 struct HomeTeamView: View {
-	@ObservedObject var viewModel: PlayersViewModel
+	@ObservedObject var playersViewModel: PlayersViewModel
+	@ObservedObject var seasonViewModel: SeasonViewModel
 	@ObservedObject var settings = StatSettings()
 	@ObservedObject var league: League
 	
@@ -66,23 +67,33 @@ struct HomeTeamView: View {
 						.padding(.bottom)
 					}
 					.buttonStyle(PlainButtonStyle())
-					NavigationLink(destination:
-						SeasonView(season: league.currentSeason)
-							.environmentObject(settings)
-					) {
-						Text("All Games")
-							.font(.headline)
-							.padding(.leading)
+					
+					//Load season games
+					seasonViewModel.loadable.isLoading {
+						Text("Loading")
+					}
+					seasonViewModel.loadable.hasError { (error) in
+						Text(error.readableMessage)
+					}
+					seasonViewModel.loadable.hasLoaded { (games) in
+						NavigationLink(destination:
+							SeasonView(season: self.league.currentSeason.withGames(games: games.games))
+								.environmentObject(self.settings)
+						) {
+							Text("All Games")
+								.font(.headline)
+								.padding(.leading)
+						}
 					}
 				}
 				Section(header: Text("Players")) {
-					viewModel.loadable.isLoading {
+					playersViewModel.loadable.isLoading {
 						Text("Loading Players")
 					}
-					viewModel.loadable.hasError { error in
+					playersViewModel.loadable.hasError { error in
 						Text("Error")
 					}
-					viewModel.loadable.hasLoaded { players in
+					playersViewModel.loadable.hasLoaded { players in
 						self.displayTeam(players: players.players)
 					}
 				}
@@ -93,9 +104,9 @@ struct HomeTeamView: View {
 				UITableView.appearance().separatorColor = .clear
 			}
 			
-			NavigationLink(destination: GameView()
+			NavigationLink(destination: LiveGameView()
 				//Create a new game if one does not exist
-				.environmentObject(league.currentSeason.currentGame ?? Game(team: league.currentSeason.team))
+				.environmentObject(LiveGame(team: league.currentSeason.team, game: league.currentSeason.currentGame))
 				.environmentObject(settings)
 				.environmentObject(league.currentSeason)
 			) {
@@ -108,9 +119,9 @@ struct HomeTeamView: View {
 					.foregroundColor(Color.white)
 					.cornerRadius(8.0)
 					.shadow(radius: 4.0)
+					.disabled(league.currentSeason.team.players.isEmpty && !seasonViewModel.loadable.loading)
+					.opacity(league.currentSeason.team.players.isEmpty && !seasonViewModel.loadable.loading ? 0.5 : 1.0)
 					.animation(.default)
-					.disabled(league.currentSeason.team.players.isEmpty)
-					.opacity(league.currentSeason.team.players.isEmpty ? 0.5 : 1.0)
 			}
 			.padding([.horizontal, .bottom])
 		}
@@ -129,7 +140,7 @@ struct HomeTeamView: View {
 							 rightGesture: self.settings.rightGesture,
 							 upGesture: self.settings.upGesture,
 							 downGesture: self.settings.downGesture)
-					.environmentObject(self.viewModel)
+					.environmentObject(self.playersViewModel)
 			},
 			trailing:
 			Button(action: {
@@ -139,11 +150,14 @@ struct HomeTeamView: View {
 					.font(.system(size: 36))
 					.foregroundColor(league.currentSeason.currentGame != nil ? Color.gray : league.currentSeason.team.primaryColor)
 			}.sheet(isPresented: $showModal) {
-				AddPlayerView(teamViewModel: self.viewModel).environmentObject(self.league.currentSeason.team)
+				AddPlayerView(teamViewModel: self.playersViewModel).environmentObject(self.league.currentSeason.team)
 			}
 			.disabled(league.currentSeason.currentGame != nil)
 		)
-		.onAppear(perform: viewModel.onAppear)
+			.onAppear {
+				self.seasonViewModel.onAppear()
+				self.playersViewModel.onAppear()
+		}
 	}
 	
 	private func displayTeam(players: [Player]) -> some View {
@@ -165,11 +179,27 @@ struct HomeTeamView: View {
 			}
 		}
 	}
+	
+	private func displayAllGames(teamGames: TeamGames) -> some View {
+		league.currentSeason.previousGames = teamGames.games.filter { $0.isComplete }
+		league.currentSeason.currentGame = teamGames.games.first { !$0.isComplete }
+		
+		return NavigationLink(destination:
+			SeasonView(season: league.currentSeason)
+				.environmentObject(settings)
+		) {
+			Text("All Games")
+				.font(.headline)
+				.padding(.leading)
+		}
+	}
 }
 
 struct AddTeamView_Previews: PreviewProvider {
     static var previews: some View {
-		return HomeTeamView(viewModel: PlayersViewModel(teamId: ""), league: League.testData)
+		return HomeTeamView(playersViewModel: PlayersViewModel(teamId: ""),
+							seasonViewModel: SeasonViewModel(teamId: ""),
+							league: League.testData)
 			.previewDevice(PreviewDevice(rawValue: "iPhone SE"))
     }
 }

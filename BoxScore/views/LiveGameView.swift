@@ -1,5 +1,5 @@
 //
-//  GameView.swift
+//  LiveGameView.swift
 //  StatTracker
 //
 //  Created by Kent Brady on 5/11/20.
@@ -11,9 +11,9 @@ import SwiftUI
 private let SCORE_BOARD_HEIGHT: CGFloat = 125
 
 ///This view is for active games to track each player's stats
-struct GameView: View {
+struct LiveGameView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-	@EnvironmentObject var game: Game
+	@EnvironmentObject var game: LiveGame
 	@EnvironmentObject var settings: StatSettings
 	@EnvironmentObject var season: Season
 	
@@ -43,7 +43,7 @@ struct GameView: View {
 							Text("\(season.team.name)")
 								.font(.caption)
 								.offset(x: 0, y: 10)
-							Text(String(game.teamScore))
+							Text(String(game.game.teamScore))
 								.foregroundColor(season.team.primaryColor)
 							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 						}
@@ -54,8 +54,8 @@ struct GameView: View {
 							Text("Opponent")
 								.font(.caption)
 								.offset(x: 0, y: 10)
-							Button(String(game.opponentScore)) {
-								self.game.opponentScore += 1
+							Button(String(game.game.opponentScore)) {
+								self.game.game.opponentScore += 1
 							}
 							.foregroundColor(season.team.primaryColor)
 							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
@@ -93,9 +93,9 @@ struct GameView: View {
 				.bold()
 		}))
 		.onAppear {
+			self.game.createOrStart()
 			self.setUpCourtPositions()
-			self.season.currentGame = self.game
-			self.season.currentGame?.hasBegun = true
+			self.season.currentGame = self.game.game
 		}
 		.onDisappear {
 			self.reorderLineup()
@@ -163,7 +163,7 @@ struct GameView: View {
 
 struct BindingPreview: View {
 	var body: some View {
-		GameView().environmentObject(Game.previewData)
+		LiveGameView().environmentObject(Game.previewData)
 	}
 }
 
@@ -174,12 +174,12 @@ struct GameView_Previews: PreviewProvider {
 }
 
 struct Bench: View {
-	@EnvironmentObject var game: Game
+	@EnvironmentObject var game: LiveGame
 	
 	var body: some View {
 		ScrollView(.horizontal, showsIndicators: false) {
 			HStack(spacing: 16) {
-				ForEach(game.playersOnBench, id: \.number) {
+				ForEach(game.playersOnBench) {
 					PlayerInGameView(player: $0)
 				}
 			}

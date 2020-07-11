@@ -32,6 +32,21 @@ class Season: ObservableObject {
 		previousGames.insert(currentGame, at: 0)
 		self.currentGame = nil
 	}
+	
+	func withGames(games: [Game]) -> Season {
+		//Only update if we have new games
+		var allGames = previousGames
+		if let currentGame = currentGame {
+			allGames.append(currentGame)
+		}
+		
+		if !(games.count == allGames.count) {
+			previousGames = games.filter { $0.isComplete }
+			currentGame = games.first { !$0.isComplete }
+		}
+		
+		return self
+	}
 }
 
 extension Season {

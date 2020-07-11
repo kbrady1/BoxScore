@@ -34,7 +34,9 @@ struct RootNavigationView: View {
 					}
 				}
 				viewModel.loadable.hasLoaded { league in
-					HomeTeamView(viewModel: PlayersViewModel(teamId: league.currentSeason.team.id), league: league)
+					HomeTeamView(playersViewModel: PlayersViewModel(teamId: league.currentSeason.team.id),
+								 seasonViewModel: SeasonViewModel(teamId: league.currentSeason.team.id),
+								 league: league)
 				}
 			}
 			.navigationBarTitle("BoxScore")

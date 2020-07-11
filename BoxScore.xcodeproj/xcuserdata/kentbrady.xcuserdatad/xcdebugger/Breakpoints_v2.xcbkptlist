@@ -23,16 +23,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "71A263C9-25E7-4FBD-9B2C-64A15EA5A512"
-            shouldBeEnabled = "No"
+            uuid = "6184D0EF-08D2-4856-ADFB-97E437A0B9E4"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BoxScore/service/CloudManager.swift"
+            filePath = "BoxScore/views/HomeTeamView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
-            landmarkName = "processBatch()"
+            startingLineNumber = "184"
+            endingLineNumber = "184"
+            landmarkName = "displayAllGames(teamGames:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

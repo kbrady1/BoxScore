@@ -31,3 +31,13 @@ extension Int {
 	
 	var asString: String { String(self) }
 }
+
+extension Bool {
+	static func fromInt(_ int: Int?) -> Bool {
+		return int != 0
+	}
+	
+	var asInt: Int {
+		return self ? 1 : 0
+	}
+}
