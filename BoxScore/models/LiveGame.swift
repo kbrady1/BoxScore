@@ -18,6 +18,8 @@ class LiveGame: ObservableObject {
 			game.playerIdsInGame = playersInGame.map { $0.id }
 		}
 	}
+	
+	//TODO: Bench players not updating after adding player
 	@Published var playersOnBench: [Player]
 	@Published var statCounter: [StatType: Int] {
 		didSet {
@@ -69,7 +71,7 @@ class LiveGame: ObservableObject {
 			if let values = self.statViewModel.loadable.value {
 				values.stats.keys.forEach {
 					if let count = values.stats[$0]?.count, count > 0 {
-						self.statCounter[$0] = count
+						self.game.statCounter[$0] = count
 					}
 					self.objectWillChange.send()
 				}
@@ -87,6 +89,10 @@ class LiveGame: ObservableObject {
 			
 			if let playerOnCourt = playerOnCourt {
 				playersOnBench.insert(playerOnCourt, at: benchIndex)
+				
+				if let courtIndex = playersInGame.firstIndex(of: playerOnCourt) {
+					playersInGame.remove(at: courtIndex)
+				}
 			}
 		} else if let playerOnCourt = playerOnCourt,
 			let courtIndex = playersInGame.firstIndex(of: playerOnCourt) {
@@ -96,14 +102,13 @@ class LiveGame: ObservableObject {
 		}
 	}
 	
-	//TODO: Fix stats not updating
 	func recordStat(_ stat: Stat) {
 		stat.joinedStats.forEach {
 			self.recordStat($0)
 		}
 		
 		//Update values
-		statCounter[stat.type] = (statCounter[stat.type] ?? 0) + 1
+		game.statCounter[stat.type] = (game.statCounter[stat.type] ?? 0) + 1
 		
 		if stat.type == .shot {
 			game.teamScore += stat.pointsOfShot ?? 0

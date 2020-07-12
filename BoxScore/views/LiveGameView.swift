@@ -66,7 +66,7 @@ struct LiveGameView: View {
 							VStack {
 								Text(stat.abbreviation())
 									.font(.callout)
-								Text("\(self.game.statCounter[stat] ?? 0)")
+								Text("\(self.game.game.statCounter[stat] ?? 0)")
 									.bold()
 									.font(.headline)
 							}

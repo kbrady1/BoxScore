@@ -118,7 +118,7 @@ class Game: ObservableObject, Equatable, RecordModel {
 				  opponentName: record.value(forKey: GameSchema.OPPONENT) as? String,
 				  opponentScore: record.value(forKey: GameSchema.OPPONENT_SCORE) as? Int,
 				  teamScore: record.value(forKey: GameSchema.SCORE) as? Int,
-				  record: record)		
+				  record: record)
 	}
 	
 	var record: CKRecord
