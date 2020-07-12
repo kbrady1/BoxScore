@@ -26,22 +26,6 @@ struct GamesForTeamRequest: FetchRequest {
 	}
 }
 
-struct StatsForGameRequest: FetchRequest {
-	var database = CKContainer.default().privateCloudDatabase
-	var query: CKQuery
-	var zone: CKRecordZone.ID? = nil
-	
-	var teamId: String
-	
-//	init(teamId: String) {
-//		self.teamId = teamId
-//		let recordToMatch = CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf)
-//		self.query = CKQuery(recordType: GameSchema.TYPE,
-//							 predicate: NSPredicate(format: "\(GameSchema.TEAM) == %@", recordToMatch))
-//		query.sortDescriptors?.append(NSSortDescriptor(key: GameSchema.DATE, ascending: true))
-//	}
-}
-
 class TeamGames: CloudCreatable {
 	var games: [Game]
 	
@@ -67,9 +51,5 @@ class SeasonViewModel: NetworkReadViewModel, ObservableObject {
 	init(teamId: String) {
 		self.teamId = teamId
 		self.request = GamesForTeamRequest(teamId: teamId)
-	}
-	
-	func getDetails() {
-		//TODO: Implement this to handle loading all stats with a game
 	}
 }

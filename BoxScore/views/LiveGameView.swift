@@ -13,11 +13,11 @@ private let SCORE_BOARD_HEIGHT: CGFloat = 125
 ///This view is for active games to track each player's stats
 struct LiveGameView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-	@EnvironmentObject var game: LiveGame
+	@ObservedObject var game: LiveGame
 	@EnvironmentObject var settings: StatSettings
 	@EnvironmentObject var season: Season
 	
-	private var stats = StatType.all.filter { $0 != .shot }
+	var stats = StatType.all.filter { $0 != .shot }
 	
 	@State private var positionA: CourtPositionView? = nil
 	@State private var positionB: CourtPositionView? = nil
@@ -80,7 +80,7 @@ struct LiveGameView: View {
 				addCourtView()
 				Spacer()
 				
-				Bench()
+				Bench(game: game)
 			}
 		}
 		.navigationBarTitle("", displayMode: .inline)
@@ -137,11 +137,11 @@ struct LiveGameView: View {
 			
 			return nil
 		}
-		positionA = CourtPositionView(position: CGPoint(x: 200, y: 340), player: playerAt(index: 0))
-		positionB = CourtPositionView(position: CGPoint(x: 300, y: 150), player: playerAt(index: 1))
-		positionC = CourtPositionView(position: CGPoint(x: 150, y: 150), player: playerAt(index: 2))
-		positionD = CourtPositionView(position: CGPoint(x: 50, y: 300), player: playerAt(index: 3))
-		positionE = CourtPositionView(position: CGPoint(x: 320, y: 300), player: playerAt(index: 4))
+		positionA = CourtPositionView(game: game, position: CGPoint(x: 200, y: 340), player: playerAt(index: 0))
+		positionB = CourtPositionView(game: game, position: CGPoint(x: 300, y: 150), player: playerAt(index: 1))
+		positionC = CourtPositionView(game: game, position: CGPoint(x: 150, y: 150), player: playerAt(index: 2))
+		positionD = CourtPositionView(game: game, position: CGPoint(x: 50, y: 300), player: playerAt(index: 3))
+		positionE = CourtPositionView(game: game, position: CGPoint(x: 320, y: 300), player: playerAt(index: 4))
 	}
 	
 	private func reorderLineup() {
@@ -163,7 +163,7 @@ struct LiveGameView: View {
 
 struct BindingPreview: View {
 	var body: some View {
-		LiveGameView().environmentObject(Game.previewData)
+		LiveGameView(game: Game.previewData)
 	}
 }
 
@@ -174,13 +174,13 @@ struct GameView_Previews: PreviewProvider {
 }
 
 struct Bench: View {
-	@EnvironmentObject var game: LiveGame
+	@ObservedObject var game: LiveGame
 	
 	var body: some View {
 		ScrollView(.horizontal, showsIndicators: false) {
 			HStack(spacing: 16) {
 				ForEach(game.playersOnBench) {
-					PlayerInGameView(player: $0)
+					PlayerInGameView(game: self.game, player: $0)
 				}
 			}
 			.padding(.leading, 10)

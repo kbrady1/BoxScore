@@ -101,7 +101,7 @@ struct PlayerStatSummaryView: View {
 			statDictionary.merge($0.statDictionary) { $0 + $1 }
 		}
 		statDictionary.keys.forEach {
-			if let stats = statDictionary[$0]?.filter({ $0.player.number == player.number }) {
+			if let stats = statDictionary[$0]?.filter({ $0.playerId == player.id }) {
 				if $0 == .shot {
 					self.shots = stats
 					

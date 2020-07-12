@@ -12,8 +12,9 @@ struct StatInputView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	
 	//TODO: These should be observed objects
+	@State var player: Player
 	@State var stat: Stat
-	@State var game: LiveGame
+	@ObservedObject var game: LiveGame
 	
 	@State private var shotWasMake: Bool = false {
 		didSet {
@@ -57,7 +58,7 @@ struct StatInputView: View {
 			Spacer().frame(height: 15)
 			VStack(spacing: 16) {
 				VStack {
-					PlayerView(player: stat.player)
+					PlayerView(player: player)
 						.frame(width: 80, height: 80)
 						.background(Color.white)
 						.clipShape(Circle())
@@ -289,8 +290,8 @@ struct StatInputView: View {
 struct StatInputView_Previews: PreviewProvider {
     static var previews: some View {
 		let game = Game.previewData
-		let stat = Stat(type: .shot, player: game.team.players[0])
-		return StatInputView(stat: stat, game: game)
+		let stat = Stat(type: .shot, playerId: game.team.players[0].id, gameId: "123", teamId: "123")
+		return StatInputView(player: game.team.players[0],stat: stat, game: game)
 			.previewLayout(.fixed(width: 300, height: 600))
     }
 }

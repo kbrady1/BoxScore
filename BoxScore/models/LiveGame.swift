@@ -19,12 +19,22 @@ class LiveGame: ObservableObject {
 		}
 	}
 	@Published var playersOnBench: [Player]
-	@Published var statCounter = [StatType: Int]()
+	@Published var statCounter: [StatType: Int] {
+		didSet {
+			print("old")
+			print(oldValue)
+			print("new")
+			print(statCounter)
+		}
+	}
+	@Published var statViewModel: StatViewModel
 	
 	var cancellable: AnyCancellable?
+	var receivable: AnyCancellable?
 	
 	init(team: Team, game: Game?) {
-		self.game = game ?? Game.createGame(teamId: team.id)
+		let createdGame = game ?? Game.createGame(teamId: team.id)
+		self.game = createdGame
 		self.team = team
 		
 		let playersInGame = game?.playerIdsInGame.compactMap { (id) in
@@ -32,6 +42,9 @@ class LiveGame: ObservableObject {
 		} ?? []
 		self.playersInGame = playersInGame
 		self.playersOnBench = team.players.filter { !playersInGame.contains($0) }
+		self.statCounter = [StatType: Int]()
+		
+		self.statViewModel = StatViewModel(id: createdGame.id, type: .game)
 		
 		cancellable = self.game.objectWillChange.sink(receiveValue: { (_) in
 			self.objectWillChange.send()
@@ -48,9 +61,24 @@ class LiveGame: ObservableObject {
 		self.playersOnBench = team.players.filter { !playersInGame.contains($0) }
 		
 		game.start()
+		statViewModel.fetch(request: statViewModel.request)
+		
+		receivable = statViewModel.objectWillChange.sink {
+			//On completion check the value and get the dictionary to write out
+
+			if let values = self.statViewModel.loadable.value {
+				values.stats.keys.forEach {
+					if let count = values.stats[$0]?.count, count > 0 {
+						self.statCounter[$0] = count
+					}
+					self.objectWillChange.send()
+				}
+			}
+		}
 	}
 	
 	func swapPlayers(fromBench benchPlayer: Player?, toLineUp playerOnCourt: Player?) {
+		//TODO: This not working, player not returning to bench
 		if let benchPlayer = benchPlayer,
 			let benchIndex = playersOnBench.firstIndex(of: benchPlayer) {
 			
@@ -68,27 +96,20 @@ class LiveGame: ObservableObject {
 		}
 	}
 	
+	//TODO: Fix stats not updating
 	func recordStat(_ stat: Stat) {
 		stat.joinedStats.forEach {
 			self.recordStat($0)
 		}
 		
-//		if statDictionary[stat.type] == nil {
-//			statDictionary[stat.type] = []
-//		}
-//
-//		statDictionary[stat.type]?.append(stat)
-//		statCounter[stat.type] = (statCounter[stat.type] ?? 0) + 1
-//
-//		switch stat.type {
-//		case .shot:
-//			if stat.shotWasMake {
-//				teamScore += stat.pointsOfShot ?? 0
-//			}
-//		default:
-//			//Do nothing
-//			break
-//		}
+		//Update values
+		statCounter[stat.type] = (statCounter[stat.type] ?? 0) + 1
+		
+		if stat.type == .shot {
+			game.teamScore += stat.pointsOfShot ?? 0
+		}
+		
+		CloudManager.shared.addRecordToSave(record: stat.recordToSave())
 	}
 	
 }

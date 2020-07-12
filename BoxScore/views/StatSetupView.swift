@@ -12,17 +12,17 @@ struct StatSetupView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var settings: StatSettings
 	
-	private var secretGame: Game = Game.statTestData
+	private var secretGame: LiveGame = Game.previewData
 	
     var body: some View {
 		NavigationView {
 			VStack {
 				VStack {
 					Spacer().frame(height: 60)
-					CourtPositionView(position: CGPoint(x: 20, y: 0)).environmentObject(secretGame)
+					CourtPositionView(game: secretGame, position: CGPoint(x: 20, y: 0)).environmentObject(secretGame)
 					.frame(width: 40, height: 40)
 					.padding()
-					Bench().environmentObject(secretGame)
+					Bench(game: secretGame)
 				}
 				
 				List {

@@ -141,7 +141,7 @@ struct TeamStatSummaryView: View {
 			let byPlayer = Dictionary(grouping: gameList.games
 				.compactMap { $0.statDictionary[statType] }
 				.flatMap { $0 }
-			) { $0.player.id }.values
+			) { $0.playerId }.values
 			var sorted = [[Stat]]()
 			var description: Int?
 			
@@ -158,7 +158,9 @@ struct TeamStatSummaryView: View {
 				description = sorted.first?.sumPoints()
 			}
 			
-			guard let player = sorted.first?.first?.player, let desc = description else { return }
+			guard let playerId = sorted.first?.first?.playerId,
+				let desc = description,
+				let player = team.players.first(where: { $0.id == playerId }) else { return }
 			
 			self.topPerformers.append(
 				TopPlayer(player: player, title: statType == .shot ? "PTS" : statType.abbreviation(), total: (desc.asDouble / gameList.games.count.asDouble).formatted(decimal: 1))

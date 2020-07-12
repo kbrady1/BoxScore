@@ -104,9 +104,8 @@ struct HomeTeamView: View {
 				UITableView.appearance().separatorColor = .clear
 			}
 			
-			NavigationLink(destination: LiveGameView()
+			NavigationLink(destination: LiveGameView(game: LiveGame(team: league.currentSeason.team, game: league.currentSeason.currentGame))
 				//Create a new game if one does not exist
-				.environmentObject(LiveGame(team: league.currentSeason.team, game: league.currentSeason.currentGame))
 				.environmentObject(settings)
 				.environmentObject(league.currentSeason)
 			) {

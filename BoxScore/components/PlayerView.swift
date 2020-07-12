@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct PlayerInGameView: View {
-	@EnvironmentObject var game: LiveGame
+	@ObservedObject var game: LiveGame
 	var player: Player
 	var shadow: Bool = true
 	var color: Color = .clear
@@ -49,7 +49,6 @@ struct PlayerView: View {
 struct PlayerView_Previews: PreviewProvider {
     static var previews: some View {
 		let view = PlayerView(player: Player(lastName: "Brady", firstName: "Kent", number: 12, teamId: ""))
-			.environmentObject(Game.previewData)
 			.previewLayout(.fixed(width: 120, height: 120))
 		
 		return view

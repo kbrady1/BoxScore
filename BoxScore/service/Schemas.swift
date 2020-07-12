@@ -41,3 +41,17 @@ class GameSchema: Schema {
 	static var PLAYERS_IN_GAME = "playersInGame"
 	static var TEAM = "teamId"
 }
+
+class StatSchema: Schema {
+	static var TYPE = CKRecord.RecordType("Stat")
+	
+	static var TEAM_ID = "teamId"
+	static var PLAYER_ID = "playerId"
+	static var GAME_ID = "gameId"
+	
+	static var STAT_TYPE = "statType"
+	static var REBOUND = "reboundTypeOffensive"
+	static var SHOT_MAKE = "shotTypeMake"
+	static var SHOT_LOCATION = "shotTypeLocation"
+	static var SHOT_POINTS = "shotTypePoints"
+}

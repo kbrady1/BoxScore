@@ -16,7 +16,7 @@ enum MoveDirection: String {
 }
 
 struct CourtPositionView: View {
-	@EnvironmentObject var game: LiveGame
+	@ObservedObject var game: LiveGame
 	@EnvironmentObject var settings: StatSettings
 	@State var position: CGPoint
 	
@@ -114,7 +114,7 @@ struct CourtPositionView: View {
 					if dragDirection == .down { Spacer() }
 					HStack {
 						if dragDirection == .right { Spacer() }
-						PlayerInGameView(player: player!)
+						PlayerInGameView(game: game, player: player!)
 						.if(hasPlayer) {
 							$0.contextMenu {
 								ForEach(settings.allStats, id: \.0) { (typePair) in
@@ -139,7 +139,12 @@ struct CourtPositionView: View {
 			}
 		}
 		.sheet(isPresented: $showingAlert) {
-			StatInputView(stat: Stat(type: self.statType ?? .shot, player: self.player!), game: self.game)
+			StatInputView(player: self.player!,
+						  stat: Stat(type: self.statType ?? .shot,
+									 playerId: self.player!.id,
+									 gameId: self.game.game.id,
+									 teamId: self.game.team.id),
+						  game: self.game)
 		}
 		.frame(width: size.width, height: size.height)
 		.background(game.team.secondaryColor.cornerRadius(60))
@@ -248,8 +253,7 @@ struct CourtPositionView: View {
 
 struct CourtPositionView_Previews: PreviewProvider {
     static var previews: some View {
-        let view = CourtPositionView(position: CGPoint(x: 0, y: 0))
-			.environmentObject(Game.previewData)
+		let view = CourtPositionView(game: Game.previewData, position: CGPoint(x: 0, y: 0))
 			.previewLayout(.fixed(width: 120, height: 120))
 		
 		return view
