@@ -73,7 +73,6 @@ class LiveGame: ObservableObject {
 					if let count = values.stats[$0]?.count, count > 0 {
 						self.game.statCounter[$0] = count
 					}
-					self.objectWillChange.send()
 				}
 			}
 		}

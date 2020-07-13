@@ -13,7 +13,7 @@ private let SCORE_BOARD_HEIGHT: CGFloat = 125
 ///This view is for active games to track each player's stats
 struct LiveGameView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-	@ObservedObject var game: LiveGame
+	@EnvironmentObject var game: LiveGame
 	@EnvironmentObject var settings: StatSettings
 	@EnvironmentObject var season: Season
 	
@@ -80,7 +80,7 @@ struct LiveGameView: View {
 				addCourtView()
 				Spacer()
 				
-				Bench(game: game)
+				Bench()
 			}
 		}
 		.navigationBarTitle("", displayMode: .inline)
@@ -137,11 +137,11 @@ struct LiveGameView: View {
 			
 			return nil
 		}
-		positionA = CourtPositionView(game: game, position: CGPoint(x: 200, y: 340), player: playerAt(index: 0))
-		positionB = CourtPositionView(game: game, position: CGPoint(x: 300, y: 150), player: playerAt(index: 1))
-		positionC = CourtPositionView(game: game, position: CGPoint(x: 150, y: 150), player: playerAt(index: 2))
-		positionD = CourtPositionView(game: game, position: CGPoint(x: 50, y: 300), player: playerAt(index: 3))
-		positionE = CourtPositionView(game: game, position: CGPoint(x: 320, y: 300), player: playerAt(index: 4))
+		positionA = CourtPositionView(position: CGPoint(x: 200, y: 340), player: playerAt(index: 0))
+		positionB = CourtPositionView(position: CGPoint(x: 300, y: 150), player: playerAt(index: 1))
+		positionC = CourtPositionView(position: CGPoint(x: 150, y: 150), player: playerAt(index: 2))
+		positionD = CourtPositionView(position: CGPoint(x: 50, y: 300), player: playerAt(index: 3))
+		positionE = CourtPositionView(position: CGPoint(x: 320, y: 300), player: playerAt(index: 4))
 	}
 	
 	private func reorderLineup() {
@@ -163,7 +163,8 @@ struct LiveGameView: View {
 
 struct BindingPreview: View {
 	var body: some View {
-		LiveGameView(game: Game.previewData)
+		LiveGameView()
+			.environmentObject(Game.previewData)
 	}
 }
 
@@ -174,7 +175,7 @@ struct GameView_Previews: PreviewProvider {
 }
 
 struct Bench: View {
-	@ObservedObject var game: LiveGame
+	@EnvironmentObject var game: LiveGame
 	
 	var body: some View {
 		ScrollView(.horizontal, showsIndicators: false) {

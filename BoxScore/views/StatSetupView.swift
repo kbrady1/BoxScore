@@ -19,10 +19,10 @@ struct StatSetupView: View {
 			VStack {
 				VStack {
 					Spacer().frame(height: 60)
-					CourtPositionView(game: secretGame, position: CGPoint(x: 20, y: 0)).environmentObject(secretGame)
+					CourtPositionView(position: CGPoint(x: 20, y: 0)).environmentObject(secretGame)
 					.frame(width: 40, height: 40)
 					.padding()
-					Bench(game: secretGame)
+					Bench().environmentObject(secretGame)
 				}
 				
 				List {

@@ -26,7 +26,8 @@ struct SeasonView: View {
 				}
 				Section {
 					NavigationLink(destination:
-						LiveGameView(game: LiveGame(team: season.team, game: currentGame!))
+						LiveGameView()
+							.environmentObject(LiveGame(team: season.team, game: currentGame!))
 							.environmentObject(settings)
 							.environmentObject(season)
 					) {

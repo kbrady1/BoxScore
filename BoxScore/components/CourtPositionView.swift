@@ -16,7 +16,7 @@ enum MoveDirection: String {
 }
 
 struct CourtPositionView: View {
-	@ObservedObject var game: LiveGame
+	@EnvironmentObject var game: LiveGame
 	@EnvironmentObject var settings: StatSettings
 	@State var position: CGPoint
 	
@@ -182,11 +182,6 @@ struct CourtPositionView: View {
 	
 	private func giveFeedback() {
 		UIImpactFeedbackGenerator().impactOccurred()
-		if let path = Bundle.main.path(forResource: "click.m4a", ofType: nil) {
-				clickSound = try? AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
-			
-				clickSound?.play()
-		}
 	}
 	
 	private func endDrag() {
@@ -253,7 +248,8 @@ struct CourtPositionView: View {
 
 struct CourtPositionView_Previews: PreviewProvider {
     static var previews: some View {
-		let view = CourtPositionView(game: Game.previewData, position: CGPoint(x: 0, y: 0))
+		let view = CourtPositionView(position: CGPoint(x: 0, y: 0))
+			.environmentObject(Game.previewData)
 			.previewLayout(.fixed(width: 120, height: 120))
 		
 		return view
