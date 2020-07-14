@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-///The Add Team View will provide a way to name a team and add players (name, pos, number
+//TODO: On changing of teams, reload the games
 struct HomeTeamView: View {
 	@ObservedObject var playersViewModel: PlayersViewModel
 	@ObservedObject var seasonViewModel: SeasonViewModel
@@ -165,7 +165,7 @@ struct HomeTeamView: View {
 		
 		return ForEach(league.currentSeason.team.players, id: \.number) { (player) in
 			NavigationLink(
-				destination: PlayerStatSummaryView(player: player)
+				destination: PlayerStatSummaryView(viewModel: StatViewModel(id: player.id, type: .player), useLoadedStats: false, player: player)
 					.environmentObject(GameList(self.league.currentSeason.previousGames))
 					.environmentObject(self.league.currentSeason.team)
 			) {

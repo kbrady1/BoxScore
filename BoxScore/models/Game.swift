@@ -25,8 +25,6 @@ class Game: ObservableObject, Equatable, RecordModel {
 
 	init(team: Team) {
 		self.team = team
-		self.playersInGame = []
-		self.playersOnBench = team.players
 		self.endDate = Date()
 		self.opponentName = "Opponent"
 		self.teamId = team.id
@@ -64,23 +62,17 @@ class Game: ObservableObject, Equatable, RecordModel {
 	
 	var endDate: Date?
 	@Published var team: Team
-	@Published var playersInGame: [Player]
-	@Published var playersOnBench: [Player]
 	
 	var dateText: String? {
 		guard let endDate = endDate else { return nil }
 		return DATE_FORMATTER.string(from: endDate)
 	}
 	
-	@Published var hasBegun: Bool = false {
-		didSet {
-			//Once the game starts, move any team players not on the floor to the bench
-			playersOnBench = team.players.filter { !playersInGame.contains($0) }
-		}
-	}
+	@Published var hasBegun: Bool = false
 	@Published var isComplete: Bool {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			endDate = Date()
+			CloudManager.shared.addRecordToSave(record: recordToSave(), instantSave: true)
 		}
 	}
 	
@@ -110,8 +102,6 @@ class Game: ObservableObject, Equatable, RecordModel {
 		self.record = record
 		
 		self.team = Team()
-		self.playersInGame = []
-		self.playersOnBench = []
 	}
 	
 	required convenience init(record: CKRecord) throws {
@@ -141,47 +131,6 @@ class Game: ObservableObject, Equatable, RecordModel {
 		return record
 	}
 	
-	func swapPlayers(fromBench benchPlayer: Player?, toLineUp playerOnCourt: Player?) {
-		if let benchPlayer = benchPlayer,
-			let benchIndex = playersOnBench.firstIndex(of: benchPlayer) {
-			
-			playersOnBench.remove(at: benchIndex)
-			playersInGame.append(benchPlayer)
-			
-			if let playerOnCourt = playerOnCourt {
-				playersOnBench.insert(playerOnCourt, at: benchIndex)
-			}
-		} else if let playerOnCourt = playerOnCourt,
-			let courtIndex = playersInGame.firstIndex(of: playerOnCourt) {
-			//If benchPlayer was nil and playerOnCourt isn't
-			playersInGame.remove(at: courtIndex)
-			playersOnBench.insert(playerOnCourt, at: 0)
-		}
-	}
-	
-	func recordStat(_ stat: Stat) {
-		stat.joinedStats.forEach {
-			self.recordStat($0)
-		}
-		
-		if statDictionary[stat.type] == nil {
-			statDictionary[stat.type] = []
-		}
-		
-		statDictionary[stat.type]?.append(stat)
-		statCounter[stat.type] = (statCounter[stat.type] ?? 0) + 1
-		
-		switch stat.type {
-		case .shot:
-			if stat.shotWasMake {
-				teamScore += stat.pointsOfShot ?? 0
-			}
-		default:
-			//Do nothing
-			break
-		}
-	}
-	
 	//MARK: Equatable
 	
 	static func == (lhs: Game, rhs: Game) -> Bool {
@@ -192,35 +141,6 @@ class Game: ObservableObject, Equatable, RecordModel {
 extension Game {
 	static var previewData: LiveGame {
 		return LiveGame(team: Team.testData, game: Game(team: Team.testData))
-	}
-	
-	static var statTestData: Game {
-		let team = Team.testData
-		
-		let game = Game(team: team)
-		
-		[team.kukoc, team.pippen, team.longley,
-		 team.jordan, team.harper, team.rodman,
-		 team.kerr, team.burrell, team.buechler,
-		 team.wennington]
-			.reduce(into: [Stat]()) { $0.append(contentsOf: $1) }
-			.forEach { game.recordStat($0) }
-		
-		game.opponentScore = 86
-		return game
-	}
-	
-	static func testGame(opponentScore: Int) -> Game {
-		let team = Team.testData
-		
-		let game = Game(team: team)
-		[team.kukoc, team.pippen, team.buechler,
-		 team.wennington]
-			.reduce(into: [Stat]()) { $0.append(contentsOf: $1) }
-			.forEach { game.recordStat($0) }
-		
-		game.opponentScore = opponentScore
-		return game
 	}
 }
 

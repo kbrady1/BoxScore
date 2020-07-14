@@ -84,7 +84,9 @@ struct ShotStatView: View {
 				}
 			}
 			
-		}.onAppear {
+		}
+		.frame(minHeight: 350, idealHeight: 380, maxHeight: 420)
+		.onAppear {
 			self.data = self.calculateData()
 		}
     }
@@ -109,7 +111,7 @@ struct ShotStatView: View {
 
 struct ShotStatView_Previews: PreviewProvider {
     static var previews: some View {
-		let game = Game.statTestData
+		let game = Game.previewData.game
 		let shots = game.statDictionary[.shot] ?? []
 		let view = ShotStatView(shotsToDisplay: shots).environmentObject(game)
 		

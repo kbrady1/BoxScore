@@ -82,7 +82,6 @@ struct TeamStatSummaryView: View {
 		return Group {
 			Section(header: Text("Shot Chart")) {
 				ShotStatView(shotsToDisplay: stats.stats[.shot] ?? [])
-				.frame(minHeight: 350, idealHeight: 380, maxHeight: 420)
 			}
 			
 			Section(header: Text("Top Performers")) {
@@ -117,7 +116,7 @@ struct TeamStatSummaryView: View {
 					HStack() {
 						ForEach(self.team.players) { (player) in
 							NavigationLink(destination:
-								PlayerStatSummaryView(player: player)
+								PlayerStatSummaryView(viewModel: StatViewModel(id: player.id, type: .player), useLoadedStats: true, player: player)
 									.environmentObject(self.gameList)
 									.environmentObject(self.team)
 							) {
@@ -205,7 +204,7 @@ struct TeamStatSummaryView: View {
 
 struct TeamStatSummaryView_Previews: PreviewProvider {
     static var previews: some View {
-		let view = TeamStatSummaryView(viewModel: StatViewModel(id: "", type: .team)).environmentObject(Game.statTestData)
+		let view = TeamStatSummaryView(viewModel: StatViewModel(id: "", type: .team)).environmentObject(Game.previewData.game)
 		return view
     }
 }

@@ -13,58 +13,78 @@ struct PlayerStatSummaryView: View {
 	@EnvironmentObject var games: GameList
 	@EnvironmentObject var team: Team
 	
+	@ObservedObject var viewModel: StatViewModel
+	
+	var useLoadedStats: Bool
 	var player: Player
-	@State private var totals = [StatRow]()
-	@State private var shots = [Stat]()
-	@State private var points = 0.0
 	
 	private var showingSingleGame: Bool { games.games.count == 1 }
 	
 	var body: some View {
 			List {
-				Section {
-					VStack {
-						if !showingSingleGame {
-							Text("Showing data for \(games.games.count) games")
-								.font(.caption)
-								.foregroundColor(.secondary)
+				viewModel.loadable.isLoading {
+					Section {
+						VStack {
+							Text("Loading")
 						}
-						HStack {
-							PlayerView(player: player, shadow: true, color: .white, height: 100)
-							Spacer()
-							
-							VStack {
-								Text(getText("POINTS", "PTS PER GAME"))
-									.font(.headline)
-								Text(points.formatted(decimal: 1))
-									.font(.system(size: 60))
-							}
-							.frame(minWidth: 80, maxWidth: .infinity)
-							.padding()
-							.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-							.background(LinearGradient(gradient: Gradient(colors: [team.primaryColor, team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
-							.cornerRadius(4)
-							.padding(8.0)
-						}
-							.padding()
+						.padding()
 					}
 				}
 				
-				Section(header: Text("Shot Chart")) {
-					ShotStatView(shotsToDisplay: shots)
+				viewModel.loadable.hasError { (error) in
+					Section {
+						VStack {
+							Text(error.readableMessage)
+						}
+						.padding()
+					}
 				}
 				
-				Section(header: Text(getText("Totals", "Averages Per Game"))) {
-					VStack(spacing: 12) {
-						ForEach(totals) { row in
-							HStack {
-								Spacer()
-								ForEach(row.cells) {
-									self.cell(stat: $0)
-									Spacer()
-								}
+				viewModel.loadable.hasLoaded { (stats) in
+					Section {
+						VStack {
+							if !self.showingSingleGame {
+								Text("Showing data for \(self.games.games.count) games")
+									.font(.caption)
+									.foregroundColor(.secondary)
 							}
-							
+							HStack {
+								PlayerView(player: self.player, shadow: true, color: .white, height: 100)
+								Spacer()
+								
+								VStack {
+									Text(self.getText("POINTS", "PTS PER GAME"))
+										.font(.headline)
+									Text(self.points(for: stats.stats).formatted(decimal: 1))
+										.font(.system(size: 60))
+								}
+								.frame(minWidth: 80, maxWidth: .infinity)
+								.padding()
+								.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
+								.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+								.cornerRadius(4)
+								.padding(8.0)
+							}
+								.padding()
+						}
+					}
+					
+					Section(header: Text("Shot Chart")) {
+						ShotStatView(shotsToDisplay: stats.stats[.shot] ?? [])
+					}
+					
+					Section(header: Text(self.getText("Totals", "Averages Per Game"))) {
+						VStack(spacing: 12) {
+							ForEach(self.totals(statDict: stats.stats)) { row in
+								HStack {
+									Spacer()
+									ForEach(row.cells) {
+										self.cell(stat: $0)
+										Spacer()
+									}
+								}
+								
+							}
 						}
 					}
 				}
@@ -72,10 +92,16 @@ struct PlayerStatSummaryView: View {
 			.listStyle(GroupedListStyle())
 			.environment(\.horizontalSizeClass, .regular)
 			.navigationBarTitle("\(player.nameFirstLast)'s Stats")
-				.onAppear {
-					self.setup()
+			.onAppear {
+				//This view doesn't need to reload stats when coming from a game summary view
+				if self.useLoadedStats {
+					self.viewModel.loadable = .success(StatGroup(stats: self.games.statDictionary.mapValues { $0.filter { $0.playerId == self.player.id }
+					}))
+					self.viewModel.objectWillChange.send()
+				} else {
+					self.viewModel.onAppear()
+				}
 			}
-		
     }
 	
 	private func cell(stat: StatCount) -> some View {
@@ -93,20 +119,15 @@ struct PlayerStatSummaryView: View {
 		.padding(8.0)
 	}
 	
-	private func setup() {
+	func points(for stats: [StatType: [Stat]]) -> Double {
+		return Double((stats[.shot] ?? []).sumPoints()) / Double(games.games.count)
+	}
+	
+	func totals(statDict: [StatType: [Stat]]) -> [StatRow] {
+		var totals = [StatRow]()
 		var tempTotals = [StatCount]()
-		var statDictionary = [StatType: [Stat]]()
-		games.games.forEach {
-			statDictionary.merge($0.statDictionary) { $0 + $1 }
-		}
-		statDictionary.keys.forEach {
-			if let stats = statDictionary[$0]?.filter({ $0.playerId == player.id }) {
-				if $0 == .shot {
-					self.shots = stats
-					
-					self.points = Double(shots.sumPoints()) / Double(games.games.count)
-				}
-				
+		statDict.keys.forEach {
+			if let stats = statDict[$0]?.filter({ $0.playerId == player.id }) {
 				tempTotals.append(StatCount(stat: $0, total: Double(stats.count) / Double(games.games.count)))
 			}
 		}
@@ -121,6 +142,8 @@ struct PlayerStatSummaryView: View {
 			tempTotals = Array(tempTotals.dropFirst(toRemove.count))
 			totals.append(StatRow(cells: Array(toRemove)))
 		}
+		
+		return totals
 	}
 	
 	private func getText(_ single: String, _ season: String) -> String {
@@ -130,9 +153,9 @@ struct PlayerStatSummaryView: View {
 
 struct PlayerStatSummaryView_Previews: PreviewProvider {
     static var previews: some View {
-		let games = GameList(Game.statTestData)
+		let games = GameList(Game.previewData.game)
 		let player = games.games[0].team.players[0]
-		let view = PlayerStatSummaryView(player: player).environmentObject(games)
+		let view = PlayerStatSummaryView(viewModel: StatViewModel(id: "", type: .player), useLoadedStats: true, player: player).environmentObject(games)
 		
 		return view
     }

@@ -93,6 +93,10 @@ struct LiveGameView: View {
 					}) {
 						FloatButtonView(text: Binding.constant("Stats"), backgroundColor: game.team.primaryColor)
 					}
+					.sheet(isPresented: $showStatModal) {
+						LiveGameStatView()
+							.environmentObject(self.game)
+					}
 					Button(action: {
 						//End game
 						self.showActionSheet.toggle()

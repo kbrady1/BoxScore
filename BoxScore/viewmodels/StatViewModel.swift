@@ -34,8 +34,13 @@ struct StatsRequest: FetchRequest {
 	}
 }
 
+//TODO: Move stat processing here for improved efficiency
 class StatGroup: CloudCreatable {
 	var stats = [StatType: [Stat]]()
+	
+	init(stats: [StatType: [Stat]]) {
+		self.stats = stats
+	}
 	
 	required init(records: [CKRecord]) throws {
 		StatType.all.forEach { stats[$0] = [] }

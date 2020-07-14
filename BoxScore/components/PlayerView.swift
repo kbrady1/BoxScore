@@ -16,6 +16,7 @@ struct PlayerInGameView: View {
 	var height: CGFloat = 80
 	
 	var body: some View {
+		//TODO: Add double tap to add a player to the court (if position open)
 		PlayerView(player: player, shadow: shadow, color: color, height: height)
 			.if(game.playersOnBench.contains(player)) {
 				$0.onDrag {

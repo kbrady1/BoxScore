@@ -19,16 +19,7 @@ class LiveGame: ObservableObject {
 		}
 	}
 	
-	//TODO: Bench players not updating after adding player
 	@Published var playersOnBench: [Player]
-	@Published var statCounter: [StatType: Int] {
-		didSet {
-			print("old")
-			print(oldValue)
-			print("new")
-			print(statCounter)
-		}
-	}
 	@Published var statViewModel: StatViewModel
 	
 	var cancellable: AnyCancellable?
@@ -44,7 +35,6 @@ class LiveGame: ObservableObject {
 		} ?? []
 		self.playersInGame = playersInGame
 		self.playersOnBench = team.players.filter { !playersInGame.contains($0) }
-		self.statCounter = [StatType: Int]()
 		
 		self.statViewModel = StatViewModel(id: createdGame.id, type: .game)
 		
@@ -69,6 +59,7 @@ class LiveGame: ObservableObject {
 			//On completion check the value and get the dictionary to write out
 
 			if let values = self.statViewModel.loadable.value {
+				self.game.statDictionary = values.stats
 				values.stats.keys.forEach {
 					if let count = values.stats[$0]?.count, count > 0 {
 						self.game.statCounter[$0] = count
@@ -79,7 +70,6 @@ class LiveGame: ObservableObject {
 	}
 	
 	func swapPlayers(fromBench benchPlayer: Player?, toLineUp playerOnCourt: Player?) {
-		//TODO: This not working, player not returning to bench
 		if let benchPlayer = benchPlayer,
 			let benchIndex = playersOnBench.firstIndex(of: benchPlayer) {
 			
@@ -106,6 +96,7 @@ class LiveGame: ObservableObject {
 			self.recordStat($0)
 		}
 		
+		game.statDictionary[stat.type] = (game.statDictionary[stat.type] ?? []) + [stat]
 		//Update values
 		game.statCounter[stat.type] = (game.statCounter[stat.type] ?? 0) + 1
 		
