@@ -29,6 +29,9 @@ struct TeamStatSummaryView: View {
 	@EnvironmentObject var gameList: GameList
 	@EnvironmentObject var team: Team
 	
+	@ObservedObject var viewModel: StatViewModel
+	
+	@State private var statDictionary = [StatType: [Stat]]()
 	@State private var topPerformers = [TopPlayer]()
 	@State private var teamTotals = [StatCount]()
 	@State private var shots = [Stat]()
@@ -45,15 +48,47 @@ struct TeamStatSummaryView: View {
 						.environmentObject(team)
 				}
 			}
-
+			viewModel.loadable.isLoading {
+				Section {
+					VStack {
+						Text("Loading")
+					}
+					.padding()
+				}
+			}
+			viewModel.loadable.hasError { (error) in
+				Section {
+					VStack {
+						Text(error.readableMessage)
+					}
+					.padding()
+				}
+			}
+			viewModel.loadable.hasLoaded { (stats) in
+				self.setup(with: stats)
+			}
+		}.listStyle(GroupedListStyle())
+		.environment(\.horizontalSizeClass, .regular)
+		.navigationBarTitle(getText("Game Summary", "Season Summary"))
+		.onAppear {
+			self.viewModel.onAppear()
+		}
+    }
+	
+	private func setup(with stats: StatGroup) -> some View {
+		//Set up stat details here
+		self.gameList.statDictionary = stats.stats
+		
+		return Group {
 			Section(header: Text("Shot Chart")) {
-				ShotStatView(shotsToDisplay: shots)
+				ShotStatView(shotsToDisplay: stats.stats[.shot] ?? [])
+				.frame(minHeight: 350, idealHeight: 380, maxHeight: 420)
 			}
 			
 			Section(header: Text("Top Performers")) {
 				ScrollView(.horizontal, showsIndicators: false) {
 					HStack(spacing: 12) {
-						ForEach(topPerformers) { topPlayer in
+						ForEach(self.getTopPerfomers(dict: stats.stats)) { topPlayer in
 							VStack {
 								Text(topPlayer.title)
 								.font(.headline)
@@ -73,14 +108,14 @@ struct TeamStatSummaryView: View {
 				}
 			}
 			
-			Section(header: Text(getText("Team Totals", "Team Averages"))) {
-				totalScrollView(list: teamTotals)
+			Section(header: Text(self.getText("Team Totals", "Team Averages"))) {
+				self.totalScrollView(list: self.getTeamTotals(dict: stats.stats))
 			}
 			
 			Section(header: Text("Individual Stats")) {
 				ScrollView(.horizontal, showsIndicators: false) {
 					HStack() {
-						ForEach(team.players) { (player) in
+						ForEach(self.team.players) { (player) in
 							NavigationLink(destination:
 								PlayerStatSummaryView(player: player)
 									.environmentObject(self.gameList)
@@ -96,13 +131,8 @@ struct TeamStatSummaryView: View {
 					}
 				}
 			}
-		}.listStyle(GroupedListStyle())
-		.environment(\.horizontalSizeClass, .regular)
-		.navigationBarTitle(getText("Game Summary", "Season Summary"))
-		.onAppear {
-			self.setup()
 		}
-    }
+	}
 	
 	private func totalScrollView(list: [StatCount]) -> some View {
 		ScrollView(.horizontal, showsIndicators: false) {
@@ -126,22 +156,10 @@ struct TeamStatSummaryView: View {
 		}
 	}
 	
-	private func setup() {
-		getShots()
-		getTopPerfomers()
-		getTeamTotals()
-	}
-	
-	private func getShots() {
-		self.shots = gameList.games.compactMap { $0.statDictionary[.shot] }.flatMap { $0 }
-	}
-	
-	private func getTopPerfomers() {
+	private func getTopPerfomers(dict: [StatType: [Stat]]) -> [TopPlayer] {
+		var topPerformers = [TopPlayer]()
 		StatType.all.forEach { (statType) in
-			let byPlayer = Dictionary(grouping: gameList.games
-				.compactMap { $0.statDictionary[statType] }
-				.flatMap { $0 }
-			) { $0.playerId }.values
+			let byPlayer = Dictionary(grouping: dict[statType] ?? []) { $0.playerId }.values
 			var sorted = [[Stat]]()
 			var description: Int?
 			
@@ -162,24 +180,21 @@ struct TeamStatSummaryView: View {
 				let desc = description,
 				let player = team.players.first(where: { $0.id == playerId }) else { return }
 			
-			self.topPerformers.append(
+			topPerformers.append(
 				TopPlayer(player: player, title: statType == .shot ? "PTS" : statType.abbreviation(), total: (desc.asDouble / gameList.games.count.asDouble).formatted(decimal: 1))
 			)
 		}
+		
+		return topPerformers
 	}
 	
-	private func getTeamTotals() {
-		teamTotals = StatType.all.map { (type) in
-			var statDict = [StatType: [Stat]]()
-			gameList.games.forEach {
-				statDict.merge($0.statDictionary) { $0 + $1 }
-			}
-			
-			if type == .shot, let shots = statDict[type]?.sumPoints() {
+	private func getTeamTotals(dict: [StatType: [Stat]]) -> [StatCount] {
+		return StatType.all.map { (type) in
+			if type == .shot, let shots = dict[type]?.sumPoints() {
 				return StatCount(stat: type, total: shots.asDouble / gameList.games.count.asDouble)
 			}
 			
-			return StatCount(stat: type, total: (statDict[type]?.count ?? 0).asDouble / gameList.games.count.asDouble)
+			return StatCount(stat: type, total: (dict[type]?.count ?? 0).asDouble / gameList.games.count.asDouble)
 		}
 	}
 	
@@ -190,7 +205,7 @@ struct TeamStatSummaryView: View {
 
 struct TeamStatSummaryView_Previews: PreviewProvider {
     static var previews: some View {
-		let view = TeamStatSummaryView().environmentObject(Game.statTestData)
+		let view = TeamStatSummaryView(viewModel: StatViewModel(id: "", type: .team)).environmentObject(Game.statTestData)
 		return view
     }
 }

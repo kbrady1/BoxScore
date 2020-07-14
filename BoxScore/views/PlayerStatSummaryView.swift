@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct PlayerStatSummaryView: View {
-	//TODO: Differentiate data if showing multiple games (averages)
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var games: GameList
 	@EnvironmentObject var team: Team

@@ -35,6 +35,7 @@ class Game: ObservableObject, Equatable, RecordModel {
 		self.playerIdsInGame = []
 		self.teamScore = 0
 		self.opponentScore = 0
+		self.isComplete = false
 	}
 	
 	var id: String { record.recordID.recordName }
@@ -77,8 +78,13 @@ class Game: ObservableObject, Equatable, RecordModel {
 			playersOnBench = team.players.filter { !playersInGame.contains($0) }
 		}
 	}
-	@Published var isComplete: Bool = false
+	@Published var isComplete: Bool {
+		didSet {
+			CloudManager.shared.addRecordToSave(record: recordToSave())
+		}
+	}
 	
+	//These are used on the live game and live game stat view to keep track of a teams current stats
 	var statDictionary = [StatType: [Stat]]()
 	@Published var statCounter = [StatType: Int]()
 	
@@ -220,6 +226,7 @@ extension Game {
 
 class GameList: ObservableObject {
 	@Published var games: [Game]
+	var statDictionary = [StatType: [Stat]]()
 	
 	init(_ games: [Game]) {
 		self.games = games

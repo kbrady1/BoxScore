@@ -24,21 +24,23 @@ struct LiveGameView: View {
 	@State private var positionC: CourtPositionView? = nil
 	@State private var positionD: CourtPositionView? = nil
 	@State private var positionE: CourtPositionView? = nil
+	@State private var showActionSheet: Bool = false
+	@State private var showStatModal: Bool = false
 	
     var body: some View {
 		return ZStack(alignment: .top) {
 			ZStack {
 				Rectangle()
-				.stroke(Color.clear, lineWidth: 0)
-				.background(season.team.primaryColor)
-				.frame(minWidth: 0, maxWidth: .infinity)
-				.frame(height: SCORE_BOARD_HEIGHT + 85 + UIApplication.safeAreaOffset)
-				.shadow(radius: 5)
-				.edgesIgnoringSafeArea(.top)
+					.stroke(Color.clear, lineWidth: 0)
+					.background(season.team.primaryColor)
+					.frame(minWidth: 0, maxWidth: .infinity)
+					.frame(height: SCORE_BOARD_HEIGHT + 85 + UIApplication.safeAreaOffset)
+					.shadow(radius: 5)
+					.edgesIgnoringSafeArea(.top)
 			}
 			VStack {
 				VStack {
-					HStack(spacing: 24) {
+					HStack {
 						VStack {
 							Text("\(season.team.name)")
 								.font(.caption)
@@ -47,9 +49,11 @@ struct LiveGameView: View {
 								.foregroundColor(season.team.primaryColor)
 							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 						}
+						Spacer()
 						Text("Game Score")
 						.font(.largeTitle)
 						.scaledToFit()
+						Spacer()
 						VStack {
 							Text("Opponent")
 								.font(.caption)
@@ -61,6 +65,7 @@ struct LiveGameView: View {
 							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 						}
 					}
+						.padding(.horizontal)
 					HStack(spacing: 16) {
 						ForEach(stats) { (stat) in
 							VStack {
@@ -79,19 +84,34 @@ struct LiveGameView: View {
 				
 				addCourtView()
 				Spacer()
-				
 				Bench()
+				
+				HStack {
+					Button(action: {
+						//Show stat view
+						self.showStatModal.toggle()
+					}) {
+						FloatButtonView(text: Binding.constant("Stats"), backgroundColor: game.team.primaryColor)
+					}
+					Button(action: {
+						//End game
+						self.showActionSheet.toggle()
+					}) {
+						FloatButtonView(text: Binding.constant("End Game"), backgroundColor: game.team.secondaryColor)
+					}
+					.actionSheet(isPresented: $showActionSheet) {
+						ActionSheet(title: Text("Confirm End Game?"), message: Text("By ending the game you will no longer be able to add stats to this game. This action cannot be undone."), buttons: [
+						ActionSheet.Button.cancel(),
+						ActionSheet.Button.destructive(Text("End Game"), action: {
+							self.season.completeGame()
+							self.presentationMode.wrappedValue.dismiss()
+						})
+						])
+					}
+				}.padding()
 			}
 		}
 		.navigationBarTitle("", displayMode: .inline)
-		//TODO: Cannot use nav bar items and presentationMode together SwiftUI bug. Move to button?
-		.navigationBarItems(trailing: Button(action: {
-			self.season.completeGame()
-			self.presentationMode.wrappedValue.dismiss()
-		}, label: {
-			Text("End")
-				.bold()
-		}))
 		.onAppear {
 			self.game.createOrStart()
 			self.setUpCourtPositions()
@@ -110,6 +130,7 @@ struct LiveGameView: View {
 		.frame(height: 300)
 		
 		return ZStack {
+			//TODO: Add geometry reader here to make sure court position views are not dragged outside of court
 			image
 			if positionA != nil {
 				positionA
@@ -170,7 +191,11 @@ struct BindingPreview: View {
 
 struct GameView_Previews: PreviewProvider {
     static var previews: some View {
-		return BindingPreview().previewDevice(PreviewDevice(rawValue: "iPhone SE"))
+		return LiveGameView()
+			.environmentObject(Game.previewData)
+			.environmentObject(StatSettings())
+			.environmentObject(Season(team: Game.previewData.team))
+			.previewDevice(PreviewDevice(rawValue: "iPhone SE"))
     }
 }
 

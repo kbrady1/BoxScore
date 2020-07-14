@@ -17,7 +17,7 @@ struct FloatButtonView: View {
         Text(text)
 			.bold()
 			.font(.system(size: 28))
-			.frame(minWidth: 300, maxWidth: .infinity)
+			.frame(minWidth: 50, maxWidth: .infinity)
 			.padding(.vertical, 6.0)
 			.background(backgroundColor)
 			.foregroundColor(textColor)
