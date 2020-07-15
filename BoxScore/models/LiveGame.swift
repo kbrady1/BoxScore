@@ -25,6 +25,16 @@ class LiveGame: ObservableObject {
 	var cancellable: AnyCancellable?
 	var receivable: AnyCancellable?
 	
+	var opponentScoreOptions: [(String, Int)] {
+		//Return -1, 1
+		[
+			("-1", -1),
+			("+1", 1),
+			("+2", 2),
+			("+3", 3)
+		].filter { $0.1 + game.opponentScore >= 0 }
+	}
+	
 	init(team: Team, game: Game?) {
 		let createdGame = game ?? Game.createGame(teamId: team.id)
 		self.game = createdGame

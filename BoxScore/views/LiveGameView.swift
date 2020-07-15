@@ -27,7 +27,7 @@ struct LiveGameView: View {
 	@State private var showActionSheet: Bool = false
 	@State private var showStatModal: Bool = false
 	
-    var body: some View {
+	var body: some View {
 		return ZStack(alignment: .top) {
 			ZStack {
 				Rectangle()
@@ -47,12 +47,12 @@ struct LiveGameView: View {
 								.offset(x: 0, y: 10)
 							Text(String(game.game.teamScore))
 								.foregroundColor(season.team.primaryColor)
-							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
+								.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 						}
 						Spacer()
 						Text("Game Score")
-						.font(.largeTitle)
-						.scaledToFit()
+							.font(.largeTitle)
+							.scaledToFit()
 						Spacer()
 						VStack {
 							Text("Opponent")
@@ -61,11 +61,20 @@ struct LiveGameView: View {
 							Button(String(game.game.opponentScore)) {
 								self.game.game.opponentScore += 1
 							}
+							.contextMenu {
+								ForEach(self.game.opponentScoreOptions, id: \.1) { (scorePair) in
+									Button(action: {
+										self.game.game.opponentScore += scorePair.1
+									}) {
+										Text(scorePair.0)
+									}
+								}
+							}
 							.foregroundColor(season.team.primaryColor)
 							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 						}
 					}
-						.padding(.horizontal)
+					.padding(.horizontal)
 					HStack(spacing: 16) {
 						ForEach(stats) { (stat) in
 							VStack {
@@ -111,11 +120,11 @@ struct LiveGameView: View {
 					}
 					.actionSheet(isPresented: $showActionSheet) {
 						ActionSheet(title: Text("Confirm End Game?"), message: Text("By ending the game you will no longer be able to add stats to this game. This action cannot be undone."), buttons: [
-						ActionSheet.Button.cancel(),
-						ActionSheet.Button.destructive(Text("End Game"), action: {
-							self.season.completeGame()
-							self.presentationMode.wrappedValue.dismiss()
-						})
+							ActionSheet.Button.cancel(),
+							ActionSheet.Button.destructive(Text("End Game"), action: {
+								self.season.completeGame()
+								self.presentationMode.wrappedValue.dismiss()
+							})
 						])
 					}
 				}.padding()
@@ -131,13 +140,13 @@ struct LiveGameView: View {
 			self.reorderLineup()
 		}
 		.popover(isPresented: $settings.needsToSeeTour) { StatSetupView().environmentObject(self.settings) }
-    }
+	}
 	
 	private func addCourtView() -> some View {
 		let image = Image("BasketballCourt")
-		.resizable()
-		.frame(minWidth: 300, maxWidth: .infinity)
-		.frame(height: 300)
+			.resizable()
+			.frame(minWidth: 300, maxWidth: .infinity)
+			.frame(height: 300)
 		
 		return ZStack {
 			//TODO: Add geometry reader here to make sure court position views are not dragged outside of court
@@ -201,13 +210,13 @@ struct BindingPreview: View {
 }
 
 struct GameView_Previews: PreviewProvider {
-    static var previews: some View {
+	static var previews: some View {
 		return LiveGameView()
 			.environmentObject(Game.previewData)
 			.environmentObject(StatSettings())
 			.environmentObject(Season(team: Game.previewData.team))
 			.previewDevice(PreviewDevice(rawValue: "iPhone SE"))
-    }
+	}
 }
 
 struct Bench: View {
@@ -232,9 +241,9 @@ struct Bench: View {
 }
 
 extension StatType: Identifiable {
-    public var id: String {
+	public var id: String {
 		return self.rawValue
-    }
+	}
 }
 
 extension UIApplication {
