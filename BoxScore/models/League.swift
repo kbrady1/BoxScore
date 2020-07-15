@@ -54,30 +54,33 @@ class League: ObservableObject, Equatable, CloudCreatable {
 	func newTeam() -> Team {
 		let team = Team.createNewRecord()
 		let season = Season(team: team)
+		
+		if seasons.isEmpty {
+			currentSeason = season
+		}
+		
 		seasons.append(season)
-		currentSeason = season
 		
 		return team
 	}
 	
 	func deleteTeam(_ team: Team) {
-		seasons.removeAll { $0.team.name == team.name }
+		seasons.removeAll { $0.team.id == team.id }
+		CloudManager.shared.addRecordToDelete(record: team.record)
 		
 		//If the current season was deleted
-		if !seasons.contains(where: { $0.team.name == currentSeason.team.name }) {
-			currentSeason = seasons.first ?? Season(team: Team.createNewRecord())
-			
-			if seasons.isEmpty {
-				seasons.append(currentSeason)
-			}
+		if !seasons.contains(where: { $0.team.id == currentSeason.team.id }) {
+			currentSeason = seasons.first ?? Season(team: newTeam())
 		}
 	}
 	
 	func deleteAll() {
+		seasons.forEach {
+			CloudManager.shared.addRecordToDelete(record: $0.team.record)
+		}
 		seasons.removeAll()
 		
-		currentSeason = Season(team: Team())
-		seasons.append(currentSeason)
+		currentSeason = Season(team: newTeam())
 	}
 	
 	//MARK: Equatable

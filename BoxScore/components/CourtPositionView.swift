@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import AVFoundation
 
 private let DISTANCE_TO_REGISTER: CGFloat = 60
 
@@ -38,8 +37,6 @@ struct CourtPositionView: View {
 		self.hasPlayer ? CGSize(width: 80, height: 80) : CGSize(width: 50, height: 50)
 	}
 	@State var statType: StatType? = nil
-	
-	@State private var clickSound: AVAudioPlayer?
 	
 	var body: some View {
 		let moveGesture = DragGesture()
@@ -115,8 +112,7 @@ struct CourtPositionView: View {
 					HStack {
 						if dragDirection == .right { Spacer() }
 						PlayerInGameView(game: game, player: player!)
-						.if(hasPlayer) {
-							$0.contextMenu {
+							.contextMenu {
 								ForEach(settings.allStats, id: \.0) { (typePair) in
 									Button(action: {
 										self.statType = typePair.1
@@ -126,7 +122,6 @@ struct CourtPositionView: View {
 									}
 								}
 							}
-						}
 						if dragDirection == .left { Spacer() }
 					}
 					if dragDirection == .up { Spacer() }
@@ -156,7 +151,7 @@ struct CourtPositionView: View {
 					self.addPlayer(reading as? DraggablePlayerReference)
 				}
 			})
-			
+
 			return true
 		}
 		.if(!hasPlayer) { $0.gesture(moveGesture) }
@@ -251,7 +246,7 @@ struct CourtPositionView_Previews: PreviewProvider {
 		let view = CourtPositionView(position: CGPoint(x: 0, y: 0))
 			.environmentObject(Game.previewData)
 			.previewLayout(.fixed(width: 120, height: 120))
-		
+
 		return view
     }
 }

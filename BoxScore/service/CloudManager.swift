@@ -81,6 +81,10 @@ class CloudManager {
 		}
 	}
 	
+	func addRecordToDelete(record: CKRecord) {
+		recordsToDelete.append(record)
+	}
+	
 	@objc private func processBatch() {
 		if !recordsToDelete.isEmpty || !recordsToSave.isEmpty {
 			let _ = process()

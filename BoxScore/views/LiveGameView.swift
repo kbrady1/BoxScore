@@ -162,6 +162,7 @@ struct LiveGameView: View {
 			
 			return nil
 		}
+		
 		positionA = CourtPositionView(position: CGPoint(x: 200, y: 340), player: playerAt(index: 0))
 		positionB = CourtPositionView(position: CGPoint(x: 300, y: 150), player: playerAt(index: 1))
 		positionC = CourtPositionView(position: CGPoint(x: 150, y: 150), player: playerAt(index: 2))

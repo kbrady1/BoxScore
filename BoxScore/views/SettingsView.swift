@@ -21,7 +21,11 @@ struct SettingsView: View {
 	@State var upGesture: StatType
 	@State var downGesture: StatType
 	
-    var body: some View {
+	@State private var teamToDelete: Team? = nil
+	@State private var deleteTeamConfirmation: Bool = false
+	@State private var deleteAllDataConfirmation: Bool = false
+	
+	var body: some View {
 		NavigationView {
 			List {
 				Section(header:
@@ -48,6 +52,18 @@ struct SettingsView: View {
 						}
 					}
 					.onDelete(perform: self.deleteRow)
+					.actionSheet(isPresented: $deleteTeamConfirmation) {
+						ActionSheet(title: Text("Confirm Delete Team?"), message: Text("Deleting this team will delete all players, games and stats associated with the team. This action cannot be undone."), buttons: [
+							ActionSheet.Button.cancel(),
+							ActionSheet.Button.destructive(Text("Delete Team"), action: {
+								if let team = self.teamToDelete {
+									self.league.deleteTeam(team)
+									self.viewModel.update(team: self.league.currentSeason.team)
+									self.teamViewModel.update(teamId: self.league.currentSeason.team.id)
+								}
+							})
+						])
+					}
 					Button(action: {
 						let team = self.league.newTeam()
 						self.viewModel.update(team: team)
@@ -67,14 +83,25 @@ struct SettingsView: View {
 					gestureButton(for: .right, selection: $settings.rightGesture)
 					gestureButton(for: .down, selection: $settings.downGesture)
 				}
-
+				
 				Button(action: {
+					self.deleteAllDataConfirmation.toggle()
 					self.league.deleteAll()
 				}) {
 					Text("Delete Data")
 						.foregroundColor(.red)
 				}
-
+				.actionSheet(isPresented: $deleteTeamConfirmation) {
+					ActionSheet(title: Text("Confirm Delete All Data?"), message: Text("All teams, games, players and stats will be deleted. This action cannot be undone."), buttons: [
+						ActionSheet.Button.cancel(),
+						ActionSheet.Button.destructive(Text("Delete Team"), action: {
+							self.league.deleteAll()
+							self.viewModel.update(team: self.league.currentSeason.team)
+							self.teamViewModel.update(teamId: self.league.currentSeason.team.id)
+						})
+					])
+				}
+				
 			}
 			.listStyle(GroupedListStyle())
 			.environment(\.horizontalSizeClass, .regular)
@@ -86,11 +113,12 @@ struct SettingsView: View {
 					.bold()
 			})
 		}
-    }
+	}
 	
 	private func deleteRow(at indexSet: IndexSet) {
-		indexSet.forEach {
-			self.league.deleteTeam(self.league.seasons[$0].team)
+		if let first = indexSet.first {
+			teamToDelete = league.seasons[first].team
+			deleteTeamConfirmation.toggle()
 		}
     }
 	
