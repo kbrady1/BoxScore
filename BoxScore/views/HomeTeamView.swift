@@ -119,8 +119,8 @@ struct HomeTeamView: View {
 					.foregroundColor(Color.white)
 					.cornerRadius(8.0)
 					.shadow(radius: 4.0)
-					.disabled(league.currentSeason.team.players.isEmpty && !seasonViewModel.loadable.loading)
-					.opacity(league.currentSeason.team.players.isEmpty && !seasonViewModel.loadable.loading ? 0.5 : 1.0)
+					.disabled(playersViewModel.loadable.loading || seasonViewModel.loadable.loading)
+					.opacity(playersViewModel.loadable.loading || seasonViewModel.loadable.loading ? 0.5 : 1.0)
 					.animation(.default)
 			}
 			.padding([.horizontal, .bottom])
@@ -141,6 +141,7 @@ struct HomeTeamView: View {
 							 upGesture: self.settings.upGesture,
 							 downGesture: self.settings.downGesture)
 					.environmentObject(self.playersViewModel)
+					.environmentObject(self.seasonViewModel)
 			},
 			trailing:
 			Button(action: {

@@ -11,6 +11,7 @@ import SwiftUI
 struct SettingsView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var viewModel: PlayersViewModel
+	@EnvironmentObject var teamViewModel: SeasonViewModel
 	
 	@ObservedObject var league: League
 	
@@ -32,6 +33,7 @@ struct SettingsView: View {
 						Button(action: {
 							self.league.currentSeason = season
 							self.viewModel.update(team: season.team)
+							self.teamViewModel.update(teamId: season.team.id)
 						}) {
 							HStack {
 								Text(season.team.name)
@@ -49,6 +51,7 @@ struct SettingsView: View {
 					Button(action: {
 						let team = self.league.newTeam()
 						self.viewModel.update(team: team)
+						self.teamViewModel.update(teamId: team.id)
 						self.presentationMode.wrappedValue.dismiss()
 					}) {
 						Text("Add Team")

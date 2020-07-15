@@ -52,4 +52,13 @@ class SeasonViewModel: NetworkReadViewModel, ObservableObject {
 		self.teamId = teamId
 		self.request = GamesForTeamRequest(teamId: teamId)
 	}
+	
+	func update(teamId: String) {
+		self.loadable = .loading
+		self.teamId = teamId
+		self.request = GamesForTeamRequest(teamId: teamId)
+		self.objectWillChange.send()
+		
+		self.fetch(request: request)
+	}
 }
