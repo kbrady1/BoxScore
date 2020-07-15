@@ -14,6 +14,14 @@ enum MoveDirection: String {
 	case left, right, up, down
 }
 
+class ObservablePlayer: ObservableObject {
+	@Published var player: Player? = nil
+	
+	init(player: Player? = nil) {
+		self.player = player
+	}
+}
+
 struct CourtPositionView: View {
 	@EnvironmentObject var game: LiveGame
 	@EnvironmentObject var settings: StatSettings
@@ -22,7 +30,7 @@ struct CourtPositionView: View {
 	@State private var offset = CGSize.zero
 	@State private var offsetPosition = CGSize.zero
 	@State private var size = CGSize.zero
-	@State var player: Player? = nil
+	@ObservedObject var player: ObservablePlayer = ObservablePlayer()
 	@State private var dragDirection: MoveDirection? = nil
 	@State private var showingAlert = false {
 		didSet {
@@ -32,7 +40,7 @@ struct CourtPositionView: View {
 		}
 	}
 	
-	var hasPlayer: Bool { player != nil }
+	var hasPlayer: Bool { player.player != nil }
 	var defaultSize: CGSize {
 		self.hasPlayer ? CGSize(width: 80, height: 80) : CGSize(width: 50, height: 50)
 	}
@@ -56,8 +64,8 @@ struct CourtPositionView: View {
 		let doubleTap = TapGesture(count: 2)
 			.onEnded { (gesture) in
 				DispatchQueue.main.async {
-					self.game.swapPlayers(fromBench: nil, toLineUp: self.player)
-					self.player = nil
+					self.game.swapPlayers(fromBench: nil, toLineUp: self.player.player)
+					self.player.player = nil
 				}
 			}
 		let statGesture = DragGesture(minimumDistance: 5)
@@ -111,7 +119,7 @@ struct CourtPositionView: View {
 					if dragDirection == .down { Spacer() }
 					HStack {
 						if dragDirection == .right { Spacer() }
-						PlayerInGameView(game: game, player: player!)
+						PlayerInGameView(game: game, player: player.player!)
 							.contextMenu {
 								ForEach(settings.allStats, id: \.0) { (typePair) in
 									Button(action: {
@@ -134,9 +142,9 @@ struct CourtPositionView: View {
 			}
 		}
 		.sheet(isPresented: $showingAlert) {
-			StatInputView(player: self.player!,
+			StatInputView(player: self.player.player!,
 						  stat: Stat(type: self.statType ?? .shot,
-									 playerId: self.player!.id,
+									 playerId: self.player.player!.id,
 									 gameId: self.game.game.id,
 									 teamId: self.game.team.id),
 						  game: self.game)
@@ -148,7 +156,7 @@ struct CourtPositionView: View {
 		.onDrop(of: ["player"], isTargeted: nil) { (providers) -> Bool in
 			providers.first?.loadObject(ofClass: DraggablePlayerReference.self, completionHandler: { (reading, error) in
 				DispatchQueue.main.async {
-					self.addPlayer(reading as? DraggablePlayerReference)
+					self.addPlayer(reading as? DraggablePlayerReference, game: self.game)
 				}
 			})
 
@@ -159,10 +167,10 @@ struct CourtPositionView: View {
 		.if(hasPlayer) { $0.gesture(statGesture) }
 	}
 	
-	func addPlayer(_ playerReference: DraggablePlayerReference?) {
+	func addPlayer(_ playerReference: DraggablePlayerReference?, game: LiveGame) {
 		if let player = game.playersOnBench.first(where: { $0.id == playerReference?.id }) {
-			game.swapPlayers(fromBench: player, toLineUp: self.player)
-			self.player = player
+			game.swapPlayers(fromBench: player, toLineUp: self.player.player)
+			self.player.player = player
 		}
 	}
 	

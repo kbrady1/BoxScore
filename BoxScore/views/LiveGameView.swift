@@ -84,7 +84,13 @@ struct LiveGameView: View {
 				
 				addCourtView()
 				Spacer()
-				Bench()
+				Bench() { (player) in
+					//Action to perform on double tap of bench item, adds player to game if spot available
+					[self.positionA, self.positionB, self.positionC, self.positionD, self.positionE]
+						.compactMap { $0 }
+						.first { $0.player.player == nil }?
+						.addPlayer(DraggablePlayerReference(id: player.id), game: self.game)
+				}
 				
 				HStack {
 					Button(action: {
@@ -155,12 +161,12 @@ struct LiveGameView: View {
 	}
 	
 	private func setUpCourtPositions() {
-		func playerAt(index: Int) -> Player? {
+		func playerAt(index: Int) -> ObservablePlayer {
 			if game.playersInGame.count - 1 >= index {
-				return game.playersInGame[index]
+				return ObservablePlayer(player: game.playersInGame[index])
 			}
 			
-			return nil
+			return ObservablePlayer()
 		}
 		
 		positionA = CourtPositionView(position: CGPoint(x: 200, y: 340), player: playerAt(index: 0))
@@ -174,7 +180,7 @@ struct LiveGameView: View {
 		var updatedLineup = [Player]()
 		
 		func addIfThere(view: CourtPositionView?) {
-			if let player = view?.player {
+			if let player = view?.player.player {
 				updatedLineup.append(player)
 			}
 		}
@@ -183,7 +189,7 @@ struct LiveGameView: View {
 			addIfThere(view: $0)
 		}
 		
-//		game.playersInGame = updatedLineup
+		game.playersInGame = updatedLineup
 	}
 }
 
@@ -207,11 +213,16 @@ struct GameView_Previews: PreviewProvider {
 struct Bench: View {
 	@EnvironmentObject var game: LiveGame
 	
+	var action: (Player) -> ()
+	
 	var body: some View {
 		ScrollView(.horizontal, showsIndicators: false) {
 			HStack(spacing: 16) {
-				ForEach(game.playersOnBench) {
-					PlayerInGameView(game: self.game, player: $0)
+				ForEach(game.playersOnBench) { (player) in
+					PlayerInGameView(game: self.game, player: player)
+						.onTapGesture(count: 2) {
+							self.action(player)
+					}
 				}
 			}
 			.padding(.leading, 10)

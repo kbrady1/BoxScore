@@ -71,7 +71,8 @@ class LiveGame: ObservableObject {
 	
 	func swapPlayers(fromBench benchPlayer: Player?, toLineUp playerOnCourt: Player?) {
 		if let benchPlayer = benchPlayer,
-			let benchIndex = playersOnBench.firstIndex(of: benchPlayer) {
+			let benchIndex = playersOnBench.firstIndex(of: benchPlayer),
+			(playersInGame.count < 5 || playerOnCourt != nil) {
 			
 			playersOnBench.remove(at: benchIndex)
 			playersInGame.append(benchPlayer)

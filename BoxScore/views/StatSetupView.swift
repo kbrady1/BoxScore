@@ -22,7 +22,7 @@ struct StatSetupView: View {
 					CourtPositionView(position: CGPoint(x: 20, y: 0)).environmentObject(secretGame)
 					.frame(width: 40, height: 40)
 					.padding()
-					Bench().environmentObject(secretGame)
+					Bench(action: { (_) in }).environmentObject(secretGame)
 				}
 				
 				List {
