@@ -14,6 +14,8 @@ struct SeasonView: View {
 	@State var season: Season
 	@State var currentGame: Game?
 	
+	@State private var deleteGameConfirmation: Bool = false
+	
     var body: some View {
 		List {
 			if currentGame != nil {
@@ -63,6 +65,15 @@ struct SeasonView: View {
 					}
 				}
 			}
+			.onDelete(perform: deleteRow)
+			.actionSheet(isPresented: $deleteGameConfirmation) {
+				ActionSheet(title: Text("Confirm Delete Game?"), message: Text("Deleting this game will delete all stats associated with the game. This action cannot be undone."), buttons: [
+					ActionSheet.Button.cancel(),
+					ActionSheet.Button.destructive(Text("Delete Team"), action: {
+						self.deleteGameConfirmation.toggle()
+					})
+				])
+			}
 		}
 		.environment(\.horizontalSizeClass, .regular)
 		.listStyle(GroupedListStyle())
@@ -77,6 +88,14 @@ struct SeasonView: View {
 		})
 		.onAppear {
 			self.currentGame = self.season.currentGame
+		}
+    }
+	
+	private func deleteRow(at indexSet: IndexSet) {
+		if let first = indexSet.first {
+			//TODO: Implement
+			print(first)
+			deleteGameConfirmation.toggle()
 		}
     }
 }

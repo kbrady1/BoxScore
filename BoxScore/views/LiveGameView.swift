@@ -27,6 +27,7 @@ struct LiveGameView: View {
 	@State private var showActionSheet: Bool = false
 	@State private var showStatModal: Bool = false
 	
+	//TODO: Add undo option for stats
 	var body: some View {
 		return ZStack(alignment: .top) {
 			ZStack {

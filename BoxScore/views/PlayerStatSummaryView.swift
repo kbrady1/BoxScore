@@ -15,6 +15,8 @@ struct PlayerStatSummaryView: View {
 	
 	@ObservedObject var viewModel: StatViewModel
 	
+	@State private var deletePlayerConfirmation: Bool = false
+	
 	var useLoadedStats: Bool
 	var player: Player
 	
@@ -83,7 +85,6 @@ struct PlayerStatSummaryView: View {
 										Spacer()
 									}
 								}
-								
 							}
 						}
 					}
@@ -92,6 +93,23 @@ struct PlayerStatSummaryView: View {
 			.listStyle(GroupedListStyle())
 			.environment(\.horizontalSizeClass, .regular)
 			.navigationBarTitle("\(player.nameFirstLast)'s Stats")
+			.if(!self.useLoadedStats) {
+				$0.navigationBarItems(trailing: Button(action: {
+					self.deletePlayerConfirmation.toggle()
+				}) {
+					//TODO: Use triple dot button?
+					Text("Edit")
+				}
+				.actionSheet(isPresented: self.$deletePlayerConfirmation) {
+					//TODO: update text and add edit options here that will launch modal to update player name and number
+					ActionSheet(title: Text("Confirm Delete Player?"), message: Text("\(self.player.nameFirstLast) and all stats associated with him/her will be deleted. This action cannot be undone."), buttons: [
+						ActionSheet.Button.cancel(),
+						ActionSheet.Button.destructive(Text("Delete Player"), action: {
+							//TODO: Delete
+						})
+					])
+				})
+			}
 			.onAppear {
 				//This view doesn't need to reload stats when coming from a game summary view
 				if self.useLoadedStats {
