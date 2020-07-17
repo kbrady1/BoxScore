@@ -27,10 +27,13 @@
 		05B140D224B9544F00936738 /* AddPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D124B9544F00936738 /* AddPlayerViewModel.swift */; };
 		05B140D424B95ED000936738 /* AddPlayerLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D324B95ED000936738 /* AddPlayerLoadingView.swift */; };
 		05B140D824BA4AEA00936738 /* Schemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D724BA4AEA00936738 /* Schemas.swift */; };
-		05B140DA24BA56A500936738 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D924BA56A500936738 /* GameViewModel.swift */; };
+		05B140DA24BA56A500936738 /* SeasonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D924BA56A500936738 /* SeasonViewModel.swift */; };
 		05B140DC24BA6DE000936738 /* LiveGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140DB24BA6DE000936738 /* LiveGame.swift */; };
 		05B140DE24BAB6BA00936738 /* StatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140DD24BAB6BA00936738 /* StatViewModel.swift */; };
 		05C9A8BC24BD520E00B0FB70 /* LiveGameStatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C9A8BB24BD520E00B0FB70 /* LiveGameStatView.swift */; };
+		05DA326F24C153DF004E4042 /* GameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DA326E24C153DF004E4042 /* GameViewModel.swift */; };
+		05DA327124C1551B004E4042 /* DeleteGameLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DA327024C1551B004E4042 /* DeleteGameLoadingView.swift */; };
+		05DA327324C1554F004E4042 /* WriteDeleteLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DA327224C1554F004E4042 /* WriteDeleteLoadingView.swift */; };
 		05E1057D24AF8FEA00F39F0C /* Season.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1057C24AF8FEA00F39F0C /* Season.swift */; };
 		05E1057F24AF913B00F39F0C /* SeasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1057E24AF913B00F39F0C /* SeasonView.swift */; };
 		05E1058124AF91E900F39F0C /* FloatButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05E1058024AF91E900F39F0C /* FloatButtonView.swift */; };
@@ -94,10 +97,13 @@
 		05B140D124B9544F00936738 /* AddPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlayerViewModel.swift; sourceTree = "<group>"; };
 		05B140D324B95ED000936738 /* AddPlayerLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlayerLoadingView.swift; sourceTree = "<group>"; };
 		05B140D724BA4AEA00936738 /* Schemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schemas.swift; sourceTree = "<group>"; };
-		05B140D924BA56A500936738 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+		05B140D924BA56A500936738 /* SeasonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonViewModel.swift; sourceTree = "<group>"; };
 		05B140DB24BA6DE000936738 /* LiveGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveGame.swift; sourceTree = "<group>"; };
 		05B140DD24BAB6BA00936738 /* StatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatViewModel.swift; sourceTree = "<group>"; };
 		05C9A8BB24BD520E00B0FB70 /* LiveGameStatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveGameStatView.swift; sourceTree = "<group>"; };
+		05DA326E24C153DF004E4042 /* GameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewModel.swift; sourceTree = "<group>"; };
+		05DA327024C1551B004E4042 /* DeleteGameLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteGameLoadingView.swift; sourceTree = "<group>"; };
+		05DA327224C1554F004E4042 /* WriteDeleteLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WriteDeleteLoadingView.swift; sourceTree = "<group>"; };
 		05E1057C24AF8FEA00F39F0C /* Season.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Season.swift; sourceTree = "<group>"; };
 		05E1057E24AF913B00F39F0C /* SeasonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonView.swift; sourceTree = "<group>"; };
 		05E1058024AF91E900F39F0C /* FloatButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatButtonView.swift; sourceTree = "<group>"; };
@@ -179,7 +185,8 @@
 				05B140CF24B9215900936738 /* PlayersViewModel.swift */,
 				05B140C924B90B5C00936738 /* LeagueViewModel.swift */,
 				05B140D124B9544F00936738 /* AddPlayerViewModel.swift */,
-				05B140D924BA56A500936738 /* GameViewModel.swift */,
+				05B140D924BA56A500936738 /* SeasonViewModel.swift */,
+				05DA326E24C153DF004E4042 /* GameViewModel.swift */,
 				05B140DD24BAB6BA00936738 /* StatViewModel.swift */,
 			);
 			path = viewmodels;
@@ -297,6 +304,8 @@
 				05E1058224AF945C00F39F0C /* VisualEffectButtonView.swift */,
 				05E1058424AFA0D300F39F0C /* GameTitleView.swift */,
 				05B140D324B95ED000936738 /* AddPlayerLoadingView.swift */,
+				05DA327024C1551B004E4042 /* DeleteGameLoadingView.swift */,
+				05DA327224C1554F004E4042 /* WriteDeleteLoadingView.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -445,13 +454,16 @@
 				05B140C424B8EDC700936738 /* CloudManager.swift in Sources */,
 				05B140CA24B90B5C00936738 /* LeagueViewModel.swift in Sources */,
 				05E1058124AF91E900F39F0C /* FloatButtonView.swift in Sources */,
+				05DA327324C1554F004E4042 /* WriteDeleteLoadingView.swift in Sources */,
 				05EF2A5D246A0357004F4E09 /* PlayerView.swift in Sources */,
 				0520404A246E498F008CEFBC /* ShotStatView.swift in Sources */,
 				05204044246E15E1008CEFBC /* TeamStatSummaryView.swift in Sources */,
-				05B140DA24BA56A500936738 /* GameViewModel.swift in Sources */,
+				05B140DA24BA56A500936738 /* SeasonViewModel.swift in Sources */,
 				05B140DE24BAB6BA00936738 /* StatViewModel.swift in Sources */,
 				05E1058524AFA0D300F39F0C /* GameTitleView.swift in Sources */,
 				05B140C824B9093800936738 /* NetworkViewModels.swift in Sources */,
+				05DA326F24C153DF004E4042 /* GameViewModel.swift in Sources */,
+				05FFA22524C224A000AC17B2 /* BoxScore.xcdatamodeld in Sources */,
 				051C7F1A246B978C00057B44 /* StatSettings.swift in Sources */,
 				05204046246E15EE008CEFBC /* PlayerStatSummaryView.swift in Sources */,
 				05EF2A63246A0C82004F4E09 /* VisualEffectView.swift in Sources */,
@@ -471,6 +483,7 @@
 				05E1057F24AF913B00F39F0C /* SeasonView.swift in Sources */,
 				05B140C624B8FEE900936738 /* Networking.swift in Sources */,
 				05E1057D24AF8FEA00F39F0C /* Season.swift in Sources */,
+				05DA327124C1551B004E4042 /* DeleteGameLoadingView.swift in Sources */,
 				05FA4204246CC8AD00B2A2EC /* AddPlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

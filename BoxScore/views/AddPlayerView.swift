@@ -82,11 +82,16 @@ struct AddPlayerView: View {
 			}
 			
 			if showLoadingView {
-				AddPlayerLoadingView(viewModel: AddPlayerViewModel(player: Player(lastName: self.lastName, firstName: self.firstName, number: self.number, teamId: team.id)), visible: $showLoadingView, action: { player in
-					self.team.addPlayer(player)
-					self.teamViewModel.update(team: self.team)
-					self.presentationMode.wrappedValue.dismiss()
-				})
+				AddPlayerLoadingView(
+					viewModel: AddPlayerViewModel(player: Player(lastName: self.lastName, firstName: self.firstName, number: self.number, teamId: team.id)),
+					loadingView: LoadingView(visible: $showLoadingView) { (model) in
+						guard let player = model as? Player else { return }
+						
+						self.team.addPlayer(player)
+						self.teamViewModel.update(team: self.team)
+						self.presentationMode.wrappedValue.dismiss()
+					}
+				)
 			}
 		}
 		.onAppear {

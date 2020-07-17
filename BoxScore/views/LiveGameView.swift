@@ -16,8 +16,7 @@ struct LiveGameView: View {
 	@EnvironmentObject var game: LiveGame
 	@EnvironmentObject var settings: StatSettings
 	@EnvironmentObject var season: Season
-	
-	var stats = StatType.all.filter { $0 != .shot }
+	@EnvironmentObject var viewModel: SeasonViewModel
 	
 	@State private var positionA: CourtPositionView? = nil
 	@State private var positionB: CourtPositionView? = nil
@@ -27,108 +26,122 @@ struct LiveGameView: View {
 	@State private var showActionSheet: Bool = false
 	@State private var showStatModal: Bool = false
 	
+	@State private var showSaveGameLoader: Bool = false
+	
 	//TODO: Add undo option for stats
 	var body: some View {
-		return ZStack(alignment: .top) {
-			ZStack {
-				Rectangle()
-					.stroke(Color.clear, lineWidth: 0)
-					.background(season.team.primaryColor)
-					.frame(minWidth: 0, maxWidth: .infinity)
-					.frame(height: SCORE_BOARD_HEIGHT + 85 + UIApplication.safeAreaOffset)
-					.shadow(radius: 5)
-					.edgesIgnoringSafeArea(.top)
-			}
-			VStack {
+		return ZStack {
+			ZStack(alignment: .top) {
+				ZStack {
+					Rectangle()
+						.stroke(Color.clear, lineWidth: 0)
+						.background(season.team.primaryColor)
+						.frame(minWidth: 0, maxWidth: .infinity)
+						.frame(height: SCORE_BOARD_HEIGHT + 85 + UIApplication.safeAreaOffset)
+						.shadow(radius: 5)
+						.edgesIgnoringSafeArea(.top)
+				}
 				VStack {
-					HStack {
-						VStack {
-							Text("\(season.team.name)")
-								.font(.caption)
-								.offset(x: 0, y: 10)
-							Text(String(game.game.teamScore))
-								.foregroundColor(season.team.primaryColor)
-								.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
-						}
-						Spacer()
-						Text("Game Score")
-							.font(.largeTitle)
-							.scaledToFit()
-						Spacer()
-						VStack {
-							Text("Opponent")
-								.font(.caption)
-								.offset(x: 0, y: 10)
-							Button(String(game.game.opponentScore)) {
-								self.game.game.opponentScore += 1
+					VStack {
+						HStack {
+							VStack {
+								Text("\(season.team.name)")
+									.font(.caption)
+									.offset(x: 0, y: 10)
+								Text(String(game.game.teamScore))
+									.foregroundColor(season.team.primaryColor)
+									.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 							}
-							.contextMenu {
-								ForEach(self.game.opponentScoreOptions, id: \.1) { (scorePair) in
-									Button(action: {
-										self.game.game.opponentScore += scorePair.1
-									}) {
-										Text(scorePair.0)
+							Spacer()
+							Text("Game Score")
+								.font(.largeTitle)
+								.scaledToFit()
+							Spacer()
+							VStack {
+								Text("Opponent")
+									.font(.caption)
+									.offset(x: 0, y: 10)
+								Button(String(game.game.opponentScore)) {
+									self.game.game.opponentScore += 1
+								}
+								.contextMenu {
+									ForEach(self.game.opponentScoreOptions, id: \.1) { (scorePair) in
+										Button(action: {
+											self.game.game.opponentScore += scorePair.1
+										}) {
+											Text(scorePair.0)
+										}
 									}
 								}
-							}
-							.foregroundColor(season.team.primaryColor)
-							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
-						}
-					}
-					.padding(.horizontal)
-					HStack(spacing: 16) {
-						ForEach(stats) { (stat) in
-							VStack {
-								Text(stat.abbreviation())
-									.font(.callout)
-								Text("\(self.game.game.statCounter[stat] ?? 0)")
-									.bold()
-									.font(.headline)
+								.foregroundColor(season.team.primaryColor)
+								.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 							}
 						}
+						.padding(.horizontal)
+						HStack(spacing: 16) {
+							ForEach(StatType.all.filter { $0 != .shot }) { (stat) in
+								VStack {
+									Text(stat.abbreviation())
+										.font(.callout)
+									Text("\(self.game.game.statCounter[stat] ?? 0)")
+										.bold()
+										.font(.headline)
+								}
+							}
+						}
 					}
+					.frame(minWidth: 0, maxWidth: .infinity)
+					.frame(height: SCORE_BOARD_HEIGHT)
+					.background(BlurView(style: .systemChromeMaterial))
+					
+					addCourtView()
+					Spacer()
+					Bench() { (player) in
+						//Action to perform on double tap of bench item, adds player to game if spot available
+						[self.positionA, self.positionB, self.positionC, self.positionD, self.positionE]
+							.compactMap { $0 }
+							.first { $0.player.player == nil }?
+							.addPlayer(DraggablePlayerReference(id: player.id), game: self.game)
+					}
+					
+					HStack {
+						Button(action: {
+							//Show stat view
+							self.showStatModal.toggle()
+						}) {
+							FloatButtonView(text: Binding.constant("Stats"), backgroundColor: game.team.primaryColor)
+						}
+						.sheet(isPresented: $showStatModal) {
+							LiveGameStatView()
+								.environmentObject(self.game)
+						}
+						Button(action: {
+							//End game
+							self.showActionSheet.toggle()
+						}) {
+							FloatButtonView(text: Binding.constant("End Game"), backgroundColor: game.team.secondaryColor)
+						}
+						.actionSheet(isPresented: $showActionSheet) {
+							ActionSheet(title: Text("Confirm End Game?"), message: Text("By ending the game you will no longer be able to add stats to this game. This action cannot be undone."), buttons: [
+								ActionSheet.Button.cancel(),
+								ActionSheet.Button.destructive(Text("End Game"), action: {
+									self.season.completeGame()
+									self.showSaveGameLoader = true
+								})
+							])
+						}
+					}.padding()
 				}
-				.frame(minWidth: 0, maxWidth: .infinity)
-				.frame(height: SCORE_BOARD_HEIGHT)
-				.background(BlurView(style: .systemChromeMaterial))
-				
-				addCourtView()
-				Spacer()
-				Bench() { (player) in
-					//Action to perform on double tap of bench item, adds player to game if spot available
-					[self.positionA, self.positionB, self.positionC, self.positionD, self.positionE]
-						.compactMap { $0 }
-						.first { $0.player.player == nil }?
-						.addPlayer(DraggablePlayerReference(id: player.id), game: self.game)
-				}
-				
-				HStack {
-					Button(action: {
-						//Show stat view
-						self.showStatModal.toggle()
-					}) {
-						FloatButtonView(text: Binding.constant("Stats"), backgroundColor: game.team.primaryColor)
+			}
+			
+			if showSaveGameLoader {
+				SaveGameLoadingView(
+					viewModel:EditGameViewModel(game: self.game.game),
+					loadingView: LoadingView(visible: $showSaveGameLoader) { (_) in
+						self.viewModel.skipCall = true
+						self.presentationMode.wrappedValue.dismiss()
 					}
-					.sheet(isPresented: $showStatModal) {
-						LiveGameStatView()
-							.environmentObject(self.game)
-					}
-					Button(action: {
-						//End game
-						self.showActionSheet.toggle()
-					}) {
-						FloatButtonView(text: Binding.constant("End Game"), backgroundColor: game.team.secondaryColor)
-					}
-					.actionSheet(isPresented: $showActionSheet) {
-						ActionSheet(title: Text("Confirm End Game?"), message: Text("By ending the game you will no longer be able to add stats to this game. This action cannot be undone."), buttons: [
-							ActionSheet.Button.cancel(),
-							ActionSheet.Button.destructive(Text("End Game"), action: {
-								self.season.completeGame()
-								self.presentationMode.wrappedValue.dismiss()
-							})
-						])
-					}
-				}.padding()
+				)
 			}
 		}
 		.navigationBarTitle("", displayMode: .inline)

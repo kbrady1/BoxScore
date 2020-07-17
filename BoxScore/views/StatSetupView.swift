@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct StatSetupView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -72,7 +73,7 @@ struct StatSetupView: View {
 
 fileprivate extension Game {
 	static var previewData: LiveGame {
-		return LiveGame(team: Team.testData, game: Game(team: Team.testData))
+		return LiveGame(team: Team.testData, game: try! Game(record: CKRecord(recordType: GameSchema.TYPE)))
 	}
 }
 

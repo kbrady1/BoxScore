@@ -22,46 +22,34 @@ extension DateFormatter {
 private let DATE_FORMATTER = DateFormatter.defaultDateFormat("MMM dd, yyyy")
 
 class Game: ObservableObject, Equatable, RecordModel {
-
-	init(team: Team) {
-		self.team = team
-		self.endDate = Date()
-		self.opponentName = "Opponent"
-		self.teamId = team.id
-		
-		self.record = CKRecord(recordType: GameSchema.TYPE)
-		self.playerIdsInGame = []
-		self.teamScore = 0
-		self.opponentScore = 0
-		self.isComplete = false
-	}
 	
 	var id: String { record.recordID.recordName }
 	
+	private var started: Bool = false
+	
 	@Published var teamScore: Int {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			saveIfStarted()
 		}
 	}
 	@Published var opponentScore: Int {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			saveIfStarted()
 		}
 	}
 	var opponentName: String {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			saveIfStarted()
 		}
 	}
 	var teamId: String
 	var playerIdsInGame: [String] {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			saveIfStarted()
 		}
 	}
 	
 	var endDate: Date?
-	@Published var team: Team
 	
 	var dateText: String? {
 		guard let endDate = endDate else { return nil }
@@ -71,7 +59,13 @@ class Game: ObservableObject, Equatable, RecordModel {
 	@Published var isComplete: Bool {
 		didSet {
 			endDate = Date()
-			CloudManager.shared.addRecordToSave(record: recordToSave(), instantSave: true)
+			saveIfStarted(instant: true)
+		}
+	}
+	
+	private func saveIfStarted(instant: Bool = false) {
+		if started {
+			CloudManager.shared.addRecordToSave(record: recordToSave(), instantSave: instant)
 		}
 	}
 	
@@ -86,7 +80,8 @@ class Game: ObservableObject, Equatable, RecordModel {
 	}
 	
 	func start() {
-		CloudManager.shared.addRecordToSave(record: recordToSave())
+		started = true
+		CloudManager.shared.addRecordToSave(record: recordToSave(), instantSave: true)
 	}
 	
 	private init(teamId: String, playersInGame: [String] = [], hasEnded: Bool? = nil, endDate: Date? = nil, opponentName: String? = nil, opponentScore: Int? = nil, teamScore: Int? = nil, record: CKRecord) {
@@ -98,8 +93,6 @@ class Game: ObservableObject, Equatable, RecordModel {
 		self.opponentScore = opponentScore ?? 0
 		self.opponentName = opponentName ?? "Opponent"
 		self.record = record
-		
-		self.team = Team()
 	}
 	
 	required convenience init(record: CKRecord) throws {

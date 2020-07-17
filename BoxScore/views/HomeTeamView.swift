@@ -79,6 +79,7 @@ struct HomeTeamView: View {
 						NavigationLink(destination:
 							SeasonView(season: self.league.currentSeason.withGames(games: games.games))
 								.environmentObject(self.settings)
+								.environmentObject(self.seasonViewModel)
 						) {
 							Text("All Games")
 								.font(.headline)
@@ -109,6 +110,7 @@ struct HomeTeamView: View {
 				.environmentObject(LiveGame(team: league.currentSeason.team, game: league.currentSeason.currentGame))
 				.environmentObject(settings)
 				.environmentObject(league.currentSeason)
+				.environmentObject(self.seasonViewModel)
 			) {
 				Text(league.currentSeason.currentGame == nil ? "New Game" : "Continue Game")
 					.bold()
@@ -151,7 +153,8 @@ struct HomeTeamView: View {
 					.font(.system(size: 36))
 					.foregroundColor(league.currentSeason.currentGame != nil ? Color.gray : league.currentSeason.team.primaryColor)
 			}.sheet(isPresented: $showModal) {
-				AddPlayerView(teamViewModel: self.playersViewModel).environmentObject(self.league.currentSeason.team)
+				AddPlayerView(teamViewModel: self.playersViewModel)
+					.environmentObject(self.league.currentSeason.team)
 			}
 			.disabled(league.currentSeason.currentGame != nil)
 		)
