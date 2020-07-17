@@ -203,23 +203,6 @@ struct LiveGameView: View {
 	}
 }
 
-struct BindingPreview: View {
-	var body: some View {
-		LiveGameView()
-			.environmentObject(Game.previewData)
-	}
-}
-
-struct GameView_Previews: PreviewProvider {
-	static var previews: some View {
-		return LiveGameView()
-			.environmentObject(Game.previewData)
-			.environmentObject(StatSettings())
-			.environmentObject(Season(team: Game.previewData.team))
-			.previewDevice(PreviewDevice(rawValue: "iPhone SE"))
-	}
-}
-
 struct Bench: View {
 	@EnvironmentObject var game: LiveGame
 	

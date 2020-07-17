@@ -46,6 +46,8 @@ class SeasonViewModel: NetworkReadViewModel, ObservableObject {
 	var request: FetchRequest
 	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
 	
+	var skipCall: Bool = false
+	
 	var teamId: String
 	
 	init(teamId: String) {

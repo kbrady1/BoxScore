@@ -169,6 +169,7 @@ struct HomeTeamView: View {
 				destination: PlayerStatSummaryView(viewModel: StatViewModel(id: player.id, type: .player), useLoadedStats: false, player: player)
 					.environmentObject(GameList(self.league.currentSeason.previousGames))
 					.environmentObject(self.league.currentSeason.team)
+					.environmentObject(self.playersViewModel)
 			) {
 				HStack(spacing: 16) {
 					Text(String(player.number))
@@ -194,13 +195,4 @@ struct HomeTeamView: View {
 				.padding(.leading)
 		}
 	}
-}
-
-struct AddTeamView_Previews: PreviewProvider {
-    static var previews: some View {
-		return HomeTeamView(playersViewModel: PlayersViewModel(teamId: ""),
-							seasonViewModel: SeasonViewModel(teamId: ""),
-							league: League.testData)
-			.previewDevice(PreviewDevice(rawValue: "iPhone SE"))
-    }
 }

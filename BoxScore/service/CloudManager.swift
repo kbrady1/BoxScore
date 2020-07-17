@@ -81,7 +81,7 @@ class CloudManager {
 		}
 	}
 	
-	func addRecordToDelete(record: CKRecord) {
+	func addRecordToDelete(record: CKRecord, instantDelete: Bool = false) {
 		recordsToDelete.append(record)
 	}
 	

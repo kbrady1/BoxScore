@@ -65,6 +65,8 @@ class StatViewModel: NetworkReadViewModel, ObservableObject {
 	var request: FetchRequest
 	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
 	
+	var skipCall: Bool = false
+	
 	var id: String?
 	
 	///One of these must not be nil

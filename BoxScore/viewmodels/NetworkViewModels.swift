@@ -21,12 +21,19 @@ protocol GenericNetworkViewModel: ObservableObject {
 protocol NetworkReadViewModel: GenericNetworkViewModel where CloudResource: CloudCreatable {
 	var request: FetchRequest { get set }
 	
+	var skipCall: Bool { get set }
+	
 	func onAppear()
 }
 
 extension NetworkReadViewModel {
 
 	func fetch(request: FetchRequest) {
+		guard !skipCall else {
+			skipCall = false
+			return
+		}
+		
 		manager.fetch(request: request)
 			.receive(on: RunLoop.main)
 			.sink(receiveCompletion: { completion in

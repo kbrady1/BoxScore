@@ -180,7 +180,7 @@ struct TeamStatSummaryView: View {
 				let player = team.players.first(where: { $0.id == playerId }) else { return }
 			
 			topPerformers.append(
-				TopPlayer(player: player, title: statType == .shot ? "PTS" : statType.abbreviation(), total: (desc.asDouble / gameList.games.count.asDouble).formatted(decimal: 1))
+				TopPlayer(player: player, title: statType == .shot ? "PTS" : statType.abbreviation(), total: desc.safeDivide(by: gameList.games.count).formatted(decimal: 1))
 			)
 		}
 		
@@ -190,10 +190,10 @@ struct TeamStatSummaryView: View {
 	private func getTeamTotals(dict: [StatType: [Stat]]) -> [StatCount] {
 		return StatType.all.map { (type) in
 			if type == .shot, let shots = dict[type]?.sumPoints() {
-				return StatCount(stat: type, total: shots.asDouble / gameList.games.count.asDouble)
+				return StatCount(stat: type, total: shots.safeDivide(by: gameList.games.count))
 			}
 			
-			return StatCount(stat: type, total: (dict[type]?.count ?? 0).asDouble / gameList.games.count.asDouble)
+			return StatCount(stat: type, total: (dict[type]?.count ?? 0).safeDivide(by: gameList.games.count))
 		}
 	}
 	

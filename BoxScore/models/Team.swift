@@ -65,7 +65,7 @@ class Team: ObservableObject, RecordModel {
 		}
 	}
 	
-	var players = [Player]()
+	@Published var players = [Player]()
 	
 	func addPlayer(_ player: Player) {
 		if !players.contains(player) {

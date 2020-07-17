@@ -24,12 +24,28 @@ extension Double {
 		
 		return stringVal
 	}
+	
+	func safeDivide(by number: Double) -> Double {
+		if number == 0 {
+			return 0
+		}
+		
+		return self / number
+	}
+	
+	func safeDivide(by number: Int) -> Double {
+		safeDivide(by: Double(number))
+	}
 }
 
 extension Int {
 	var asDouble: Double { Double(self) }
 	
 	var asString: String { String(self) }
+	
+	func safeDivide(by number: Int) -> Double {
+		Double(self).safeDivide(by: number)
+	}
 }
 
 extension Bool {

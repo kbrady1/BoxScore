@@ -12,10 +12,13 @@ struct PlayerStatSummaryView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var games: GameList
 	@EnvironmentObject var team: Team
+	@EnvironmentObject var teamViewModel: PlayersViewModel
 	
 	@ObservedObject var viewModel: StatViewModel
 	
 	@State private var deletePlayerConfirmation: Bool = false
+	@State private var editConfirmation: Bool = false
+	@State private var showEditPlayerView: Bool = false
 	
 	var useLoadedStats: Bool
 	var player: Player
@@ -52,6 +55,18 @@ struct PlayerStatSummaryView: View {
 							}
 							HStack {
 								PlayerView(player: self.player, shadow: true, color: .white, height: 100)
+									.actionSheet(isPresented: self.$deletePlayerConfirmation) {
+										ActionSheet(title: Text("Confirm Delete Player?"), message: Text("Are you sure you want to delete \(self.player.nameFirstLast)? This will delete all stats associated with this player. This action cannot be undone."), buttons: [
+											ActionSheet.Button.destructive(Text("Delete Player"), action: {
+												CloudManager.shared.addRecordToDelete(record: self.player.record)
+												self.team.players.removeAll { $0.id == self.player.id }
+												self.teamViewModel.update(team: self.team)
+												self.teamViewModel.skipCall = true
+												self.presentationMode.wrappedValue.dismiss()
+											}),
+											ActionSheet.Button.cancel()
+										])
+									}
 								Spacer()
 								
 								VStack {
@@ -95,18 +110,21 @@ struct PlayerStatSummaryView: View {
 			.navigationBarTitle("\(player.nameFirstLast)'s Stats")
 			.if(!self.useLoadedStats) {
 				$0.navigationBarItems(trailing: Button(action: {
-					self.deletePlayerConfirmation.toggle()
+					self.editConfirmation.toggle()
 				}) {
 					//TODO: Use triple dot button?
 					Text("Edit")
 				}
-				.actionSheet(isPresented: self.$deletePlayerConfirmation) {
+				.actionSheet(isPresented: self.$editConfirmation) {
 					//TODO: update text and add edit options here that will launch modal to update player name and number
-					ActionSheet(title: Text("Confirm Delete Player?"), message: Text("\(self.player.nameFirstLast) and all stats associated with him/her will be deleted. This action cannot be undone."), buttons: [
-						ActionSheet.Button.cancel(),
+					ActionSheet(title: Text("Select an Option"), buttons: [
+						ActionSheet.Button.default(Text("Edit Player"), action: {
+							self.showEditPlayerView.toggle()
+						}),
 						ActionSheet.Button.destructive(Text("Delete Player"), action: {
-							//TODO: Delete
-						})
+							self.deletePlayerConfirmation.toggle()
+						}),
+						ActionSheet.Button.cancel()
 					])
 				})
 			}
@@ -138,7 +156,7 @@ struct PlayerStatSummaryView: View {
 	}
 	
 	func points(for stats: [StatType: [Stat]]) -> Double {
-		return Double((stats[.shot] ?? []).sumPoints()) / Double(games.games.count)
+		return (stats[.shot] ?? []).sumPoints().safeDivide(by: games.games.count)
 	}
 	
 	func totals(statDict: [StatType: [Stat]]) -> [StatRow] {
@@ -146,7 +164,7 @@ struct PlayerStatSummaryView: View {
 		var tempTotals = [StatCount]()
 		statDict.keys.forEach {
 			if let stats = statDict[$0]?.filter({ $0.playerId == player.id }) {
-				tempTotals.append(StatCount(stat: $0, total: Double(stats.count) / Double(games.games.count)))
+				tempTotals.append(StatCount(stat: $0, total: stats.count.safeDivide(by: games.games.count)))
 			}
 		}
 		
@@ -173,7 +191,10 @@ struct PlayerStatSummaryView_Previews: PreviewProvider {
     static var previews: some View {
 		let games = GameList(Game.previewData.game)
 		let player = games.games[0].team.players[0]
-		let view = PlayerStatSummaryView(viewModel: StatViewModel(id: "", type: .player), useLoadedStats: true, player: player).environmentObject(games)
+		let view = PlayerStatSummaryView(viewModel: StatViewModel(id: "", type: .player), useLoadedStats: true, player: player)
+			.environmentObject(games)
+			.environmentObject(games.games[0].team)
+			.environmentObject(PlayersViewModel(teamId: ""))
 		
 		return view
     }

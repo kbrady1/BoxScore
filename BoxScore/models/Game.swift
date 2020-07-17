@@ -68,7 +68,6 @@ class Game: ObservableObject, Equatable, RecordModel {
 		return DATE_FORMATTER.string(from: endDate)
 	}
 	
-	@Published var hasBegun: Bool = false
 	@Published var isComplete: Bool {
 		didSet {
 			endDate = Date()
@@ -87,7 +86,6 @@ class Game: ObservableObject, Equatable, RecordModel {
 	}
 	
 	func start() {
-		hasBegun = true
 		CloudManager.shared.addRecordToSave(record: recordToSave())
 	}
 	

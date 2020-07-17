@@ -46,6 +46,8 @@ class PlayersViewModel: NetworkReadViewModel, ObservableObject {
 	var request: FetchRequest
 	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
 	
+	var skipCall = false
+	
 	init(teamId: String) {
 		self.request = TeamPlayersRequest(teamId: teamId)
 	}

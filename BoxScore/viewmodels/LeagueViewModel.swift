@@ -27,4 +27,6 @@ class LeagueViewModel: NetworkReadViewModel, ObservableObject {
 	var manager: CloudManager = CloudManager()
 	var request: FetchRequest = AllTeamsRequest()
 	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
+	
+	var skipCall: Bool = false
 }
