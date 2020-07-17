@@ -133,13 +133,7 @@ struct AddPlayerView: View {
 	}
 }
 
-struct AddPlayerView_Previews: PreviewProvider {
-	static var previews: some View {
-		let view = AddPlayerView(teamViewModel: PlayersViewModel(teamId: "")).environmentObject(Team())
-		return view
-	}
-}
-
+//This is for unique numbers 1 - 100
 extension Int: Identifiable {
 	public var id: String {
 		return self.description

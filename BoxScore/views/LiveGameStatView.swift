@@ -155,12 +155,3 @@ struct LiveGameStatView: View {
 		}
 	}
 }
-
-struct LiveGameStatView_Previews: PreviewProvider {
-    static var previews: some View {
-		NavigationView {
-			LiveGameStatView()
-				.environmentObject(Game.previewData)
-		}
-    }
-}

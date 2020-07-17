@@ -8,10 +8,12 @@
 
 import SwiftUI
 
-struct TopPlayer {
+struct TopPlayer: Identifiable {
 	var player: Player
 	var title: String
 	var total: String
+	
+	public var id: String { title + player.id }
 }
 
 struct StatCount: Identifiable {
@@ -199,34 +201,5 @@ struct TeamStatSummaryView: View {
 	
 	private func getText(_ single: String, _ season: String) -> String {
 		gameList.games.count == 1 ? single : season
-	}
-}
-
-struct TeamStatSummaryView_Previews: PreviewProvider {
-    static var previews: some View {
-		let view = TeamStatSummaryView(viewModel: StatViewModel(id: "", type: .team)).environmentObject(Game.previewData.game)
-		return view
-    }
-}
-
-struct ShotView: View {
-	var make: Bool
-	
-	var body: some View {
-		DefaultCircleView(color: make ? .green : .red, shadow: false)
-			.frame(width: 16, height: 16)
-	}
-}
-
-
-extension Array where Element: Stat {
-	func sumPoints() -> Int {
-		return self.reduce(into: 0) { $0 += ($1.shotWasMake ? $1.pointsOfShot ?? 0 : 0) }
-	}
-}
-
-extension TopPlayer: Identifiable {
-	public var id: String {
-		return self.title
 	}
 }

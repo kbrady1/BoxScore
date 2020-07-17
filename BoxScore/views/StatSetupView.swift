@@ -70,10 +70,38 @@ struct StatSetupView: View {
     }
 }
 
-struct StatSetupView_Previews: PreviewProvider {
-    static var previews: some View {
-		let view = StatSetupView()
-		
-		return view
-    }
+fileprivate extension Game {
+	static var previewData: LiveGame {
+		return LiveGame(team: Team.testData, game: Game(team: Team.testData))
+	}
+}
+
+fileprivate extension Color {
+	static var bullsRed: Color {
+		Color(UIColor(red: 150/255.0, green: 30/255.0, blue: 51/255.0, alpha: 1.0))
+	}
+
+	static var bullsGray: Color {
+		Color(UIColor(red: 149/255.0, green: 149/255.0, blue: 149/255.0, alpha: 1.0))
+	}
+}
+
+fileprivate extension Team {
+	static var testData: Team {
+		let team = Team(name: "Chicago Bulls", primaryColor: .bullsRed, secondaryColor:.bullsGray )
+		team.addPlayer(Player(lastName: "Kukoc", firstName: "Toni", number: 7, teamId: "1"))
+		team.addPlayer(Player(lastName: "Pippen", firstName: "Scottie", number: 33, teamId: "1"))
+		team.addPlayer(Player(lastName: "Longley", firstName: "Luc", number: 13, teamId: "1"))
+		team.addPlayer(Player(lastName: "Jordan", firstName: "Michael", number: 23, teamId: "1"))
+		team.addPlayer(Player(lastName: "Harper", firstName: "Ron", number: 9, teamId: "1"))
+		team.addPlayer(Player(lastName: "Rodman", firstName: "Dennis", number: 91, teamId: "1"))
+		team.addPlayer(Player(lastName: "Kerr", firstName: "Steve", number: 25, teamId: "1"))
+		team.addPlayer(Player(lastName: "Burrell", firstName: "Scott", number: 24, teamId: "1"))
+		team.addPlayer(Player(lastName: "Buechler", firstName: "Jud", number: 30, teamId: "1"))
+		team.addPlayer(Player(lastName: "Wennington", firstName: "Bill", number: 34, teamId: "1"))
+		team.addPlayer(Player(lastName: "Brown", firstName: "Randy", number: 1, teamId: "1"))
+		team.addPlayer(Player(lastName: "Simpkins", firstName: "Dickey", number: 8, teamId: "1"))
+
+		return team
+	}
 }

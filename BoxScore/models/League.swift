@@ -24,7 +24,6 @@ class League: ObservableObject, Equatable, CloudCreatable {
 	
 	var cancellable: AnyCancellable?
 	
-	//TODO: Save preferred team in user defaults and look up to populate
 	init(seasons: [Season]) {
 		self.seasons = seasons
 		
@@ -87,11 +86,5 @@ class League: ObservableObject, Equatable, CloudCreatable {
 	
 	static func == (lhs: League, rhs: League) -> Bool {
 		lhs.id == rhs.id
-	}
-}
-
-extension League {
-	static var testData: League {
-		return League(seasons: [Season.testData])
 	}
 }

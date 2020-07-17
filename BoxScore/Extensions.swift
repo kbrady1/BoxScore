@@ -7,6 +7,17 @@
 //
 
 import Foundation
+import SwiftUI
+
+extension View {
+	func `if`<Content: View>(_ conditional: Bool, content: (Self) -> Content) -> some View {
+		if conditional {
+			return AnyView(content(self))
+		} else {
+			return AnyView(self)
+		}
+	}
+}
 
 extension Double {
 	var asString: String { String(self) }
@@ -55,5 +66,17 @@ extension Bool {
 	
 	var asInt: Int {
 		return self ? 1 : 0
+	}
+}
+
+extension String: Identifiable {
+	public var id: String {
+		return self.description
+	}
+}
+
+extension Array where Element: Stat {
+	func sumPoints() -> Int {
+		return self.reduce(into: 0) { $0 += ($1.shotWasMake ? $1.pointsOfShot ?? 0 : 0) }
 	}
 }

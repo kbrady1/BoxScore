@@ -49,12 +49,3 @@ struct GameTitleView: View {
 		}
     }
 }
-
-struct GameTitleView_Previews: PreviewProvider {
-    static var previews: some View {
-		let team = Team(name: "BYU Cougars", primaryColor: .blue, secondaryColor: .gray)
-		return GameTitleView()
-			.environmentObject(Game(team: team))
-			.environmentObject(team)
-    }
-}

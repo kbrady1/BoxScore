@@ -99,18 +99,3 @@ struct SeasonView: View {
 		}
     }
 }
-
-struct SeasonView_Previews: PreviewProvider {
-	static let team = Team(name: "BYU Cougars",
-					primaryColor: Color.blue,
-					secondaryColor: Color.black)
-	static let game = Game(team: team)
-	static let pastGame = Game(team: team)
-	static let pastGame2 = Game(team: team)
-	
-    static var previews: some View {
-        return SeasonView(season: Season(team: team,
-										 currentGame: game,
-										 previousGames: [pastGame, pastGame2]))
-    }
-}

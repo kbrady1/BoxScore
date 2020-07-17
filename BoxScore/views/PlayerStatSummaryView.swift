@@ -187,19 +187,6 @@ struct PlayerStatSummaryView: View {
 	}
 }
 
-struct PlayerStatSummaryView_Previews: PreviewProvider {
-    static var previews: some View {
-		let games = GameList(Game.previewData.game)
-		let player = games.games[0].team.players[0]
-		let view = PlayerStatSummaryView(viewModel: StatViewModel(id: "", type: .player), useLoadedStats: true, player: player)
-			.environmentObject(games)
-			.environmentObject(games.games[0].team)
-			.environmentObject(PlayersViewModel(teamId: ""))
-		
-		return view
-    }
-}
-
 struct StatRow: Identifiable {
 	var cells: [StatCount]
 	public var id = UUID()

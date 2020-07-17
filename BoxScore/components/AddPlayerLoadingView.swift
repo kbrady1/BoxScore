@@ -65,9 +65,3 @@ struct AddPlayerLoadingView: View {
 		.multilineTextAlignment(.center)
 	}
 }
-
-struct AddPlayerLoadingView_Previews: PreviewProvider {
-    static var previews: some View {
-		AddPlayerLoadingView(viewModel: AddPlayerViewModel(player: Player(lastName: "", firstName: "", number: 1, teamId: "123")), visible: Binding.constant(true), action: { (_) in }).previewLayout(.fixed(width: 300, height: 300))
-    }
-}

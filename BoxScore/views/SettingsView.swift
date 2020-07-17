@@ -159,16 +159,3 @@ struct SettingsView: View {
 		}
 	}
 }
-
-struct SettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-		SettingsView(
-			league: League.testData,
-			settings: StatSettings(),
-			leftGesture: .shot,
-			rightGesture: .rebound,
-			upGesture: .steal,
-			downGesture: .block
-		)
-    }
-}

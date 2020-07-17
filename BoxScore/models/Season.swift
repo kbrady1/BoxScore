@@ -48,13 +48,3 @@ class Season: ObservableObject {
 		return self
 	}
 }
-
-extension Season {
-	static var testData: Season {
-		return Season(
-			team: Team.testData,
-			currentGame: Game.previewData.game,
-			previousGames: []
-		)
-	}
-}

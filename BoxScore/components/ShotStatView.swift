@@ -109,19 +109,12 @@ struct ShotStatView: View {
 	}
 }
 
-struct ShotStatView_Previews: PreviewProvider {
-    static var previews: some View {
-		let game = Game.previewData.game
-		let shots = game.statDictionary[.shot] ?? []
-		let view = ShotStatView(shotsToDisplay: shots).environmentObject(game)
-		
-		return view.previewLayout(.fixed(width: 300, height: 400))
-    }
-}
-
-extension String: Identifiable {
-	public var id: String {
-		return self.description
+struct ShotView: View {
+	var make: Bool
+	
+	var body: some View {
+		DefaultCircleView(color: make ? .green : .red, shadow: false)
+			.frame(width: 16, height: 16)
 	}
 }
 

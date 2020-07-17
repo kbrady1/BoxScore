@@ -44,9 +44,3 @@ struct RootNavigationView: View {
 		.onAppear(perform: viewModel.onAppear)
 	}
 }
-
-struct RootNavigationView_Previews: PreviewProvider {
-    static var previews: some View {
-        RootNavigationView()
-    }
-}

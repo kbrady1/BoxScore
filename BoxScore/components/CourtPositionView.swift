@@ -248,13 +248,3 @@ struct CourtPositionView: View {
 		return (DISTANCE_TO_REGISTER * 0.8) * (1 + log10(offset / (DISTANCE_TO_REGISTER * 0.8)))
 	}
 }
-
-struct CourtPositionView_Previews: PreviewProvider {
-    static var previews: some View {
-		let view = CourtPositionView(position: CGPoint(x: 0, y: 0))
-			.environmentObject(Game.previewData)
-			.previewLayout(.fixed(width: 120, height: 120))
-
-		return view
-    }
-}

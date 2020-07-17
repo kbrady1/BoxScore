@@ -287,15 +287,6 @@ struct StatInputView: View {
 	}
 }
 
-struct StatInputView_Previews: PreviewProvider {
-    static var previews: some View {
-		let game = Game.previewData
-		let stat = Stat(type: .shot, playerId: game.team.players[0].id, gameId: "123", teamId: "123")
-		return StatInputView(player: game.team.players[0],stat: stat, game: game)
-			.previewLayout(.fixed(width: 300, height: 600))
-    }
-}
-
 struct InstructionView: View {
 	@State var number: String
 	@State var title: String

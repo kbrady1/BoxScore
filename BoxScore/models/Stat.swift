@@ -141,30 +141,3 @@ class Stat: Identifiable, RecordModel {
 		return record
 	}
 }
-
-extension Stat {
-	//These are simply for easy of creating test data
-	
-	static func nStats(for player: Player, n: Int, ofType type: StatType) -> [Stat] {
-		Array(0..<n).map { (_) in
-			Stat(type: type, playerId: player.id, gameId: "123", teamId: "123")
-		}
-	}
-	
-	static func nRebounds(for player: Player, n: Int, offensive: Bool) -> [Stat] {
-		Stat.nStats(for: player, n: n, ofType: .rebound).map {
-			$0.offensiveRebound = offensive
-			return $0
-		}
-	}
-	
-	static func nShots(for player: Player, n: Int, make: Bool, points: Int) -> [Stat] {
-		Stat.nStats(for: player, n: n, ofType: .shot).map {
-			$0.pointsOfShot = points
-			$0.shotWasMake = make
-			$0.shotLocation = CGPoint(x: Int.random(in: 0..<300), y: Int.random(in: 0..<200))
-			
-			return $0
-		}
-	}
-}

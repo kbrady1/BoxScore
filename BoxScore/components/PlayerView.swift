@@ -56,16 +56,6 @@ struct PlayerView_Previews: PreviewProvider {
     }
 }
 
-extension View {
-	func `if`<Content: View>(_ conditional: Bool, content: (Self) -> Content) -> some View {
-		if conditional {
-			return AnyView(content(self))
-		} else {
-			return AnyView(self)
-		}
-	}
-}
-
 struct DefaultCircleView: View {
 	@State var color = Color.white
 	var shadow: Bool = true

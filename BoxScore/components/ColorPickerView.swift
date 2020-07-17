@@ -126,9 +126,3 @@ struct ColorPickerView: View {
 		return min(max(0, startLocationLeft + offsetLeft.height), LINEAR_GRADIENT_HEIGHT)
 	}
 }
-
-struct ColorPickerView_Previews: PreviewProvider {
-    static var previews: some View {
-		ColorPickerView(chosenColor: Binding.constant(Color.blue))
-    }
-}

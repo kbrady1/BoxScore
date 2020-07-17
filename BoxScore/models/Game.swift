@@ -89,7 +89,7 @@ class Game: ObservableObject, Equatable, RecordModel {
 		CloudManager.shared.addRecordToSave(record: recordToSave())
 	}
 	
-	init(teamId: String, playersInGame: [String] = [], hasEnded: Bool? = nil, endDate: Date? = nil, opponentName: String? = nil, opponentScore: Int? = nil, teamScore: Int? = nil, record: CKRecord) {
+	private init(teamId: String, playersInGame: [String] = [], hasEnded: Bool? = nil, endDate: Date? = nil, opponentName: String? = nil, opponentScore: Int? = nil, teamScore: Int? = nil, record: CKRecord) {
 		self.teamId = teamId
 		self.playerIdsInGame = playersInGame
 		self.isComplete = hasEnded ?? false
@@ -133,12 +133,6 @@ class Game: ObservableObject, Equatable, RecordModel {
 	
 	static func == (lhs: Game, rhs: Game) -> Bool {
 		lhs.id == rhs.id
-	}
-}
-
-extension Game {
-	static var previewData: LiveGame {
-		return LiveGame(team: Team.testData, game: Game(team: Team.testData))
 	}
 }
 
