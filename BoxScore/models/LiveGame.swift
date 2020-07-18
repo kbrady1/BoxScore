@@ -58,18 +58,10 @@ class LiveGame: ObservableObject {
 		self.playersOnBench = team.players.filter { !game.playersInGame.contains($0) }
 		
 		game.start()
-		statViewModel.fetch()
-		
-		receivable = statViewModel.objectWillChange.sink {
-			//On completion check the value and get the dictionary to write out
-
-			if let values = self.statViewModel.loadable.value {
-				self.game.statDictionary = values.stats
-				values.stats.keys.forEach {
-					if let count = values.stats[$0]?.count, count > 0 {
-						self.game.statCounter[$0] = count
-					}
-				}
+		self.game.statDictionary = statViewModel.fetch().0.stats
+		self.game.statDictionary.keys.forEach {
+			if let count = self.game.statDictionary[$0]?.count, count > 0 {
+				self.game.statCounter[$0] = count
 			}
 		}
 	}
@@ -112,7 +104,7 @@ class LiveGame: ObservableObject {
 			game.teamScore += recordedStat.pointsOfShot ?? 0
 		}
 		
-		try? AppDelegate.context.save()
+		AppDelegate.instance.saveContext()
 	}
 	
 }

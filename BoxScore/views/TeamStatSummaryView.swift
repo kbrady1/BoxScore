@@ -31,7 +31,9 @@ struct TeamStatSummaryView: View {
 	@EnvironmentObject var gameList: GameList
 	@EnvironmentObject var team: Team
 	
-	@ObservedObject var viewModel: StatViewModel
+	var viewModel: StatViewModel
+	@State private var error: DisplayableError? = nil
+	@State var stats: StatGroup = StatGroup(stats: [:])
 	
 	@State private var statDictionary = [StatType: [Stat]]()
 	@State private var topPerformers = [TopPlayer]()
@@ -50,30 +52,22 @@ struct TeamStatSummaryView: View {
 						.environmentObject(team)
 				}
 			}
-			viewModel.loadable.isLoading {
+			
+			if error != nil {
 				Section {
 					VStack {
-						Text("Loading")
+						Text(error!.readableMessage)
 					}
 					.padding()
 				}
-			}
-			viewModel.loadable.hasError { (error) in
-				Section {
-					VStack {
-						Text(error.readableMessage)
-					}
-					.padding()
-				}
-			}
-			viewModel.loadable.hasLoaded { (stats) in
+			} else {
 				self.setup(with: stats)
 			}
 		}.listStyle(GroupedListStyle())
 		.environment(\.horizontalSizeClass, .regular)
 		.navigationBarTitle(getText("Game Summary", "Season Summary"))
 		.onAppear {
-			self.viewModel.fetch()
+			(self.stats, self.error) = self.viewModel.fetch()
 		}
     }
 	

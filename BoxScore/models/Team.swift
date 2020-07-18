@@ -9,7 +9,7 @@
 import Foundation
 import UIKit.UIColor
 import SwiftUI
-import CloudKit
+import Combine
 
 class Team: ObservableObject {
 	init(name: String, primaryColor: Color, secondaryColor: Color, model: TeamCD, id: UUID, players: [Player]) {
@@ -37,7 +37,7 @@ class Team: ObservableObject {
 					players: []
 		)
 		
-		try? AppDelegate.context.save()
+		AppDelegate.instance.saveContext()
 		
 		return team
 	}
@@ -65,26 +65,26 @@ class Team: ObservableObject {
 	@Published var name: String {
 		didSet {
 			model.name = name
-			try? AppDelegate.context.save()
+			AppDelegate.instance.saveContext()
 		}
 	}
 	@Published var primaryColor: Color {
 		didSet {
 			model.primaryColor = primaryColor.stringRepresentation
-			try? AppDelegate.context.save()
+			AppDelegate.instance.saveContext()
 		}
 	}
 	@Published var secondaryColor: Color {
 		didSet {
 			model.secondaryColor = secondaryColor.stringRepresentation
-			try? AppDelegate.context.save()
+			AppDelegate.instance.saveContext()
 		}
 	}
 	
 	@Published var players: [Player] {
 		didSet {
 			model.players = NSSet(array: players.map { $0.model })
-			try? AppDelegate.context.save()
+			AppDelegate.instance.saveContext()
 		}
 	}
 	
@@ -92,6 +92,13 @@ class Team: ObservableObject {
 		if !players.contains(player) {
 			players.append(player)
 		}
+	}
+	
+	func delete(player: Player) {
+		players.removeAll { player == $0 }
+		objectWillChange.send()
+		
+		AppDelegate.context.delete(player.model)
 	}
 }
 

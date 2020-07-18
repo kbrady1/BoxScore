@@ -30,9 +30,7 @@ class StatGroup {
 	}
 }
 
-class StatViewModel: ObservableObject {
-	var loadable: Loadable<StatGroup> = .loading
-	
+class StatViewModel {
 	var team: TeamCD?
 	var game: GameCD?
 	var player: PlayerCD?
@@ -43,7 +41,7 @@ class StatViewModel: ObservableObject {
 		self.player = player
 	}
 	
-	func fetch() {
+	func fetch() -> (StatGroup, DisplayableError?) {
 		do {
 			var stats = [StatCD]()
 			if let team = team,
@@ -58,14 +56,12 @@ class StatViewModel: ObservableObject {
 				let newCD = try AppDelegate.context.existingObject(with: player.objectID) as? PlayerCD {
 				stats = newCD.stats?.compactMap { $0 as? StatCD } ?? []
 			} else {
-				//Failed
-				loadable = .error(DisplayableError(readableMessage: "Error loading stats"))
+				return (StatGroup(stats: [:]), DisplayableError())
 			}
 			
-			loadable = .success(try StatGroup(models: stats))
+			return (try StatGroup(models: stats), nil)
 		} catch {
-			loadable = .error(DisplayableError(error: error))
+			return (StatGroup(stats: [:]), DisplayableError())
 		}
-		self.objectWillChange.send()
 	}
 }

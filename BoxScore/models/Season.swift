@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 class Season: ObservableObject {
 	@Published var team: Team
@@ -18,12 +19,18 @@ class Season: ObservableObject {
 	}
 	@Published var currentlyInGame: Bool = false
 	
+	var cancellable: AnyCancellable?
+	
 	init(team: Team, currentGame: Game? = nil, previousGames: [Game] = []) {
 		self.team = team
 		
 		self.previousGames = previousGames
 		self.currentGame = currentGame
 		self.currentlyInGame = currentGame != nil
+		
+		cancellable = team.objectWillChange.sink { (_) in
+			self.objectWillChange.send()
+		}
 	}
 	
 	func completeGame() {
@@ -33,6 +40,13 @@ class Season: ObservableObject {
 		previousGames.insert(currentGame, at: 0)
 		self.currentGame = nil
 		
-		try? AppDelegate.context.save()
+		AppDelegate.instance.saveContext()
+	}
+	
+	func delete(game: Game) {
+		previousGames.removeAll { $0 == game }
+		
+		AppDelegate.context.delete(game.model)
+		AppDelegate.instance.saveContext()
 	}
 }

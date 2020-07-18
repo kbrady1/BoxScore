@@ -55,7 +55,6 @@ struct LiveGameView: View {
 			}
 		}
 		.navigationBarTitle("", displayMode: .inline)
-//		.popover(isPresented: $settings.needsToSeeTour) { StatSetupView().environmentObject(self.settings) }
 	}
 	
 	func instructionCards(width: CGFloat, height: CGFloat) -> some View {

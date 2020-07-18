@@ -56,7 +56,7 @@ class League: ObservableObject, Equatable {
 		
 		seasons.append(season)
 		
-		try? AppDelegate.context.save()
+		AppDelegate.instance.saveContext()
 	}
 	
 	func deleteTeam(_ team: Team) {
@@ -72,7 +72,7 @@ class League: ObservableObject, Equatable {
 			}
 		}
 		
-		try? AppDelegate.context.save()
+		AppDelegate.instance.saveContext()
 	}
 	
 	func deleteAll() {

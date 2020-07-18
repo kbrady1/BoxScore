@@ -8,10 +8,7 @@
 
 import SwiftUI
 
-//TODO: On changing of teams, reload the games
 struct HomeTeamView: View {
-//	@ObservedObject var playersViewModel: PlayersViewModel
-//	@ObservedObject var seasonViewModel: SeasonViewModel
 	@ObservedObject var settings = StatSettings()
 	@ObservedObject var league: League
 	

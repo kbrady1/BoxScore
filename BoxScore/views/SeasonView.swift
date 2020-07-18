@@ -11,7 +11,7 @@ import SwiftUI
 struct SeasonView: View {
 	@EnvironmentObject var settings: StatSettings
 	
-	@State var season: Season
+	@ObservedObject var season: Season
 	@State var currentGame: Game?
 	
 	@State private var deleteGameConfirmation: Bool = false
@@ -72,8 +72,8 @@ struct SeasonView: View {
 					ActionSheet(title: Text("Confirm Delete Game?"), message: Text("Deleting this game will delete all stats associated with the game. This action cannot be undone."), buttons: [
 						ActionSheet.Button.cancel(),
 						ActionSheet.Button.destructive(Text("Delete Team"), action: {
-							if let _ = self.gameToDelete {
-								self.showDeleteGameLoadingView.toggle()
+							if let game = self.gameToDelete {
+								self.season.delete(game: game)
 							}
 						})
 					])
@@ -81,18 +81,6 @@ struct SeasonView: View {
 			}
 			.environment(\.horizontalSizeClass, .regular)
 			.listStyle(GroupedListStyle())
-			
-//			if showDeleteGameLoadingView && gameToDelete != nil {
-				
-//				DeleteGameLoadingView(
-//					viewModel: EditGameViewModel(game: gameToDelete!),
-//					loadingView: LoadingView(visible: $showDeleteGameLoadingView) { (_) in
-//						guard let gameToDelete = self.gameToDelete else { return }
-//
-//						self.season.previousGames.removeAll { $0.id == gameToDelete.id }
-//					}
-//				)
-//			}
 		}
 		.navigationBarTitle("Season")
 		.navigationBarItems(trailing:

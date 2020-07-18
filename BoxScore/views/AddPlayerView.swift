@@ -12,10 +12,13 @@ struct AddPlayerView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var team: Team
 	
-	@State private var firstName: String = ""
-	@State private var lastName: String = ""
-	@State private var number: Int = 0
+	var editView: Bool = false
+	@ObservedObject var player: ObservablePlayer = ObservablePlayer()
 	
+	@State var firstName: String = ""
+	@State var lastName: String = ""
+	@State var number: Int = 0
+		
 	//Get unused numbers
 	@State private var listOfNumbers = [Int]()
 	@State private var listOfCollectionRows = [CollectionRow]()
@@ -61,10 +64,18 @@ struct AddPlayerView: View {
 					.padding(.top)
 				}
 				Button(action: {
-					self.team.addPlayer(Player(lastName: self.lastName, firstName: self.firstName, number: self.number, team: self.team))
+					if self.editView {
+						self.player.player?.firstName = self.firstName
+						self.player.player?.lastName = self.lastName
+						self.player.player?.number = self.number
+						
+						self.team.objectWillChange.send()
+					} else {
+						self.team.addPlayer(Player(lastName: self.lastName, firstName: self.firstName, number: self.number, team: self.team))
+					}
 					self.presentationMode.wrappedValue.dismiss()
 				}) {
-					Text("Add Player")
+					Text(editView ? "Update Player" : "Add Player")
 						.bold()
 						.font(.system(size: 28))
 						.frame(minWidth: 0, maxWidth: .infinity)
@@ -80,6 +91,11 @@ struct AddPlayerView: View {
 			}
 		}
 		.onAppear {
+			if self.editView, let player = self.player.player {
+				self.number = player.number
+				self.firstName = player.firstName
+				self.lastName = player.lastName
+			}
 			self.setUpCollection()
 		}
 		
@@ -110,7 +126,8 @@ struct AddPlayerView: View {
 	
 	private func setUpCollection() {
 		var numbers = Array(0...99).filter { (num) in
-			return !self.team.players.contains { $0.number == num }
+			//Only use available numbers (and current player number)
+			return !self.team.players.contains { $0.number == num } || self.player.player?.number == num
 		}
 		var rows = [CollectionRow]()
 		while !numbers.isEmpty {
@@ -119,7 +136,7 @@ struct AddPlayerView: View {
 			rows.append(CollectionRow(elements: Array(toRemove)))
 		}
 		self.listOfCollectionRows = rows
-		self.number = rows.first?.elements.first ?? 99
+		self.number = editView ? number : rows.first?.elements.first ?? 99
 	}
 }
 

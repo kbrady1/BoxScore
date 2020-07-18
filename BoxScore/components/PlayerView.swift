@@ -10,7 +10,7 @@ import SwiftUI
 
 struct PlayerInGameView: View {
 	@ObservedObject var game: LiveGame
-	var player: Player
+	@ObservedObject var player: Player
 	var shadow: Bool = true
 	var color: Color = .clear
 	var height: CGFloat = 80
@@ -27,7 +27,7 @@ struct PlayerInGameView: View {
 }
 
 struct PlayerView: View {
-	var player: Player
+	@ObservedObject var player: Player
 	var shadow: Bool = true
 	var color: Color = .clear
 	var height: CGFloat = 80

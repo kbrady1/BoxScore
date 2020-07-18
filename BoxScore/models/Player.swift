@@ -16,7 +16,7 @@ struct SavePlayerRequest: SaveRequest {
 	var zone: CKRecordZone.ID? = nil
 }
 
-class Player: Identifiable, Equatable {
+class Player: Identifiable, Equatable, ObservableObject {
 	
 	private init(lastName: String, firstName: String, number: Int, model: PlayerCD, id: String) {
 		self.lastName = lastName
@@ -36,7 +36,7 @@ class Player: Identifiable, Equatable {
 		model.number = Int16(number)
 		model.id = id
 		
-		try? AppDelegate.context.save()
+		AppDelegate.instance.saveContext()
 		
 		self.init(lastName: lastName,
 				  firstName: firstName,
@@ -59,19 +59,23 @@ class Player: Identifiable, Equatable {
 	let model: PlayerCD
 	let id: String
 	
-	var lastName: String {
+	@Published var lastName: String {
 		didSet {
 			model.lastName = lastName
+			AppDelegate.instance.saveContext()
 		}
 	}
-	var firstName: String {
+	
+	@Published var firstName: String {
 		didSet {
 			model.firstName = firstName
+			AppDelegate.instance.saveContext()
 		}
 	}
-	var number: Int {
+	@Published var number: Int {
 		didSet {
 			model.number = Int16(number)
+			AppDelegate.instance.saveContext()
 		}
 	}
 	

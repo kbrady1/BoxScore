@@ -22,6 +22,7 @@ struct PagerView<Content: View>: View {
 	
 	@GestureState private var translation: CGFloat = 0
 
+	//TODO: Add an indicator?
 	var body: some View {
 		GeometryReader { geometry in
 			HStack(spacing: 0) {

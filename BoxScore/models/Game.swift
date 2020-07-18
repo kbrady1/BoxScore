@@ -72,7 +72,7 @@ class Game: ObservableObject, Equatable {
 			model.teamScore = Int16(teamScore)
 			model.playersInGame = NSSet(array: playersInGame.map { $0.model })
 			
-			try? AppDelegate.context.save()
+			AppDelegate.instance.saveContext()
 		}
 	}
 	
@@ -95,7 +95,7 @@ class Game: ObservableObject, Equatable {
 	
 	func start() {
 		started = true
-		try? AppDelegate.context.save()
+		AppDelegate.instance.saveContext()
 	}
 	
 	private init(playersInGame: [Player] = [], hasEnded: Bool? = nil, endDate: Date? = nil, opponentName: String, opponentScore: Int? = nil, teamScore: Int? = nil, model: GameCD, id: String) {
