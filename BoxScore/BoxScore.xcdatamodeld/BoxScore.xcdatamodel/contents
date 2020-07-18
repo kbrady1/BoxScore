@@ -24,7 +24,8 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="reboundTypeOffensive" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="shotTypeLocation" optional="YES" attributeType="String"/>
-        <attribute name="shotTypeMake" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="shotTypeMake" optional="YES" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="shotTypePoints" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statType" optional="YES" attributeType="String"/>
         <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GameCD" inverseName="stats" inverseEntity="GameCD"/>
         <relationship name="player" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PlayerCD" inverseName="stats" inverseEntity="PlayerCD"/>
@@ -42,7 +43,7 @@
     <elements>
         <element name="GameCD" positionX="-63" positionY="-18" width="128" height="178"/>
         <element name="PlayerCD" positionX="-36" positionY="63" width="128" height="148"/>
-        <element name="StatCD" positionX="-18" positionY="72" width="128" height="163"/>
+        <element name="StatCD" positionX="-18" positionY="72" width="128" height="178"/>
         <element name="TeamCD" positionX="-54" positionY="45" width="128" height="148"/>
     </elements>
 </model>

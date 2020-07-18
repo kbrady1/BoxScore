@@ -80,7 +80,7 @@ struct HomeTeamView: View {
 				Section(header: Text("Players")) {
 					ForEach(self.league.currentSeason.team.players) { (player) in
 						NavigationLink(
-							destination: PlayerStatSummaryView(viewModel: StatViewModel(id: player.id, type: .player), useLoadedStats: false, player: player)
+							destination: PlayerStatSummaryView(viewModel: StatViewModel(player: player.model), useLoadedStats: false, player: player)
 								.environmentObject(GameList(self.league.currentSeason.previousGames))
 								.environmentObject(self.league.currentSeason.team)
 						) {
@@ -114,8 +114,8 @@ struct HomeTeamView: View {
 					.foregroundColor(Color.white)
 					.cornerRadius(8.0)
 					.shadow(radius: 4.0)
-//					.disabled(playersViewModel.loadable.loading || seasonViewModel.loadable.loading)
-//					.opacity(playersViewModel.loadable.loading || seasonViewModel.loadable.loading ? 0.5 : 1.0)
+					.disabled(league.currentSeason.team.players.isEmpty)
+					.opacity(league.currentSeason.team.players.isEmpty ? 0.5 : 1.0)
 					.animation(.default)
 			}
 			.padding([.horizontal, .bottom])

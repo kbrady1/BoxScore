@@ -57,7 +57,7 @@ struct SeasonView: View {
 				
 				ForEach(season.previousGames, id: \.id) { (game) in
 					Section (header: Text(game.dateText ?? "")) {
-						NavigationLink(destination: TeamStatSummaryView(viewModel: StatViewModel(id: game.id, type: .game))
+						NavigationLink(destination: TeamStatSummaryView(viewModel: StatViewModel(game: game.model))
 							.environmentObject(GameList(game))
 							.environmentObject(self.season.team)
 						) {
@@ -97,7 +97,7 @@ struct SeasonView: View {
 		.navigationBarTitle("Season")
 		.navigationBarItems(trailing:
 			NavigationLink(destination:
-				TeamStatSummaryView(viewModel: StatViewModel(id: season.team.id, type: .team))
+				TeamStatSummaryView(viewModel: StatViewModel(team: season.team.model))
 					.environmentObject(GameList(season.previousGames))
 					.environmentObject(season.team)
 			) {

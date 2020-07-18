@@ -13,7 +13,7 @@ struct StatInputView: View {
 	
 	//TODO: These should be observed objects
 	@State var player: Player
-	@State var stat: Stat
+	@State var stat: StatInput
 	@ObservedObject var game: LiveGame
 	
 	@State private var shotWasMake: Bool = false {

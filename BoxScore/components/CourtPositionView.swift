@@ -143,10 +143,10 @@ struct CourtPositionView: View {
 		}
 		.sheet(isPresented: $showingAlert) {
 			StatInputView(player: self.player.player!,
-						  stat: Stat(type: self.statType ?? .shot,
-									 playerId: self.player.player!.id,
-									 gameId: self.game.game.id,
-									 teamId: self.game.team.id),
+						  stat: StatInput(type: self.statType ?? .shot,
+										  player: self.player.player!.model,
+										  game: self.game.game.model,
+										  team: self.game.team.model),
 						  game: self.game)
 		}
 		.frame(width: size.width, height: size.height)

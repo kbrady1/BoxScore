@@ -71,11 +71,11 @@ struct LiveGameStatView: View {
     }
 	
 	private func totals(for player: Player, dict: [StatType: [Stat]]) -> [StatRow] {
-		let statDict = dict.mapValues { $0.filter { $0.playerId == player.id } }
+		let statDict = dict.mapValues { $0.filter { $0.player.id?.uuidString == player.id } }
 		var totals = [StatRow]()
 		var tempTotals = [StatCount]()
 		statDict.keys.forEach {
-			if let stats = statDict[$0]?.filter({ $0.playerId == player.id }) {
+			if let stats = statDict[$0]?.filter({ $0.player.id?.uuidString == player.id }) {
 				tempTotals.append(StatCount(stat: $0, total: stats.count.asDouble))
 			}
 		}

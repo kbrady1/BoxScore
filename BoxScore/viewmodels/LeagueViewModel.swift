@@ -30,7 +30,7 @@ class LeagueViewModel: ObservableObject {
 			let request = NSFetchRequest<TeamCD>()
 			request.entity = TeamCD.entity()
 			
-			let seasons: [Season] = try AppDelegate.instance.persistentContainer.viewContext.fetch(request)
+			let seasons: [Season] = try AppDelegate.context.fetch(request)
 				.map { try Team(model: $0) }
 				.map {
 					let games = $0.model.game?.compactMap { $0 as? GameCD }.compactMap { try? Game(model: $0) } ?? []

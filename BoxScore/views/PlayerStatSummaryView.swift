@@ -131,11 +131,11 @@ struct PlayerStatSummaryView: View {
 			.onAppear {
 				//This view doesn't need to reload stats when coming from a game summary view
 				if self.useLoadedStats {
-					self.viewModel.loadable = .success(StatGroup(stats: self.games.statDictionary.mapValues { $0.filter { $0.playerId == self.player.id }
+					self.viewModel.loadable = .success(StatGroup(stats: self.games.statDictionary.mapValues { $0.filter { $0.player.id?.uuidString == self.player.id }
 					}))
 					self.viewModel.objectWillChange.send()
 				} else {
-					self.viewModel.onAppear()
+					self.viewModel.fetch()
 				}
 			}
     }
@@ -163,7 +163,7 @@ struct PlayerStatSummaryView: View {
 		var totals = [StatRow]()
 		var tempTotals = [StatCount]()
 		statDict.keys.forEach {
-			if let stats = statDict[$0]?.filter({ $0.playerId == player.id }) {
+			if let stats = statDict[$0]?.filter({ $0.player.id?.uuidString == player.id }) {
 				tempTotals.append(StatCount(stat: $0, total: stats.count.safeDivide(by: games.games.count)))
 			}
 		}
