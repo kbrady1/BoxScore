@@ -53,7 +53,7 @@ struct LiveGameCourtView: View {
 							.scaledToFit()
 						Spacer()
 						VStack {
-							Text("Opponent")
+							Text(game.game.opponentName)
 								.font(.caption)
 								.offset(x: 0, y: 10)
 							Button(String(game.game.opponentScore)) {
@@ -108,6 +108,7 @@ struct LiveGameCourtView: View {
 					.sheet(isPresented: self.$showStatModal) {
 						LiveGameStatView()
 							.environmentObject(self.game)
+							.environmentObject(self.game.team)
 					}
 					Button(action: {
 						//End game

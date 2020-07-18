@@ -18,6 +18,7 @@
 		0549FDE624B80EC500720DDF /* League.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0549FDE524B80EC500720DDF /* League.swift */; };
 		0570312524C3363500F05349 /* InstructionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0570312424C3363500F05349 /* InstructionCardView.swift */; };
 		0570312724C35E9B00F05349 /* PagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0570312624C35E9B00F05349 /* PagerView.swift */; };
+		0570312924C37E7000F05349 /* TeamGradientBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0570312824C37E7000F05349 /* TeamGradientBackground.swift */; };
 		057149A124AAAE5A00228806 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057149A024AAAE5A00228806 /* SettingsView.swift */; };
 		05B140C124B8E81700936738 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05B140C024B8E81700936738 /* CloudKit.framework */; };
 		05B140C424B8EDC700936738 /* CloudManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C324B8EDC700936738 /* CloudManager.swift */; };
@@ -91,6 +92,7 @@
 		0549FDE524B80EC500720DDF /* League.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = League.swift; sourceTree = "<group>"; };
 		0570312424C3363500F05349 /* InstructionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionCardView.swift; sourceTree = "<group>"; };
 		0570312624C35E9B00F05349 /* PagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagerView.swift; sourceTree = "<group>"; };
+		0570312824C37E7000F05349 /* TeamGradientBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamGradientBackground.swift; sourceTree = "<group>"; };
 		057149A024AAAE5A00228806 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		05B140BE24B8E81300936738 /* BoxScore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BoxScore.entitlements; sourceTree = "<group>"; };
 		05B140C024B8E81700936738 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
@@ -318,6 +320,7 @@
 				05FFA22824C28A8B00AC17B2 /* LiveGameCourtView.swift */,
 				0570312424C3363500F05349 /* InstructionCardView.swift */,
 				0570312624C35E9B00F05349 /* PagerView.swift */,
+				0570312824C37E7000F05349 /* TeamGradientBackground.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -481,6 +484,7 @@
 				05204046246E15EE008CEFBC /* PlayerStatSummaryView.swift in Sources */,
 				0570312724C35E9B00F05349 /* PagerView.swift in Sources */,
 				05EF2A63246A0C82004F4E09 /* VisualEffectView.swift in Sources */,
+				0570312924C37E7000F05349 /* TeamGradientBackground.swift in Sources */,
 				05EF2A5F246A0373004F4E09 /* Player.swift in Sources */,
 				05EF2A67246A3FB4004F4E09 /* Game.swift in Sources */,
 				05E1058324AF945C00F39F0C /* VisualEffectButtonView.swift in Sources */,

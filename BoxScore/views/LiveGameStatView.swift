@@ -11,6 +11,7 @@ import SwiftUI
 struct LiveGameStatView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var game: LiveGame
+	@EnvironmentObject var team: Team
 	
 	@State private var teamTotals = [StatCount]()
 	@State private var highlightedPlayer: Player? = nil
@@ -40,10 +41,10 @@ struct LiveGameStatView: View {
 								}) {
 									PlayerView(player: player, shadow: false)
 										.if(player.id == self.highlightedPlayer?.id) {
-											$0.background(LinearGradient(gradient: Gradient(colors: [self.game.team.primaryColor, self.game.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+											$0.background(TeamGradientBackground(useBlur: false))
 										}
 										.if(player.id != self.highlightedPlayer?.id) {
-											$0.background(Color.white)
+											$0.background(Color(UIColor.systemBackground))
 										}
 									.clipShape(Circle())
 									.padding([.vertical, .trailing])
@@ -127,8 +128,7 @@ struct LiveGameStatView: View {
 				.font(.system(size: 40))
 		}
 		.frame(minWidth: 55, maxWidth: .infinity)
-		.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-		.background(LinearGradient(gradient: Gradient(colors: [game.team.primaryColor, game.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+		.background(TeamGradientBackground())
 		.cornerRadius(4)
 		.padding(8.0)
 	}
@@ -146,8 +146,7 @@ struct LiveGameStatView: View {
 					}
 					.frame(width: 60)
 					.padding()
-					.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-					.background(LinearGradient(gradient: Gradient(colors: [self.game.team.primaryColor, self.game.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+					.background(TeamGradientBackground())
 					.cornerRadius(4)
 					.padding(8.0)
 				}

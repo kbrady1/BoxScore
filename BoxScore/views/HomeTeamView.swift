@@ -41,7 +41,7 @@ struct HomeTeamView: View {
 									.frame(width: 60, height: 60)
 									.foregroundColor(league.currentSeason.team.primaryColor)
 									.overlay(RoundedRectangle(cornerRadius: 8.0).stroke(Color.white, lineWidth: 2.0))
-									.shadow(radius: 4)
+									.shadow(color: Color.black.opacity(0.15), radius: 6)
 							}
 							.sheet(isPresented: $showPrimaryColorSheet) {
 								ColorPickerView(chosenColor: self.$league.currentSeason.team.primaryColor)
@@ -54,7 +54,7 @@ struct HomeTeamView: View {
 									.frame(width: 60, height: 60)
 									.foregroundColor(league.currentSeason.team.secondaryColor)
 									.overlay(RoundedRectangle(cornerRadius: 8.0).stroke(Color.white, lineWidth: 2.0))
-									.shadow(radius: 4)
+									.shadow(color: Color.black.opacity(0.2), radius: 6)
 							}
 							.sheet(isPresented: $showSecondaryColorSheet) {
 								ColorPickerView(chosenColor: self.$league.currentSeason.team.secondaryColor)

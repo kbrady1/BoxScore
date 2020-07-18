@@ -93,8 +93,7 @@ struct TeamStatSummaryView: View {
 									PlayerView(player: topPlayer.player, shadow: true, height: 60)
 								}
 								.padding()
-								.background(BlurView(style: .systemThinMaterial).cornerRadius(8))
-									.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+								.background(TeamGradientBackground(cornerRadius: 8.0))
 								.cornerRadius(8)
 							}
 							.padding(8.0)
@@ -117,7 +116,7 @@ struct TeamStatSummaryView: View {
 									.environmentObject(self.team)
 							) {
 								PlayerView(player: player, shadow: false)
-									.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+									.background(TeamGradientBackground(useBlur: false))
 									.clipShape(Circle())
 									.padding([.vertical, .trailing])
 							}
@@ -142,8 +141,7 @@ struct TeamStatSummaryView: View {
 					}
 					.frame(width: 60)
 					.padding()
-					.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-					.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+					.background(TeamGradientBackground())
 				.cornerRadius(4)
 					.padding(8.0)
 				}

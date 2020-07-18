@@ -48,9 +48,9 @@ struct PlayerView: View {
 }
 
 struct DefaultCircleView: View {
-	@State var color = Color.white
+	@State var color = Color(UIColor.systemBackground)
 	var shadow: Bool = true
-	var style: UIBlurEffect.Style = .systemThinMaterial
+	var style: UIBlurEffect.Style = .prominent
 	
 	var body: some View {
 		CircleView(color: $color, shadow: shadow, style: style)
@@ -60,12 +60,12 @@ struct DefaultCircleView: View {
 struct CircleView: View {
 	@Binding var color: Color
 	var shadow: Bool = true
-	var style: UIBlurEffect.Style = .systemThinMaterial
+	var style: UIBlurEffect.Style = .prominent
 	
 	var body: some View {
 		BlurView(style: style)
 			.background(color)
 			.clipShape(Circle())
-			.shadow(radius: shadow ? 3 : 0)
+			.shadow(color: Color.black.opacity(0.15), radius: shadow ? 6 : 0)
 	}
 }

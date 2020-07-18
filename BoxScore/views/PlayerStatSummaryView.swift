@@ -40,7 +40,7 @@ struct PlayerStatSummaryView: View {
 									.foregroundColor(.secondary)
 							}
 							HStack {
-								PlayerView(player: self.player, shadow: true, color: .white, height: 100)
+								PlayerView(player: self.player, shadow: true, color: Color(UIColor.systemBackground), height: 100)
 									.actionSheet(isPresented: self.$deletePlayerConfirmation) {
 										ActionSheet(title: Text("Confirm Delete Player?"), message: Text("Are you sure you want to delete \(self.player.nameFirstLast)? This will delete all stats associated with this player. This action cannot be undone."), buttons: [
 											ActionSheet.Button.destructive(Text("Delete Player"), action: {
@@ -60,8 +60,7 @@ struct PlayerStatSummaryView: View {
 								}
 								.frame(minWidth: 80, maxWidth: .infinity)
 								.padding()
-								.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-								.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+								.background(TeamGradientBackground())
 								.cornerRadius(4)
 								.padding(8.0)
 							}
@@ -135,8 +134,7 @@ struct PlayerStatSummaryView: View {
 				.font(.system(size: 40))
 		}
 		.frame(minWidth: 55, maxWidth: .infinity)
-		.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-		.background(LinearGradient(gradient: Gradient(colors: [team.primaryColor, team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+		.background(TeamGradientBackground())
 		.cornerRadius(4)
 		.padding(8.0)
 	}

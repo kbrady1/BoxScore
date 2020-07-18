@@ -96,7 +96,7 @@ struct CourtPositionView: View {
 		return ZStack {
 			if !hasPlayer {
 				Circle()
-					.fill(LinearGradient(gradient: Gradient(colors: [.gray, .white]), startPoint: .bottom, endPoint: .topTrailing))
+					.fill(LinearGradient(gradient: Gradient(colors: [.gray, Color(UIColor.secondarySystemBackground)]), startPoint: .bottom, endPoint: .topTrailing))
 					.frame(width: 50, height: 50)
 			} else {
 				if statType != nil {

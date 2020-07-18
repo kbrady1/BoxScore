@@ -56,13 +56,13 @@ struct StatInputView: View {
     var body: some View {
 		return ScrollView(.vertical, showsIndicators: true) {
 			Spacer().frame(height: 15)
-			VStack(spacing: 16) {
+			VStack(spacing: 24) {
 				VStack {
 					PlayerView(player: player)
 						.frame(width: 80, height: 80)
-						.background(Color.white)
-						.clipShape(Circle())
-						.shadow(radius: 6)
+//						.background(Color.white)
+//						.clipShape(Circle())
+//						.shadow(radius: 6)
 					Text("Add \(stat.type.rawValue.capitalized)")
 						.font(.system(size: 45))
 						.bold()
@@ -98,7 +98,7 @@ struct StatInputView: View {
 							}
 						}
 					}
-					VStack {
+					VStack(spacing: 8.0) {
 						InstructionView(number: "2", title: "Make or Miss", accentColor: game.team.secondaryColor)
 						HStack {
 							Button(action: {
@@ -161,7 +161,7 @@ struct StatInputView: View {
 											$0.background(CircleView(color: self.$game.team.primaryColor, shadow: false))
 										}
 										.if(self.otherPlayer != player) {
-											$0.background(DefaultCircleView(shadow: false))
+											$0.background(DefaultCircleView(color: .clear, shadow: false))
 										}
 										.onTapGesture { self.otherPlayer = player }
 										.animation(.default)
@@ -173,7 +173,7 @@ struct StatInputView: View {
 					}
 					//Until I add predictive shot point analysis, this has to always be shown for statistical accuracy
 //					if shotWasMake {
-						VStack {
+						VStack(spacing: 8.0) {
 							InstructionView(number: "4", title: "Points", accentColor: game.team.secondaryColor)
 							HStack {
 								pointView(points: 1)
@@ -184,7 +184,7 @@ struct StatInputView: View {
 //					}
 				}
 				if stat.type == .rebound {
-					VStack {
+					VStack(spacing: 8.0) {
 						InstructionView(number: "1", title: "Offensive or Defensive", accentColor: game.team.secondaryColor)
 						HStack {
 							Button(action: {
@@ -219,7 +219,7 @@ struct StatInputView: View {
 					}
 				}
 				if timeUntilDismissal != nil {
-					VStack {
+					VStack(spacing: 24) {
 						Text("Dismissing in...")
 						Text("\(timeUntilDismissal ?? 0)")
 							.bold()
