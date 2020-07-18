@@ -10,8 +10,6 @@ import SwiftUI
 
 struct SettingsView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-	@EnvironmentObject var viewModel: PlayersViewModel
-	@EnvironmentObject var teamViewModel: SeasonViewModel
 	
 	@ObservedObject var league: League
 	
@@ -36,8 +34,6 @@ struct SettingsView: View {
 					ForEach(league.seasons, id: \.team.id) { (season) in
 						Button(action: {
 							self.league.currentSeason = season
-							self.viewModel.update(team: season.team)
-							self.teamViewModel.update(teamId: season.team.id)
 						}) {
 							HStack {
 								Text(season.team.name)
@@ -58,16 +54,12 @@ struct SettingsView: View {
 							ActionSheet.Button.destructive(Text("Delete Team"), action: {
 								if let team = self.teamToDelete {
 									self.league.deleteTeam(team)
-									self.viewModel.update(team: self.league.currentSeason.team)
-									self.teamViewModel.update(teamId: self.league.currentSeason.team.id)
 								}
 							})
 						])
 					}
 					Button(action: {
-						let team = self.league.newTeam()
-						self.viewModel.update(team: team)
-						self.teamViewModel.update(teamId: team.id)
+						self.league.newTeam(setToCurrent: true)
 						self.presentationMode.wrappedValue.dismiss()
 					}) {
 						Text("Add Team")
@@ -96,12 +88,9 @@ struct SettingsView: View {
 						ActionSheet.Button.cancel(),
 						ActionSheet.Button.destructive(Text("Delete Team"), action: {
 							self.league.deleteAll()
-							self.viewModel.update(team: self.league.currentSeason.team)
-							self.teamViewModel.update(teamId: self.league.currentSeason.team.id)
 						})
 					])
 				}
-				
 			}
 			.listStyle(GroupedListStyle())
 			.environment(\.horizontalSizeClass, .regular)

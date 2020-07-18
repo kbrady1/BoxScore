@@ -10,7 +10,7 @@ import SwiftUI
 
 struct PlayerInGameView: View {
 	@ObservedObject var game: LiveGame
-	var player: Player
+	@ObservedObject var player: Player
 	var shadow: Bool = true
 	var color: Color = .clear
 	var height: CGFloat = 80
@@ -27,7 +27,7 @@ struct PlayerInGameView: View {
 }
 
 struct PlayerView: View {
-	var player: Player
+	@ObservedObject var player: Player
 	var shadow: Bool = true
 	var color: Color = .clear
 	var height: CGFloat = 80
@@ -47,19 +47,10 @@ struct PlayerView: View {
 	}
 }
 
-struct PlayerView_Previews: PreviewProvider {
-    static var previews: some View {
-		let view = PlayerView(player: Player(lastName: "Brady", firstName: "Kent", number: 12, teamId: ""))
-			.previewLayout(.fixed(width: 120, height: 120))
-		
-		return view
-    }
-}
-
 struct DefaultCircleView: View {
-	@State var color = Color.white
+	@State var color = Color(UIColor.systemBackground)
 	var shadow: Bool = true
-	var style: UIBlurEffect.Style = .systemThinMaterial
+	var style: UIBlurEffect.Style = .prominent
 	
 	var body: some View {
 		CircleView(color: $color, shadow: shadow, style: style)
@@ -69,12 +60,12 @@ struct DefaultCircleView: View {
 struct CircleView: View {
 	@Binding var color: Color
 	var shadow: Bool = true
-	var style: UIBlurEffect.Style = .systemThinMaterial
+	var style: UIBlurEffect.Style = .prominent
 	
 	var body: some View {
 		BlurView(style: style)
 			.background(color)
 			.clipShape(Circle())
-			.shadow(radius: shadow ? 3 : 0)
+			.shadow(color: Color.black.opacity(0.15), radius: shadow ? 6 : 0)
 	}
 }

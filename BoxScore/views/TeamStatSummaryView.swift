@@ -31,7 +31,9 @@ struct TeamStatSummaryView: View {
 	@EnvironmentObject var gameList: GameList
 	@EnvironmentObject var team: Team
 	
-	@ObservedObject var viewModel: StatViewModel
+	var viewModel: StatViewModel
+	@State private var error: DisplayableError? = nil
+	@State var stats: StatGroup = StatGroup(stats: [:])
 	
 	@State private var statDictionary = [StatType: [Stat]]()
 	@State private var topPerformers = [TopPlayer]()
@@ -50,30 +52,22 @@ struct TeamStatSummaryView: View {
 						.environmentObject(team)
 				}
 			}
-			viewModel.loadable.isLoading {
+			
+			if error != nil {
 				Section {
 					VStack {
-						Text("Loading")
+						Text(error!.readableMessage)
 					}
 					.padding()
 				}
-			}
-			viewModel.loadable.hasError { (error) in
-				Section {
-					VStack {
-						Text(error.readableMessage)
-					}
-					.padding()
-				}
-			}
-			viewModel.loadable.hasLoaded { (stats) in
+			} else {
 				self.setup(with: stats)
 			}
 		}.listStyle(GroupedListStyle())
 		.environment(\.horizontalSizeClass, .regular)
 		.navigationBarTitle(getText("Game Summary", "Season Summary"))
 		.onAppear {
-			self.viewModel.onAppear()
+			(self.stats, self.error) = self.viewModel.fetch()
 		}
     }
 	
@@ -99,8 +93,7 @@ struct TeamStatSummaryView: View {
 									PlayerView(player: topPlayer.player, shadow: true, height: 60)
 								}
 								.padding()
-								.background(BlurView(style: .systemThinMaterial).cornerRadius(8))
-									.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+								.background(TeamGradientBackground(cornerRadius: 8.0))
 								.cornerRadius(8)
 							}
 							.padding(8.0)
@@ -118,12 +111,12 @@ struct TeamStatSummaryView: View {
 					HStack() {
 						ForEach(self.team.players) { (player) in
 							NavigationLink(destination:
-								PlayerStatSummaryView(viewModel: StatViewModel(id: player.id, type: .player), useLoadedStats: true, player: player)
+								PlayerStatSummaryView(viewModel: StatViewModel(player: player.model), useLoadedStats: true, player: player)
 									.environmentObject(self.gameList)
 									.environmentObject(self.team)
 							) {
 								PlayerView(player: player, shadow: false)
-									.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+									.background(TeamGradientBackground(useBlur: false))
 									.clipShape(Circle())
 									.padding([.vertical, .trailing])
 							}
@@ -148,8 +141,7 @@ struct TeamStatSummaryView: View {
 					}
 					.frame(width: 60)
 					.padding()
-					.background(BlurView(style: .systemThinMaterial).cornerRadius(4))
-					.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottomLeading, endPoint: .topTrailing))
+					.background(TeamGradientBackground())
 				.cornerRadius(4)
 					.padding(8.0)
 				}
@@ -160,7 +152,7 @@ struct TeamStatSummaryView: View {
 	private func getTopPerfomers(dict: [StatType: [Stat]]) -> [TopPlayer] {
 		var topPerformers = [TopPlayer]()
 		StatType.all.forEach { (statType) in
-			let byPlayer = Dictionary(grouping: dict[statType] ?? []) { $0.playerId }.values
+			let byPlayer = Dictionary(grouping: dict[statType] ?? []) { $0.player.id?.uuidString ?? "" }.values
 			var sorted = [[Stat]]()
 			var description: Int?
 			
@@ -177,7 +169,7 @@ struct TeamStatSummaryView: View {
 				description = sorted.first?.sumPoints()
 			}
 			
-			guard let playerId = sorted.first?.first?.playerId,
+			guard let playerId = sorted.first?.first?.player.id?.uuidString,
 				let desc = description,
 				let player = team.players.first(where: { $0.id == playerId }) else { return }
 			

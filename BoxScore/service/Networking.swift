@@ -7,25 +7,7 @@
 //
 
 import Foundation
-import CloudKit
 import SwiftUI
-
-protocol GenericRequest {
-	var database: CKDatabase { get }
-	var zone: CKRecordZone.ID? { get }
-}
-
-protocol FetchRequest: GenericRequest {
-	var query: CKQuery { get }
-}
-
-protocol SaveRequest: GenericRequest {
-	var recordModel: RecordModel { get set }
-}
-
-protocol DeleteRequest: GenericRequest {
-	var recordId: CKRecord.ID { get }
-}
 
 enum Loadable<T> {
 	case loading
@@ -84,4 +66,15 @@ enum Loadable<T> {
 
         return nil
     }
+}
+
+struct DisplayableError {
+	var error: Error?
+	var title: String = "🏀 Shoot! 🏀"
+	var readableMessage: String = "That wasn't supposed to happen... Please try again."
+}
+
+enum BoxScoreError: Error {
+	case invalidModelError(message: String = "Server returned invalid information. Please try again")
+	case requestFailed(error: Error, message: String = "That wasn't supposed to happen... Please try again.")
 }

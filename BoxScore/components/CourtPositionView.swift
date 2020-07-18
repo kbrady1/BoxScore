@@ -96,7 +96,7 @@ struct CourtPositionView: View {
 		return ZStack {
 			if !hasPlayer {
 				Circle()
-					.fill(LinearGradient(gradient: Gradient(colors: [.gray, .white]), startPoint: .bottom, endPoint: .topTrailing))
+					.fill(LinearGradient(gradient: Gradient(colors: [.gray, Color(UIColor.secondarySystemBackground)]), startPoint: .bottom, endPoint: .topTrailing))
 					.frame(width: 50, height: 50)
 			} else {
 				if statType != nil {
@@ -143,10 +143,10 @@ struct CourtPositionView: View {
 		}
 		.sheet(isPresented: $showingAlert) {
 			StatInputView(player: self.player.player!,
-						  stat: Stat(type: self.statType ?? .shot,
-									 playerId: self.player.player!.id,
-									 gameId: self.game.game.id,
-									 teamId: self.game.team.id),
+						  stat: StatInput(type: self.statType ?? .shot,
+										  player: self.player.player!.model,
+										  game: self.game.game.model,
+										  team: self.game.team.model),
 						  game: self.game)
 		}
 		.frame(width: size.width, height: size.height)

@@ -77,9 +77,7 @@ struct ShotStatView: View {
 						}
 						.padding(.vertical, 2.0)
 					}
-					
-					.background(BlurView(style: .systemThinMaterial).cornerRadius(4.0))
-					.background(LinearGradient(gradient: Gradient(colors: [self.team.primaryColor, self.team.secondaryColor]), startPoint: .bottom, endPoint: .top).cornerRadius(4.0))
+				.background(TeamGradientBackground())
 					.padding(.horizontal, 4.0)
 				}
 			}

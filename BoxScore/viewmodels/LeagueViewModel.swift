@@ -8,25 +8,42 @@
 
 import Foundation
 import Combine
-import CloudKit
+import CoreData
 
-struct AllTeamsRequest: FetchRequest {
-	var database = CKContainer.default().privateCloudDatabase
-	var query = CKQuery(recordType: TeamSchema.TYPE, predicate: NSPredicate(value: true))
-	var zone: CKRecordZone.ID? = nil
+class LeagueViewModel: ObservableObject {
+	var loadable: Loadable<League> = .loading
 	
-	init() {
-		query.sortDescriptors?.append(NSSortDescriptor(key: TeamSchema.NAME, ascending: false))
+	func fetch() {
+		do {
+			//Create two teams
+			let request = NSFetchRequest<TeamCD>()
+			request.entity = TeamCD.entity()
+			
+			let seasons: [Season] = try AppDelegate.context.fetch(request)
+				.map { try Team(model: $0) }
+				.map {
+					let games = $0.model.game?.compactMap { $0 as? GameCD }.compactMap { try? Game(model: $0) } ?? []
+					var previousGames = games.filter { $0.isComplete }
+					let activeGames = games.filter { !$0.isComplete }
+					
+					var currentGame = activeGames.first
+					if activeGames.count > 1 {
+						var extraActives = activeGames.sorted { $0.endDate ?? Date() < $1.endDate ?? Date() }
+						currentGame = extraActives.popLast()
+						
+						extraActives.forEach { $0.isComplete = true }
+						
+						previousGames.append(contentsOf: extraActives)
+					}
+					
+					return Season(team: $0, currentGame: currentGame, previousGames: previousGames)
+			}
+			
+			loadable = .success(League(seasons: seasons))
+		} catch {
+			print(error)
+			loadable = .error(DisplayableError())
+		}
+		objectWillChange.send()
 	}
-}
-
-class LeagueViewModel: NetworkReadViewModel, ObservableObject {
-	typealias CloudResource = League
-	
-	var loadable: Loadable<CloudResource> = .loading
-	var manager: CloudManager = CloudManager()
-	var request: FetchRequest = AllTeamsRequest()
-	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
-	
-	var skipCall: Bool = false
 }

@@ -21,47 +21,33 @@ extension DateFormatter {
 
 private let DATE_FORMATTER = DateFormatter.defaultDateFormat("MMM dd, yyyy")
 
-class Game: ObservableObject, Equatable, RecordModel {
-
-	init(team: Team) {
-		self.team = team
-		self.endDate = Date()
-		self.opponentName = "Opponent"
-		self.teamId = team.id
-		
-		self.record = CKRecord(recordType: GameSchema.TYPE)
-		self.playerIdsInGame = []
-		self.teamScore = 0
-		self.opponentScore = 0
-		self.isComplete = false
-	}
+class Game: ObservableObject, Equatable {
 	
-	var id: String { record.recordID.recordName }
+	private var started: Bool = false
 	
 	@Published var teamScore: Int {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			saveIfStarted()
 		}
 	}
 	@Published var opponentScore: Int {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			saveIfStarted()
 		}
 	}
 	var opponentName: String {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			saveIfStarted()
 		}
 	}
-	var teamId: String
-	var playerIdsInGame: [String] {
+	
+	var playersInGame: [Player] {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			saveIfStarted()
 		}
 	}
 	
 	var endDate: Date?
-	@Published var team: Team
 	
 	var dateText: String? {
 		guard let endDate = endDate else { return nil }
@@ -70,8 +56,23 @@ class Game: ObservableObject, Equatable, RecordModel {
 	
 	@Published var isComplete: Bool {
 		didSet {
+			guard isComplete else { return }
 			endDate = Date()
-			CloudManager.shared.addRecordToSave(record: recordToSave(), instantSave: true)
+			playersInGame = []
+			saveIfStarted()
+		}
+	}
+	
+	private func saveIfStarted() {
+		if started {
+			model.endDate = endDate
+			model.hasEnded = isComplete
+			model.opponentName = opponentName
+			model.opponentScore = Int16(opponentScore)
+			model.teamScore = Int16(teamScore)
+			model.playersInGame = NSSet(array: playersInGame.map { $0.model })
+			
+			AppDelegate.instance.saveContext()
 		}
 	}
 	
@@ -81,52 +82,46 @@ class Game: ObservableObject, Equatable, RecordModel {
 	
 	//MARK: RecordModel
 	
-	static func createGame(teamId: String) -> Game {
-		return Game(teamId: teamId, record: CKRecord(recordType: GameSchema.TYPE))
+	static func createGame(team: Team) -> Game {
+		let model = GameCD(context: AppDelegate.context)
+		let id = UUID()
+		model.id = id
+		model.opponentName = "Opponent"
+		
+		model.team = team.model
+		
+		return Game(opponentName: "Opponent", model: model, id: id.uuidString)
 	}
 	
 	func start() {
-		CloudManager.shared.addRecordToSave(record: recordToSave())
+		started = true
+		AppDelegate.instance.saveContext()
 	}
 	
-	private init(teamId: String, playersInGame: [String] = [], hasEnded: Bool? = nil, endDate: Date? = nil, opponentName: String? = nil, opponentScore: Int? = nil, teamScore: Int? = nil, record: CKRecord) {
-		self.teamId = teamId
-		self.playerIdsInGame = playersInGame
+	private init(playersInGame: [Player] = [], hasEnded: Bool? = nil, endDate: Date? = nil, opponentName: String, opponentScore: Int? = nil, teamScore: Int? = nil, model: GameCD, id: String) {
+		self.playersInGame = playersInGame
 		self.isComplete = hasEnded ?? false
 		self.endDate = endDate
 		self.teamScore = teamScore ?? 0
 		self.opponentScore = opponentScore ?? 0
-		self.opponentName = opponentName ?? "Opponent"
-		self.record = record
-		
-		self.team = Team()
+		self.opponentName = opponentName
+		self.id = id
+		self.model = model
 	}
 	
-	required convenience init(record: CKRecord) throws {
-		guard let teamId = record.value(forKey: GameSchema.TEAM) as? CKRecord.Reference else { throw BoxScoreError.invalidModelError() }
+	let id: String
+	let model: GameCD
+	init(model: GameCD) throws {
+		guard let id = model.id else { throw BoxScoreError.invalidModelError() }
 		
-		self.init(teamId: teamId.recordID.recordName,
-				  playersInGame: ((record.value(forKey: GameSchema.PLAYERS_IN_GAME) as? [CKRecord.Reference]) ?? []).map { $0.recordID.recordName } ,
-				  hasEnded: Bool.fromInt(record.value(forKey: GameSchema.HAS_ENDED) as? Int),
-				  endDate: record.value(forKey: GameSchema.DATE) as? Date,
-				  opponentName: record.value(forKey: GameSchema.OPPONENT) as? String,
-				  opponentScore: record.value(forKey: GameSchema.OPPONENT_SCORE) as? Int,
-				  teamScore: record.value(forKey: GameSchema.SCORE) as? Int,
-				  record: record)
-	}
-	
-	var record: CKRecord
-	
-	func recordToSave() -> CKRecord {
-		record.setValue(CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf), forKey: GameSchema.TEAM)
-		record.setValue(opponentName, forKey: GameSchema.OPPONENT)
-		record.setValue(opponentScore, forKey: GameSchema.OPPONENT_SCORE)
-		record.setValue(teamScore, forKey: GameSchema.SCORE)
-		record.setValue(endDate, forKey: GameSchema.DATE)
-		record.setValue(isComplete, forKey: GameSchema.HAS_ENDED)
-		record.setValue(playerIdsInGame.map { CKRecord.Reference(recordID: CKRecord.ID(recordName: $0), action: .deleteSelf) }, forKey: GameSchema.PLAYERS_IN_GAME)
+		self.isComplete = model.hasEnded
+		self.opponentName = model.opponentName ?? "Opponent"
+		self.opponentScore = Int(model.opponentScore)
+		self.teamScore = Int(model.teamScore)
+		self.playersInGame = try model.playersInGame?.allObjects.compactMap { $0 as? PlayerCD }.map { try Player(model: $0) } ?? []
 		
-		return record
+		self.model = model
+		self.id = id.uuidString
 	}
 	
 	//MARK: Equatable

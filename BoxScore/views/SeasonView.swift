@@ -11,76 +11,81 @@ import SwiftUI
 struct SeasonView: View {
 	@EnvironmentObject var settings: StatSettings
 	
-	@State var season: Season
+	@ObservedObject var season: Season
 	@State var currentGame: Game?
 	
 	@State private var deleteGameConfirmation: Bool = false
+	@State private var gameToDelete: Game? = nil
+	@State private var showDeleteGameLoadingView: Bool = false
 	
     var body: some View {
-		List {
-			if currentGame != nil {
+		ZStack {
+			List {
+				if currentGame != nil {
+					Section(header:
+						Text("Current Game")
+							.font(.largeTitle)
+							.fontWeight(.bold)
+					) {
+						EmptyView()
+					}
+					Section {
+						NavigationLink(destination:
+							LiveGameView()
+								.environmentObject(settings)
+								.environmentObject(season)
+						) {
+							GameTitleView(showDate: false)
+								.environmentObject(season.currentGame!)
+								.environmentObject(season.team)
+						}
+					}
+				}
+				
 				Section(header:
-					Text("Current Game")
+					Text("Past Games")
 						.font(.largeTitle)
 						.fontWeight(.bold)
 				) {
-					EmptyView()
-				}
-				Section {
-					NavigationLink(destination:
-						LiveGameView()
-							.environmentObject(LiveGame(team: season.team, game: currentGame!))
-							.environmentObject(settings)
-							.environmentObject(season)
-					) {
-						GameTitleView(showDate: false)
-							.environmentObject(season.currentGame!)
-							.environmentObject(season.team)
+					if season.previousGames.isEmpty {
+						Text("No completed games")
+						.padding()
+					} else {
+						EmptyView()
 					}
 				}
-			}
-			
-			Section(header:
-				Text("Past Games")
-					.font(.largeTitle)
-					.fontWeight(.bold)
-			) {
-				if season.previousGames.isEmpty {
-					Text("No completed games")
-					.padding()
-				} else {
-					EmptyView()
-				}
-			}
-			
-			ForEach(season.previousGames, id: \.id) { (game) in
-				Section (header: Text(game.dateText ?? "")) {
-					NavigationLink(destination: TeamStatSummaryView(viewModel: StatViewModel(id: game.id, type: .game))
-						.environmentObject(GameList(game))
-						.environmentObject(self.season.team)
-					) {
-						GameTitleView(showDate: false)
-							.environmentObject(game)
+				
+				ForEach(season.previousGames, id: \.id) { (game) in
+					Section (header: Text(game.dateText ?? "")) {
+						NavigationLink(destination: TeamStatSummaryView(viewModel: StatViewModel(game: game.model))
+							.environmentObject(GameList(game))
 							.environmentObject(self.season.team)
+						) {
+							GameTitleView(showDate: false)
+								.environmentObject(game)
+								.environmentObject(self.season.team)
+						}
 					}
 				}
+				.onDelete(perform: deleteRow)
+				.actionSheet(isPresented: $deleteGameConfirmation) {
+					ActionSheet(title: Text("Confirm Delete Game?"), message: Text("Deleting this game will delete all stats associated with the game. This action cannot be undone."), buttons: [
+						ActionSheet.Button.cancel(),
+						ActionSheet.Button.destructive(Text("Delete Team"), action: {
+							if let game = self.gameToDelete {
+								self.season.delete(game: game)
+							}
+						})
+					])
+				}
 			}
-			.onDelete(perform: deleteRow)
-			.actionSheet(isPresented: $deleteGameConfirmation) {
-				ActionSheet(title: Text("Confirm Delete Game?"), message: Text("Deleting this game will delete all stats associated with the game. This action cannot be undone."), buttons: [
-					ActionSheet.Button.cancel(),
-					ActionSheet.Button.destructive(Text("Delete Team"), action: {
-						self.deleteGameConfirmation.toggle()
-					})
-				])
-			}
+			.environment(\.horizontalSizeClass, .regular)
+			.listStyle(GroupedListStyle())
 		}
-		.environment(\.horizontalSizeClass, .regular)
-		.listStyle(GroupedListStyle())
 		.navigationBarTitle("Season")
 		.navigationBarItems(trailing:
 			NavigationLink(destination:
-				TeamStatSummaryView(viewModel: StatViewModel(id: season.team.id, type: .team))
+				TeamStatSummaryView(viewModel: StatViewModel(team: season.team.model))
 					.environmentObject(GameList(season.previousGames))
 					.environmentObject(season.team)
 			) {
@@ -93,8 +98,7 @@ struct SeasonView: View {
 	
 	private func deleteRow(at indexSet: IndexSet) {
 		if let first = indexSet.first {
-			//TODO: Implement
-			print(first)
+			self.gameToDelete = self.season.previousGames[first]
 			deleteGameConfirmation.toggle()
 		}
     }

@@ -54,20 +54,17 @@ enum StatType: String {
 	}
 }
 
-class Stat: Identifiable, RecordModel {
-	init(type: StatType, playerId: String, gameId: String, teamId: String) {
+///This allows for the extra logic of creating new stats, and prevents those from being saved to the db until ready to add
+class StatInput {
+	init(type: StatType, player: PlayerCD, game: GameCD, team: TeamCD) {
 		self.type = type
-		self.teamId = teamId
-		self.gameId = gameId
-		self.playerId = playerId
-		self.record = CKRecord(recordType: StatSchema.TYPE)
+		self.game = game
+		self.player = player
+		self.team = team
 	}
 	
 	var type: StatType
-	var teamId: String
-	var gameId: String
-	var playerId: String
-	var joinedStats = [Stat]()
+	var joinedStats = [StatInput]()
 	
 	@Published var shotWasMake: Bool = false
 	
@@ -76,14 +73,14 @@ class Stat: Identifiable, RecordModel {
 	var assistedBy: Player? {
 		didSet {
 			guard let assistedBy = assistedBy else { return }
-			joinedStats.append(Stat(type: .assist, playerId: assistedBy.id, gameId: gameId, teamId: teamId))
+			joinedStats.append(StatInput(type: .assist, player: assistedBy.model, game: game, team: team))
 		}
 	}
 	@Published var pointsOfShot: Int?
 	var rebounder: Player? {
 		didSet {
 			guard let rebounder = rebounder else { return }
-			let stat = Stat(type: .rebound, playerId: rebounder.id, gameId: gameId, teamId: teamId)
+			let stat = StatInput(type: .rebound, player: rebounder.model, game: game, team: team)
 			stat.offensiveRebound = true
 			joinedStats.append(stat)
 		}
@@ -91,53 +88,96 @@ class Stat: Identifiable, RecordModel {
 	
 	var offensiveRebound: Bool = false
 	
+	let game: GameCD
+	let team: TeamCD
+	let player: PlayerCD
+	
+	func toStat() -> Stat {
+		let id = UUID()
+		let model = StatCD(context: AppDelegate.context)
+		
+		model.game = game
+		model.player = player
+		model.team = team
+		model.id = id
+		model.reboundTypeOffensive = offensiveRebound
+		model.shotTypeLocation = shotLocation?.toString()
+		model.shotTypeMake = shotWasMake
+		model.shotTypePoints = Int16(pointsOfShot ?? 0)
+		model.statType = type.rawValue
+		
+		return Stat(player: player,
+					statType: type,
+					offensiveRebound: offensiveRebound,
+					shotLocation: shotLocation,
+					shotMake: shotWasMake,
+					shotPoints: pointsOfShot,
+					id: id.uuidString,
+					model: model)
+	}
+}
+
+class Stat: Identifiable {
+	
+	var type: StatType
+	var shotWasMake: Bool = false
+	//This is a standardized location for distance percentage from origin (0-100)
+	var shotLocation: CGPoint?
+	var pointsOfShot: Int?
+	var offensiveRebound: Bool = false
+	
+	let id: String
+	let model: StatCD
+	let player: PlayerCD
+	
 	//MARK: RecordModel Properties
 	
-	init(teamId: String, playerId: String, gameId: String, statType: StatType, offensiveRebound: Bool?, shotLocation: CGPoint?, shotMake: Bool?, shotPoints: Int?, record: CKRecord) {
-		self.teamId = teamId
-		self.playerId = playerId
-		self.gameId = gameId
+	fileprivate init(player: PlayerCD, statType: StatType, offensiveRebound: Bool?, shotLocation: CGPoint?, shotMake: Bool?, shotPoints: Int?, id: String, model: StatCD) {
+		self.player = player
+		
 		self.type = statType
 		self.offensiveRebound = offensiveRebound ?? false
 		self.shotLocation = shotLocation
 		self.shotWasMake = shotMake ?? false
 		self.pointsOfShot = shotPoints
-		self.record = record
+		
+		self.id = id
+		self.model = model
 	}
 	
-	required convenience init(record: CKRecord) throws {
-		guard let teamId = record.value(forKey: StatSchema.TEAM_ID) as? CKRecord.Reference,
-			let playerId = record.value(forKey: StatSchema.PLAYER_ID) as? CKRecord.Reference,
-			let gameId = record.value(forKey: StatSchema.GAME_ID) as? CKRecord.Reference else {
-				throw BoxScoreError.invalidModelError()
+	convenience init(model: StatCD) throws {
+		guard let id = model.id,
+			let player = model.player else { throw BoxScoreError.invalidModelError() }
+				
+		self.init(player: player,
+				  statType: try StatType.fromString(model.statType),
+				  offensiveRebound: model.reboundTypeOffensive,
+				  shotLocation: try model.shotTypeLocation?.toPoint(),
+				  shotMake: model.shotTypeMake,
+				  shotPoints: Int(model.shotTypePoints),
+				  id: id.uuidString,
+				  model: model
+		)
+	}
+}
+
+fileprivate extension CGPoint {
+	static func from(_ stringList: [String]) throws -> CGPoint {
+		let points = stringList.compactMap { Double($0) }
+		guard points.count == 2 else {
+			throw BoxScoreError.invalidModelError()
 		}
 		
-		let point = record.value(forKey: StatSchema.SHOT_LOCATION) as? [Double]
-		
-		self.init(teamId: teamId.recordID.recordName,
-				  playerId: playerId.recordID.recordName,
-				  gameId: gameId.recordID.recordName,
-				  statType: try StatType.fromString(record.value(forKey: StatSchema.STAT_TYPE) as? String),
-				  offensiveRebound: Bool.fromInt(record.value(forKey: StatSchema.REBOUND) as? Int),
-				  shotLocation: CGPoint(x: point?.first ?? 0.0,
-										y: point?.last ?? 0.0),
-				  shotMake: Bool.fromInt(record.value(forKey: StatSchema.SHOT_MAKE) as? Int),
-				  shotPoints: record.value(forKey: StatSchema.SHOT_POINTS) as? Int,
-				  record: record)
+		return CGPoint(x: points[0], y: points[1])
 	}
 	
-	var record: CKRecord
-	
-	func recordToSave() -> CKRecord {
-		record.setValue(CKRecord.Reference(recordID: CKRecord.ID(recordName: gameId), action: .deleteSelf), forKey: StatSchema.GAME_ID)
-		record.setValue(CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf), forKey: StatSchema.TEAM_ID)
-		record.setValue(CKRecord.Reference(recordID: CKRecord.ID(recordName: playerId), action: .deleteSelf), forKey: StatSchema.PLAYER_ID)
-		record.setValue(type.rawValue, forKey: StatSchema.STAT_TYPE)
-		record.setValue(offensiveRebound, forKey: StatSchema.REBOUND)
-		record.setValue([shotLocation?.x ?? 0.0, shotLocation?.y ?? 0.0].map { Double($0) }, forKey: StatSchema.SHOT_LOCATION)
-		record.setValue(shotWasMake, forKey: StatSchema.SHOT_MAKE)
-		record.setValue(pointsOfShot, forKey: StatSchema.SHOT_POINTS)
-		
-		return record
+	func toString() -> String {
+		"\(self.x)-\(self.y)"
+	}
+}
+
+fileprivate extension String {
+	func toPoint() throws -> CGPoint {
+		try CGPoint.from(self.split(separator: "-").map { "\($0)" })
 	}
 }

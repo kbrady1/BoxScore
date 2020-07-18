@@ -9,10 +9,11 @@
 import Foundation
 import Combine
 import CloudKit
+import CoreData
 
 private let SAVED_TEAM_KEY = "currentlySelectedTeamKey"
 
-class League: ObservableObject, Equatable, CloudCreatable {
+class League: ObservableObject, Equatable {
 	
 	@Published var seasons: [Season]
 	@Published var currentSeason: Season {
@@ -31,7 +32,7 @@ class League: ObservableObject, Equatable, CloudCreatable {
 			let season = seasons.first(where: { $0.team.id == currentSeasonId }) {
 			self.currentSeason = season
 		} else {
-			self.currentSeason = seasons.first ?? Season(team: Team())
+			self.currentSeason = seasons.first ?? Season(team: Team.createNewRecord())
 			
 			if seasons.isEmpty {
 				self.seasons.append(currentSeason)
@@ -44,42 +45,44 @@ class League: ObservableObject, Equatable, CloudCreatable {
 		}
 	}
 	
-	required convenience init(records: [CKRecord]) throws {
-		self.init(seasons: try records.map { try Team(record: $0) }.map { Season(team: $0) })
-	}
-	
 	var teams: [Team] { seasons.map { $0.team }}
 	
-	func newTeam() -> Team {
-		let team = Team.createNewRecord()
-		let season = Season(team: team)
+	func newTeam(setToCurrent: Bool = false) {
+		let season = Season(team: Team.createNewRecord())
 		
-		if seasons.isEmpty {
+		if seasons.isEmpty || setToCurrent {
 			currentSeason = season
 		}
 		
 		seasons.append(season)
 		
-		return team
+		AppDelegate.instance.saveContext()
 	}
 	
 	func deleteTeam(_ team: Team) {
 		seasons.removeAll { $0.team.id == team.id }
-		CloudManager.shared.addRecordToDelete(record: team.record)
+		AppDelegate.context.delete(team.model)
 		
 		//If the current season was deleted
 		if !seasons.contains(where: { $0.team.id == currentSeason.team.id }) {
-			currentSeason = seasons.first ?? Season(team: newTeam())
+			if let nextInLine = seasons.first {
+				currentSeason = nextInLine
+			} else {
+				newTeam()
+			}
 		}
+		
+		AppDelegate.instance.saveContext()
 	}
 	
 	func deleteAll() {
 		seasons.forEach {
-			CloudManager.shared.addRecordToDelete(record: $0.team.record)
+			AppDelegate.context.delete($0.team.model)
 		}
 		seasons.removeAll()
+		AppDelegate.context.delete(currentSeason.team.model)
 		
-		currentSeason = Season(team: newTeam())
+		newTeam(setToCurrent: true)
 	}
 	
 	//MARK: Equatable

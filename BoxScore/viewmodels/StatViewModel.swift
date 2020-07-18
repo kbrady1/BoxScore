@@ -9,70 +9,59 @@
 import Foundation
 import CloudKit
 import Combine
-
-struct StatsRequest: FetchRequest {
-	var database = CKContainer.default().privateCloudDatabase
-	var query: CKQuery
-	var zone: CKRecordZone.ID? = nil
-	
-	var referenceId: String
-	
-	init(referenceId: String, type: StatViewModelType) {
-		var key = ""
-		switch type {
-		case .game:
-			key = StatSchema.GAME_ID
-		case .team:
-			key = StatSchema.TEAM_ID
-		case .player:
-			key = StatSchema.PLAYER_ID
-		}
-		self.referenceId = referenceId
-		let recordToMatch = CKRecord.Reference(recordID: CKRecord.ID(recordName: referenceId), action: .deleteSelf)
-		self.query = CKQuery(recordType: StatSchema.TYPE,
-							 predicate: NSPredicate(format: "\(key) == %@", recordToMatch))
-	}
-}
+import CoreData
 
 //TODO: Move stat processing here for improved efficiency
-class StatGroup: CloudCreatable {
+class StatGroup {
 	var stats = [StatType: [Stat]]()
 	
 	init(stats: [StatType: [Stat]]) {
 		self.stats = stats
 	}
 	
-	required init(records: [CKRecord]) throws {
+	required init(models: [StatCD]) throws {
 		StatType.all.forEach { stats[$0] = [] }
 		
-		try records.forEach {
-			let stat = try Stat(record: $0)
+		try models.forEach {
+			let stat = try Stat(model: $0)
 			
 			stats[stat.type]?.append(stat)
 		}
 	}
 }
 
-enum StatViewModelType {
-	case team, game, player
-}
-
-class StatViewModel: NetworkReadViewModel, ObservableObject {
-	typealias CloudResource = StatGroup
+class StatViewModel {
+	var team: TeamCD?
+	var game: GameCD?
+	var player: PlayerCD?
 	
-	var loadable: Loadable<CloudResource> = .loading
-	var manager: CloudManager = CloudManager()
-	var request: FetchRequest
-	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
+	init(team: TeamCD? = nil, game: GameCD? = nil, player: PlayerCD? = nil) {
+		self.team = team
+		self.game = game
+		self.player = player
+	}
 	
-	var skipCall: Bool = false
-	
-	var id: String?
-	
-	///One of these must not be nil
-	init(id: String, type: StatViewModelType) {
-		self.id = id
-		
-		self.request = StatsRequest(referenceId: id, type: type)
+	func fetch() -> (StatGroup, DisplayableError?) {
+		do {
+			var stats = [StatCD]()
+			if let team = team,
+				let newCD = try AppDelegate.context.existingObject(with: team.objectID) as? TeamCD {
+				
+				stats = newCD.stats?.compactMap { $0 as? StatCD } ?? []
+				
+			} else if let game = game,
+				let newCD = try AppDelegate.context.existingObject(with: game.objectID) as? GameCD {
+				stats = newCD.stats?.compactMap { $0 as? StatCD } ?? []
+			} else if let player = player,
+				let newCD = try AppDelegate.context.existingObject(with: player.objectID) as? PlayerCD {
+				stats = newCD.stats?.compactMap { $0 as? StatCD } ?? []
+			} else {
+				return (StatGroup(stats: [:]), DisplayableError())
+			}
+			
+			return (try StatGroup(models: stats), nil)
+		} catch {
+			return (StatGroup(stats: [:]), DisplayableError())
+		}
 	}
 }

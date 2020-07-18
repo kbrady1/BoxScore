@@ -17,7 +17,6 @@ struct ColorPickerView: View {
 	private var currentColor: Color {
 		let s = 1.01 - (adjustSaturation() / LINEAR_GRADIENT_HEIGHT)
 		let b = adjustShade() / LINEAR_GRADIENT_HEIGHT
-		print("h: \(h) s: \(s) b: \(b)")
 		return Color(UIColor(hue: h,
 					  saturation: s,
 					  brightness: b,

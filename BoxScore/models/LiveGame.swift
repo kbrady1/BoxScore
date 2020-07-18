@@ -15,7 +15,7 @@ class LiveGame: ObservableObject {
 	
 	@Published var playersInGame: [Player] {
 		didSet {
-			game.playerIdsInGame = playersInGame.map { $0.id }
+			game.playersInGame = playersInGame
 		}
 	}
 	
@@ -35,18 +35,16 @@ class LiveGame: ObservableObject {
 		].filter { $0.1 + game.opponentScore >= 0 }
 	}
 	
-	init(team: Team, game: Game?) {
-		let createdGame = game ?? Game.createGame(teamId: team.id)
+	init(team: Team, game: Game) {
+		let createdGame = game
 		self.game = createdGame
 		self.team = team
 		
-		let playersInGame = game?.playerIdsInGame.compactMap { (id) in
-			team.players.first { $0.id == id }
-		} ?? []
+		let playersInGame = game.playersInGame
 		self.playersInGame = playersInGame
 		self.playersOnBench = team.players.filter { !playersInGame.contains($0) }
 		
-		self.statViewModel = StatViewModel(id: createdGame.id, type: .game)
+		self.statViewModel = StatViewModel(game: createdGame.model)
 		
 		cancellable = self.game.objectWillChange.sink(receiveValue: { (_) in
 			self.objectWillChange.send()
@@ -56,25 +54,14 @@ class LiveGame: ObservableObject {
 	//MARK: Methods
 	
 	func createOrStart() {
-		let playersInGame = game.playerIdsInGame.compactMap { (id) in
-			team.players.first { $0.id == id }
-		}
-		self.playersInGame = playersInGame
-		self.playersOnBench = team.players.filter { !playersInGame.contains($0) }
+		self.playersInGame = game.playersInGame
+		self.playersOnBench = team.players.filter { !game.playersInGame.contains($0) }
 		
 		game.start()
-		statViewModel.fetch(request: statViewModel.request)
-		
-		receivable = statViewModel.objectWillChange.sink {
-			//On completion check the value and get the dictionary to write out
-
-			if let values = self.statViewModel.loadable.value {
-				self.game.statDictionary = values.stats
-				values.stats.keys.forEach {
-					if let count = values.stats[$0]?.count, count > 0 {
-						self.game.statCounter[$0] = count
-					}
-				}
+		self.game.statDictionary = statViewModel.fetch().0.stats
+		self.game.statDictionary.keys.forEach {
+			if let count = self.game.statDictionary[$0]?.count, count > 0 {
+				self.game.statCounter[$0] = count
 			}
 		}
 	}
@@ -102,20 +89,22 @@ class LiveGame: ObservableObject {
 		}
 	}
 	
-	func recordStat(_ stat: Stat) {
+	func recordStat(_ stat: StatInput) {
 		stat.joinedStats.forEach {
 			self.recordStat($0)
 		}
 		
-		game.statDictionary[stat.type] = (game.statDictionary[stat.type] ?? []) + [stat]
-		//Update values
-		game.statCounter[stat.type] = (game.statCounter[stat.type] ?? 0) + 1
+		let recordedStat = stat.toStat()
 		
-		if stat.type == .shot {
-			game.teamScore += stat.pointsOfShot ?? 0
+		game.statDictionary[recordedStat.type] = (game.statDictionary[recordedStat.type] ?? []) + [recordedStat]
+		//Update values
+		game.statCounter[recordedStat.type] = (game.statCounter[recordedStat.type] ?? 0) + 1
+		
+		if recordedStat.type == .shot {
+			game.teamScore += recordedStat.pointsOfShot ?? 0
 		}
 		
-		CloudManager.shared.addRecordToSave(record: stat.recordToSave())
+		AppDelegate.instance.saveContext()
 	}
 	
 }

@@ -2,7 +2,7 @@
 //  GameViewModel.swift
 //  BoxScore
 //
-//  Created by Kent Brady on 7/11/20.
+//  Created by Kent Brady on 7/16/20.
 //  Copyright © 2020 Kent Brady. All rights reserved.
 //
 
@@ -10,57 +10,43 @@ import Foundation
 import CloudKit
 import Combine
 
-struct GamesForTeamRequest: FetchRequest {
-	var database = CKContainer.default().privateCloudDatabase
-	var query: CKQuery
-	var zone: CKRecordZone.ID? = nil
-	
-	var teamId: String
-	
-	init(teamId: String) {
-		self.teamId = teamId
-		let recordToMatch = CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf)
-		self.query = CKQuery(recordType: GameSchema.TYPE,
-							 predicate: NSPredicate(format: "\(GameSchema.TEAM) == %@", recordToMatch))
-		query.sortDescriptors?.append(NSSortDescriptor(key: GameSchema.DATE, ascending: true))
-	}
-}
+//struct AddGameRequest: SaveRequest {
+//	var recordModel: RecordModel
+//	var database = CKContainer.default().privateCloudDatabase
+//	var zone: CKRecordZone.ID? = nil
+//}
+//
+//struct DeleteGameRequest: DeleteRequest {
+//	var database = CKContainer.default().privateCloudDatabase
+//	var zone: CKRecordZone.ID? = nil
+//	var recordId: CKRecord.ID
+//}
+//
+//class EditGameViewModel: NetworkWriteViewModel {
+//	typealias CloudResource = CloudUpdateResponse
+//	
+//	var loadable: Loadable<CloudResource> = .loading
+//	var manager: CloudManager = CloudManager()
+//	var saveRequest: SaveRequest
+//	var deleteRequest: DeleteRequest
+//	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
+//	
+//	var game: Game
+//	var record: RecordModel
+//	
+//	init(game: Game) {
+//		self.game = game
+//		
+//		saveRequest = AddGameRequest(recordModel: record)
+//		deleteRequest = DeleteGameRequest(recordId: record.record.recordID)
+//	}
+//	
+//	func beginSave() {
+//		save(request: saveRequest)
+//	}
+//	
+//	func beginDelete() {
+//		delete(request: deleteRequest)
+//	}
+//}
 
-class TeamGames: CloudCreatable {
-	var games: [Game]
-	
-	init(games: [Game]) {
-		self.games = games
-	}
-	
-	required init(records: [CKRecord]) throws {
-		self.games = try records.map { try Game(record: $0) }
-	}
-}
-
-class SeasonViewModel: NetworkReadViewModel, ObservableObject {
-	typealias CloudResource = TeamGames
-
-	var loadable: Loadable<CloudResource> = .loading
-	var manager: CloudManager = CloudManager()
-	var request: FetchRequest
-	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
-	
-	var skipCall: Bool = false
-	
-	var teamId: String
-	
-	init(teamId: String) {
-		self.teamId = teamId
-		self.request = GamesForTeamRequest(teamId: teamId)
-	}
-	
-	func update(teamId: String) {
-		self.loadable = .loading
-		self.teamId = teamId
-		self.request = GamesForTeamRequest(teamId: teamId)
-		self.objectWillChange.send()
-		
-		self.fetch(request: request)
-	}
-}

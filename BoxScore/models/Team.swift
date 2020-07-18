@@ -9,63 +9,84 @@
 import Foundation
 import UIKit.UIColor
 import SwiftUI
-import CloudKit
+import Combine
 
-class Team: ObservableObject, RecordModel {
-	init(name: String, primaryColor: Color, secondaryColor: Color, record: CKRecord = CKRecord(recordType: TeamSchema.TYPE)) {
+class Team: ObservableObject {
+	init(name: String, primaryColor: Color, secondaryColor: Color, model: TeamCD, id: UUID, players: [Player]) {
 		self.name = name
 		self.primaryColor = primaryColor
 		self.secondaryColor = secondaryColor
-		self.record = record
+		self.model = model
+		self.id = id.uuidString
+		self.players = players
+		
+		//Set initial values on model
+		self.model.name = self.name
+		self.model.primaryColor = primaryColor.stringRepresentation
+		self.model.secondaryColor = secondaryColor.stringRepresentation
+		self.model.id = id
+		self.model.players = NSSet(array: players.map { $0.model })
 	}
 	
 	static func createNewRecord() -> Team {
-		let team = Team()
-		CloudManager.shared.addRecordToSave(record: team.record, instantSave: true)
+		let team = Team(name: "",
+					primaryColor: .brandBlue,
+					secondaryColor: .brandBeige,
+					model: TeamCD(context: AppDelegate.context),
+					id: UUID(),
+					players: []
+		)
+		
+		AppDelegate.instance.saveContext()
 		
 		return team
 	}
 	
-	convenience init() {
-		self.init(name: "",
-				  primaryColor: .blue,
-				  secondaryColor: .red)
-	}
-	
-	required convenience init(record: CKRecord) throws {
-		guard let name = record.value(forKey: TeamSchema.NAME) as? String,
-			let primaryColorList = record.value(forKey: TeamSchema.PRIMARY_COLOR) as? [Double],
-			let secondaryColorList = record.value(forKey: TeamSchema.SECONDARY_COLOR) as? [Double],
-			primaryColorList.count == 4,
-			secondaryColorList.count == 4 else {
-			throw BoxScoreError.invalidModelError()
-		}
+	convenience init(model: TeamCD) throws {
+		guard let name = model.name,
+			let primaryColor = model.primaryColor,
+			let secondaryColor = model.secondaryColor,
+			let id = model.id else {
+				throw BoxScoreError.invalidModelError()
+			}
 		
 		self.init(name: name,
-				  primaryColor: try Color(doubleList: primaryColorList),
-				  secondaryColor: try Color(doubleList: secondaryColorList),
-				  record: record)
+				  primaryColor: try Color(primaryColor),
+				  secondaryColor: try Color(secondaryColor),
+				  model: model,
+				  id: id,
+				  players: try model.players?.allObjects.compactMap { $0 as? PlayerCD }.map { try Player(model: $0) } ?? []
+		)
 	}
 	
-	var id: String { record.recordID.recordName }
-	var record: CKRecord
+	let model: TeamCD
+	let id: String
+	
 	@Published var name: String {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			model.name = name
+			AppDelegate.instance.saveContext()
 		}
 	}
 	@Published var primaryColor: Color {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			model.primaryColor = primaryColor.stringRepresentation
+			AppDelegate.instance.saveContext()
 		}
 	}
 	@Published var secondaryColor: Color {
 		didSet {
-			CloudManager.shared.addRecordToSave(record: recordToSave())
+			model.secondaryColor = secondaryColor.stringRepresentation
+			AppDelegate.instance.saveContext()
 		}
 	}
 	
-	@Published var players = [Player]()
+	@Published var players: [Player] {
+		didSet {
+			model.players = NSSet(array: players.map { $0.model })
+			AppDelegate.instance.saveContext()
+		}
+	}
 	
 	func addPlayer(_ player: Player) {
 		if !players.contains(player) {
@@ -73,14 +94,11 @@ class Team: ObservableObject, RecordModel {
 		}
 	}
 	
-	//MARK: RecordModel
-	
-	func recordToSave() -> CKRecord {
-		record.setValue(name, forKey: TeamSchema.NAME)
-		record.setValue(primaryColor.toRGBList, forKey: TeamSchema.PRIMARY_COLOR)
-		record.setValue(secondaryColor.toRGBList, forKey: TeamSchema.SECONDARY_COLOR)
+	func delete(player: Player) {
+		players.removeAll { player == $0 }
+		objectWillChange.send()
 		
-		return record
+		AppDelegate.context.delete(player.model)
 	}
 }
 
@@ -88,9 +106,27 @@ extension Color {
 	typealias ColorComponents = (r: CGFloat, g: CGFloat, b: CGFloat, a: CGFloat)
 	typealias HueSatBrightAlphaComponents = (h: CGFloat, s: CGFloat, b: CGFloat, a: CGFloat)
 	
+	static var brandBlue: Color {
+		Color(components: (r: 0.50688, g: 0.667794, b: 0.768, a: 1.0))
+	}
+	
+	static var brandBeige: Color {
+		Color(components: (r: 0.624, g: 0.639, b: 0.529, a: 1.0))
+	}
+	
+	var stringRepresentation: String {
+		self.toRGBList.map { "\($0)" }.joined(separator: "-")
+	}
 	var toRGBList: [Double] {
 		let components = self.components()
 		return [components.r, components.g, components.b, components.a].map { Double($0) }
+	}
+	
+	init(_ string: String) throws {
+		let list = string.split(separator: "-").compactMap { Double($0) }.map { CGFloat($0) }
+		guard list.count == 4 else { throw BoxScoreError.invalidModelError() }
+		
+		self.init(components: (list[0], list[1], list[2], list[3]))
 	}
 	
 	init(doubleList: [Double]) throws {
