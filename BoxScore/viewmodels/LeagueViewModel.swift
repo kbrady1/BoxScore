@@ -9,8 +9,9 @@
 import Foundation
 import Combine
 import CloudKit
+import CoreData
 
-struct AllTeamsRequest: FetchRequest {
+struct AllTeamsRequest: FetchRequest2 {
 	var database = CKContainer.default().privateCloudDatabase
 	var query = CKQuery(recordType: TeamSchema.TYPE, predicate: NSPredicate(value: true))
 	var zone: CKRecordZone.ID? = nil
@@ -20,13 +21,24 @@ struct AllTeamsRequest: FetchRequest {
 	}
 }
 
-class LeagueViewModel: NetworkReadViewModel, ObservableObject {
-	typealias CloudResource = League
+class LeagueViewModel: ObservableObject {
+	var loadable: Loadable<League> = .loading
 	
-	var loadable: Loadable<CloudResource> = .loading
-	var manager: CloudManager = CloudManager()
-	var request: FetchRequest = AllTeamsRequest()
-	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
-	
-	var skipCall: Bool = false
+	func fetch() {
+		do {
+			//Create two teams
+			let request = NSFetchRequest<TeamCD>()
+			request.entity = TeamCD.entity()
+			
+			let seasons = try AppDelegate.instance.persistentContainer.viewContext.fetch(request)
+				.map { try Team(model: $0) }
+				.map { Season(team: $0) }
+			
+			loadable = .success(League(seasons: seasons))
+		} catch {
+			print(error)
+			loadable = .error(DisplayableError())
+		}
+		objectWillChange.send()
+	}
 }

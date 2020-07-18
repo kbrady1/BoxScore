@@ -9,8 +9,9 @@
 import Foundation
 import Combine
 import CloudKit
+import CoreData
 
-struct TeamPlayersRequest: FetchRequest {
+struct TeamPlayersRequest: FetchRequest2 {
 	var database = CKContainer.default().privateCloudDatabase
 	var query: CKQuery
 	var zone: CKRecordZone.ID? = CKRecordZone.default().zoneID
@@ -34,7 +35,7 @@ class TeamPlayers: CloudCreatable {
 	}
 	
 	required init(records: [CKRecord]) throws {
-		self.players = try records.map { try Player(record: $0) }
+		self.players = []
 	}
 }
 
@@ -43,7 +44,7 @@ class PlayersViewModel: NetworkReadViewModel, ObservableObject {
 
 	var loadable: Loadable<CloudResource> = .loading
 	var manager: CloudManager = CloudManager()
-	var request: FetchRequest
+	var request: FetchRequest2
 	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
 	
 	var skipCall = false
@@ -65,5 +66,76 @@ class PlayersViewModel: NetworkReadViewModel, ObservableObject {
 			fetch(request: request)
 		}
 		self.objectWillChange.send()
+	}
+}
+
+class PlayersViewModel2: ObservableObject {
+	var loadable: Loadable<[Player]> = .loading
+	
+	var team: TeamCD
+	init(team: TeamCD) {
+		self.team = team
+	}
+	
+	func fetch() {
+		do {
+			let request = NSFetchRequest<PlayerCD>()
+			request.entity = PlayerCD.entity()
+			request.predicate = NSPredicate(format: "teamId == %@", team)
+			
+			let players = try AppDelegate.instance.persistentContainer.viewContext.fetch(request)
+				.map { try Player(model: $0) }
+			
+			loadable = .success(players)
+		} catch {
+			loadable = .error(DisplayableError())
+		}
+		objectWillChange.send()
+	}
+}
+
+class SeasonViewModel2: ObservableObject {
+	var loadable: Loadable<Season> = .loading
+	
+	var team: Team
+	
+	init(team: Team) {
+		self.team = team
+	}
+	
+	func fetch() {
+		do {
+			let predicate = NSPredicate(format: "team == %@", team.model)
+			let playersRequest = NSFetchRequest<PlayerCD>()
+			playersRequest.entity = PlayerCD.entity()
+			playersRequest.predicate = predicate
+			
+			//TODO: Test, I think that players will come with the team
+//			let players = try AppDelegate.instance.persistentContainer.viewContext.fetch(playersRequest)
+//				.map { try Player(player: $0) }
+			
+			let gamesRequest = NSFetchRequest<GameCD>()
+			gamesRequest.entity = GameCD.entity()
+			gamesRequest.predicate = predicate
+			
+			let games = try AppDelegate.instance.persistentContainer.viewContext.fetch(gamesRequest)
+				.map { try Game(model: $0) }
+			
+			var previousGames = games.filter { $0.isComplete }
+			let activeGames = games.filter { !$0.isComplete }
+			
+			var currentGame = activeGames.first
+			if activeGames.count > 1 {
+				var extraActives = activeGames.sorted { $0.endDate ?? Date() < $1.endDate ?? Date() }
+				currentGame = extraActives.popLast()
+				
+				previousGames.append(contentsOf: extraActives)
+			}
+			
+			loadable = .success(Season(team: team, currentGame: currentGame, previousGames: previousGames))
+		} catch {
+			loadable = .error(DisplayableError())
+		}
+		objectWillChange.send()
 	}
 }

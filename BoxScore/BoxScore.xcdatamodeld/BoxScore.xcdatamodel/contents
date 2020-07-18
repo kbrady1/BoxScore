@@ -1,4 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="GameCD" representedClassName="GameCD" syncable="YES" codeGenerationType="class">
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="hasEnded" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="opponentName" optional="YES" attributeType="String"/>
+        <attribute name="opponentScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="teamScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="playersInGame" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PlayerCD" inverseName="game" inverseEntity="PlayerCD"/>
+        <relationship name="stats" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="StatCD" inverseName="game" inverseEntity="StatCD"/>
+        <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TeamCD" inverseName="game" inverseEntity="TeamCD"/>
+    </entity>
+    <entity name="PlayerCD" representedClassName="PlayerCD" syncable="YES" codeGenerationType="class">
+        <attribute name="firstName" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="lastName" optional="YES" attributeType="String"/>
+        <attribute name="number" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GameCD" inverseName="playersInGame" inverseEntity="GameCD"/>
+        <relationship name="stats" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="StatCD" inverseName="player" inverseEntity="StatCD"/>
+        <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TeamCD" inverseName="players" inverseEntity="TeamCD"/>
+    </entity>
+    <entity name="StatCD" representedClassName="StatCD" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="reboundTypeOffensive" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="shotTypeLocation" optional="YES" attributeType="String"/>
+        <attribute name="shotTypeMake" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="statType" optional="YES" attributeType="String"/>
+        <relationship name="game" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GameCD" inverseName="stats" inverseEntity="GameCD"/>
+        <relationship name="player" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PlayerCD" inverseName="stats" inverseEntity="PlayerCD"/>
+        <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TeamCD" inverseName="stats" inverseEntity="TeamCD"/>
+    </entity>
+    <entity name="TeamCD" representedClassName="TeamCD" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="primaryColor" optional="YES" attributeType="String"/>
+        <attribute name="secondaryColor" optional="YES" attributeType="String"/>
+        <relationship name="game" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="GameCD" inverseName="team" inverseEntity="GameCD"/>
+        <relationship name="players" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PlayerCD" inverseName="team" inverseEntity="PlayerCD"/>
+        <relationship name="stats" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="StatCD" inverseName="team" inverseEntity="StatCD"/>
+    </entity>
+    <elements>
+        <element name="GameCD" positionX="-63" positionY="-18" width="128" height="178"/>
+        <element name="PlayerCD" positionX="-36" positionY="63" width="128" height="148"/>
+        <element name="StatCD" positionX="-18" positionY="72" width="128" height="163"/>
+        <element name="TeamCD" positionX="-54" positionY="45" width="128" height="148"/>
+    </elements>
 </model>

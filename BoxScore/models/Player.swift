@@ -8,6 +8,7 @@
 
 import Foundation
 import CloudKit
+import CoreData
 
 struct SavePlayerRequest: SaveRequest {
 	var recordModel: RecordModel
@@ -15,48 +16,66 @@ struct SavePlayerRequest: SaveRequest {
 	var zone: CKRecordZone.ID? = nil
 }
 
-class Player: Identifiable, RecordModel, Equatable {
+class Player: Identifiable, Equatable {
 	
-	//TODO: Remove defaults
-	private init(lastName: String, firstName: String, number: Int, record: CKRecord) {
+	private init(lastName: String, firstName: String, number: Int, model: PlayerCD, id: String) {
 		self.lastName = lastName
 		self.firstName = firstName
 		self.number = number
-		self.record = record
+		self.model = model
+		self.id = id
 	}
 	
 	//This is for creating players in the app
-	convenience init(lastName: String, firstName: String, number: Int, teamId: String) {
-		let record = CKRecord(recordType: PlayerSchema.TYPE)
-		record.setValue(CKRecord.Reference(recordID: CKRecord.ID(recordName: teamId), action: .deleteSelf), forKey: PlayerSchema.TEAM_ID_REF)
+	convenience init(lastName: String, firstName: String, number: Int, team: Team) {
+		let id = UUID()
+		let model = PlayerCD(context: AppDelegate.context)
+		model.firstName = firstName
+		model.lastName = lastName
+		model.team = team.model
+		model.id = id
+		
+		try? AppDelegate.context.save()
 		
 		self.init(lastName: lastName,
 				  firstName: firstName,
 				  number: number,
-				  record: record)
+				  model: model,
+				  id: id.uuidString
+		)
 	}
 	
-	required convenience init(record: CKRecord) throws {
-		guard let firstName = record.value(forKey: PlayerSchema.FIRST_NAME) as? String,
-			let lastName = record.value(forKey: PlayerSchema.LAST_NAME) as? String,
-			let number = record.value(forKey: PlayerSchema.NUMBER) as? Int else {
+	convenience init(model: PlayerCD) throws {
+		guard let firstName = model.firstName,
+			let lastName = model.lastName,
+			let id = model.id else {
 				throw BoxScoreError.invalidModelError()
 		}
 		
-		self.init(lastName: lastName,
-				  firstName: firstName,
-				  number: number,
-				  record: record)
+		self.init(lastName: lastName, firstName: firstName, number: Int(model.number), model: model, id: id.uuidString)
 	}
 	
-	var lastName: String
-	var firstName: String
-	var number: Int
-	var record: CKRecord
+	let model: PlayerCD
+	let id: String
+	
+	var lastName: String {
+		didSet {
+			model.lastName = lastName
+		}
+	}
+	var firstName: String {
+		didSet {
+			model.firstName = firstName
+		}
+	}
+	var number: Int {
+		didSet {
+			model.number = Int16(number)
+		}
+	}
 	
 	var nameFirstLast: String { [firstName, lastName].joined(separator: " ") }
 	var nameLastFirst: String { [lastName, firstName].joined(separator: ", ") }
-	var id: String { record.recordID.recordName }
 	
 	var draggableReference: DraggablePlayerReference {
 		DraggablePlayerReference(id: id)
@@ -67,17 +86,6 @@ class Player: Identifiable, RecordModel, Equatable {
 	static func == (lhs: Player, rhs: Player) -> Bool {
 		return lhs.id == rhs.id
 	}
-	
-	//MARK: RecordModel Methods
-	
-	func recordToSave() -> CKRecord {
-		record.setValue(firstName, forKey: PlayerSchema.FIRST_NAME)
-		record.setValue(lastName, forKey: PlayerSchema.LAST_NAME)
-		record.setValue(number, forKey: PlayerSchema.NUMBER)
-		
-		return record
-	}
-	
 }
 
 //Use this in the drag and drop view

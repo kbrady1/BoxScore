@@ -95,6 +95,22 @@ class Game: ObservableObject, Equatable, RecordModel {
 		self.record = record
 	}
 	
+	var model: GameCD? = nil
+	init(model: GameCD) throws {
+		self.model = model
+		
+		guard let teamId = model.team?.id?.uuidString else { throw BoxScoreError.invalidModelError() }
+		
+		self.teamId = teamId
+		self.isComplete = model.hasEnded
+		self.opponentName = model.opponentName ?? "Opponent"
+		self.opponentScore = Int(model.opponentScore)
+		self.teamScore = Int(model.teamScore)
+		self.playerIdsInGame = model.playersInGame?.allObjects.compactMap { $0 as? PlayerCD }.compactMap { $0.id?.uuidString } ?? []
+		
+		self.record = CKRecord(recordType: GameSchema.TYPE)
+	}
+	
 	required convenience init(record: CKRecord) throws {
 		guard let teamId = record.value(forKey: GameSchema.TEAM) as? CKRecord.Reference else { throw BoxScoreError.invalidModelError() }
 		

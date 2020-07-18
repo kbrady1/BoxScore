@@ -47,15 +47,6 @@ struct PlayerView: View {
 	}
 }
 
-struct PlayerView_Previews: PreviewProvider {
-    static var previews: some View {
-		let view = PlayerView(player: Player(lastName: "Brady", firstName: "Kent", number: 12, teamId: ""))
-			.previewLayout(.fixed(width: 120, height: 120))
-		
-		return view
-    }
-}
-
 struct DefaultCircleView: View {
 	@State var color = Color.white
 	var shadow: Bool = true

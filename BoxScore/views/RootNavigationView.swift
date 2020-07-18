@@ -7,8 +7,11 @@
 //
 
 import SwiftUI
+import CoreFoundation
+import CoreData
 
 struct RootNavigationView: View {
+	@Environment(\.managedObjectContext) var context: NSManagedObjectContext
 	@ObservedObject var viewModel = LeagueViewModel()
 	
 	init() {
@@ -34,13 +37,11 @@ struct RootNavigationView: View {
 					}
 				}
 				viewModel.loadable.hasLoaded { league in
-					HomeTeamView(playersViewModel: PlayersViewModel(teamId: league.currentSeason.team.id),
-								 seasonViewModel: SeasonViewModel(teamId: league.currentSeason.team.id),
-								 league: league)
+					HomeTeamView(league: league)
 				}
 			}
 			.navigationBarTitle("BoxScore")
 		}
-		.onAppear(perform: viewModel.onAppear)
+		.onAppear(perform: viewModel.fetch)
 	}
 }

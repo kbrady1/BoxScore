@@ -58,7 +58,7 @@ struct PlayerStatSummaryView: View {
 									.actionSheet(isPresented: self.$deletePlayerConfirmation) {
 										ActionSheet(title: Text("Confirm Delete Player?"), message: Text("Are you sure you want to delete \(self.player.nameFirstLast)? This will delete all stats associated with this player. This action cannot be undone."), buttons: [
 											ActionSheet.Button.destructive(Text("Delete Player"), action: {
-												CloudManager.shared.addRecordToDelete(record: self.player.record)
+//												CloudManager.shared.addRecordToDelete(record: self.player.record)
 												self.team.players.removeAll { $0.id == self.player.id }
 												self.teamViewModel.update(team: self.team)
 												self.teamViewModel.skipCall = true

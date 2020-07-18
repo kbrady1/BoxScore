@@ -153,7 +153,7 @@ struct LiveGameView: View {
 		.onDisappear {
 			self.reorderLineup()
 		}
-		.popover(isPresented: $settings.needsToSeeTour) { StatSetupView().environmentObject(self.settings) }
+//		.popover(isPresented: $settings.needsToSeeTour) { StatSetupView().environmentObject(self.settings) }
 	}
 	
 	private func addCourtView() -> some View {

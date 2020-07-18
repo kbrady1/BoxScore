@@ -24,7 +24,6 @@
 		05B140CA24B90B5C00936738 /* LeagueViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140C924B90B5C00936738 /* LeagueViewModel.swift */; };
 		05B140CC24B91A9000936738 /* RootNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140CB24B91A9000936738 /* RootNavigationView.swift */; };
 		05B140D024B9215900936738 /* PlayersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140CF24B9215900936738 /* PlayersViewModel.swift */; };
-		05B140D224B9544F00936738 /* AddPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D124B9544F00936738 /* AddPlayerViewModel.swift */; };
 		05B140D424B95ED000936738 /* AddPlayerLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D324B95ED000936738 /* AddPlayerLoadingView.swift */; };
 		05B140D824BA4AEA00936738 /* Schemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D724BA4AEA00936738 /* Schemas.swift */; };
 		05B140DA24BA56A500936738 /* SeasonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B140D924BA56A500936738 /* SeasonViewModel.swift */; };
@@ -56,6 +55,8 @@
 		05EF2A67246A3FB4004F4E09 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05EF2A66246A3FB4004F4E09 /* Game.swift */; };
 		05FA4204246CC8AD00B2A2EC /* AddPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05FA4203246CC8AD00B2A2EC /* AddPlayerView.swift */; };
 		05FA4206246CCB4200B2A2EC /* ColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05FA4205246CCB4200B2A2EC /* ColorPickerView.swift */; };
+		05FFA22524C224A000AC17B2 /* BoxScore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 05FFA22324C224A000AC17B2 /* BoxScore.xcdatamodeld */; };
+		05FFA22724C234C700AC17B2 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05FFA22624C234C700AC17B2 /* CoreDataManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,7 +95,6 @@
 		05B140C924B90B5C00936738 /* LeagueViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeagueViewModel.swift; sourceTree = "<group>"; };
 		05B140CB24B91A9000936738 /* RootNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootNavigationView.swift; sourceTree = "<group>"; };
 		05B140CF24B9215900936738 /* PlayersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayersViewModel.swift; sourceTree = "<group>"; };
-		05B140D124B9544F00936738 /* AddPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlayerViewModel.swift; sourceTree = "<group>"; };
 		05B140D324B95ED000936738 /* AddPlayerLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlayerLoadingView.swift; sourceTree = "<group>"; };
 		05B140D724BA4AEA00936738 /* Schemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schemas.swift; sourceTree = "<group>"; };
 		05B140D924BA56A500936738 /* SeasonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonViewModel.swift; sourceTree = "<group>"; };
@@ -132,6 +132,8 @@
 		05EF2A66246A3FB4004F4E09 /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		05FA4203246CC8AD00B2A2EC /* AddPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlayerView.swift; sourceTree = "<group>"; };
 		05FA4205246CCB4200B2A2EC /* ColorPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerView.swift; sourceTree = "<group>"; };
+		05FFA22424C224A000AC17B2 /* BoxScore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BoxScore.xcdatamodel; sourceTree = "<group>"; };
+		05FFA22624C234C700AC17B2 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 				05B140C324B8EDC700936738 /* CloudManager.swift */,
 				05B140C524B8FEE900936738 /* Networking.swift */,
 				05B140D724BA4AEA00936738 /* Schemas.swift */,
+				05FFA22624C234C700AC17B2 /* CoreDataManager.swift */,
 			);
 			path = service;
 			sourceTree = "<group>";
@@ -184,7 +187,6 @@
 				05B140C724B9093800936738 /* NetworkViewModels.swift */,
 				05B140CF24B9215900936738 /* PlayersViewModel.swift */,
 				05B140C924B90B5C00936738 /* LeagueViewModel.swift */,
-				05B140D124B9544F00936738 /* AddPlayerViewModel.swift */,
 				05B140D924BA56A500936738 /* SeasonViewModel.swift */,
 				05DA326E24C153DF004E4042 /* GameViewModel.swift */,
 				05B140DD24BAB6BA00936738 /* StatViewModel.swift */,
@@ -227,6 +229,7 @@
 				05EF2A23246A0162004F4E09 /* SceneDelegate.swift */,
 				05EF2A27246A0165004F4E09 /* Assets.xcassets */,
 				05EF2A2C246A0165004F4E09 /* LaunchScreen.storyboard */,
+				05FFA22324C224A000AC17B2 /* BoxScore.xcdatamodeld */,
 				05EF2A2F246A0165004F4E09 /* Info.plist */,
 				05EF2A29246A0165004F4E09 /* Preview Content */,
 			);
@@ -474,9 +477,9 @@
 				05EF2A65246A1FBD004F4E09 /* CourtPositionView.swift in Sources */,
 				05B140DC24BA6DE000936738 /* LiveGame.swift in Sources */,
 				051C7F18246B5D9A00057B44 /* Stat.swift in Sources */,
+				05FFA22724C234C700AC17B2 /* CoreDataManager.swift in Sources */,
 				05EF2A54246A01F0004F4E09 /* HomeTeamView.swift in Sources */,
 				05B140D824BA4AEA00936738 /* Schemas.swift in Sources */,
-				05B140D224B9544F00936738 /* AddPlayerViewModel.swift in Sources */,
 				0549FDE224B55F8100720DDF /* Extensions.swift in Sources */,
 				05C9A8BC24BD520E00B0FB70 /* LiveGameStatView.swift in Sources */,
 				05EF2A58246A0235004F4E09 /* LiveGameView.swift in Sources */,
@@ -817,6 +820,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		05FFA22324C224A000AC17B2 /* BoxScore.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				05FFA22424C224A000AC17B2 /* BoxScore.xcdatamodel */,
+			);
+			currentVersion = 05FFA22424C224A000AC17B2 /* BoxScore.xcdatamodel */;
+			path = BoxScore.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 05EF2A16246A0162004F4E09 /* Project object */;
 }

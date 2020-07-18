@@ -11,13 +11,10 @@ import SwiftUI
 struct AddPlayerView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var team: Team
-	@ObservedObject var teamViewModel: PlayersViewModel
 	
 	@State private var firstName: String = ""
 	@State private var lastName: String = ""
 	@State private var number: Int = 0
-	
-	@State private var showLoadingView: Bool = false
 	
 	//Get unused numbers
 	@State private var listOfNumbers = [Int]()
@@ -64,7 +61,8 @@ struct AddPlayerView: View {
 					.padding(.top)
 				}
 				Button(action: {
-					self.showLoadingView.toggle()
+					self.team.addPlayer(Player(lastName: self.lastName, firstName: self.firstName, number: self.number, team: self.team))
+					self.presentationMode.wrappedValue.dismiss()
 				}) {
 					Text("Add Player")
 						.bold()
@@ -79,19 +77,6 @@ struct AddPlayerView: View {
 				}
 				.disabled(firstName.isEmpty || lastName.isEmpty)
 				.padding([.horizontal, .bottom])
-			}
-			
-			if showLoadingView {
-				AddPlayerLoadingView(
-					viewModel: AddPlayerViewModel(player: Player(lastName: self.lastName, firstName: self.firstName, number: self.number, teamId: team.id)),
-					loadingView: LoadingView(visible: $showLoadingView) { (model) in
-						guard let player = model as? Player else { return }
-						
-						self.team.addPlayer(player)
-						self.teamViewModel.update(team: self.team)
-						self.presentationMode.wrappedValue.dismiss()
-					}
-				)
 			}
 		}
 		.onAppear {

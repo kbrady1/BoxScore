@@ -15,7 +15,7 @@ protocol GenericRequest {
 	var zone: CKRecordZone.ID? { get }
 }
 
-protocol FetchRequest: GenericRequest {
+protocol FetchRequest2: GenericRequest {
 	var query: CKQuery { get }
 }
 

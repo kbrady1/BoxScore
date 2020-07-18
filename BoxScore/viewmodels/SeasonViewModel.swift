@@ -9,8 +9,9 @@
 import Foundation
 import CloudKit
 import Combine
+import CoreData
 
-struct GamesForTeamRequest: FetchRequest {
+struct GamesForTeamRequest: FetchRequest2 {
 	var database = CKContainer.default().privateCloudDatabase
 	var query: CKQuery
 	var zone: CKRecordZone.ID? = nil
@@ -43,7 +44,7 @@ class SeasonViewModel: NetworkReadViewModel, ObservableObject {
 
 	var loadable: Loadable<CloudResource> = .loading
 	var manager: CloudManager = CloudManager()
-	var request: FetchRequest
+	var request: FetchRequest2
 	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
 	
 	var skipCall: Bool = false

@@ -8,6 +8,7 @@
 
 import Foundation
 import Combine
+import CoreData
 
 protocol GenericNetworkViewModel: ObservableObject {
 	associatedtype CloudResource: GenericCloudType
@@ -19,7 +20,7 @@ protocol GenericNetworkViewModel: ObservableObject {
 }
 
 protocol NetworkReadViewModel: GenericNetworkViewModel where CloudResource: CloudCreatable {
-	var request: FetchRequest { get set }
+	var request: FetchRequest2 { get set }
 	
 	var skipCall: Bool { get set }
 	
@@ -28,7 +29,7 @@ protocol NetworkReadViewModel: GenericNetworkViewModel where CloudResource: Clou
 
 extension NetworkReadViewModel {
 
-	func fetch(request: FetchRequest) {
+	func fetch(request: FetchRequest2) {
 		guard !skipCall else {
 			skipCall = false
 			return
