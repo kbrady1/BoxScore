@@ -10,12 +10,6 @@ import Foundation
 import CloudKit
 import CoreData
 
-struct SavePlayerRequest: SaveRequest {
-	var recordModel: RecordModel
-	var database = CKContainer.default().privateCloudDatabase
-	var zone: CKRecordZone.ID? = nil
-}
-
 class Player: Identifiable, Equatable, ObservableObject {
 	
 	private init(lastName: String, firstName: String, number: Int, model: PlayerCD, id: String) {
