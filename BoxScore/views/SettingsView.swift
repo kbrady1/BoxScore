@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+//TODO: Add options here to disable iCloud backup?
 struct SettingsView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	

@@ -32,7 +32,7 @@ struct AddPlayerView: View {
 							.font(.largeTitle)
 							.multilineTextAlignment(.center)
 							.frame(width: 120, height: 120)
-							.background(DefaultCircleView())
+							.background(DefaultCircleView(color: Color(UIColor.tertiarySystemBackground)))
 						
 						HStack {
 							Text("First: ")
@@ -113,7 +113,7 @@ struct AddPlayerView: View {
 						$0.background(CircleView(color: self.$team.secondaryColor))
 					}
 					.if(num != self.number) {
-						$0.background(DefaultCircleView(shadow: false))
+						$0.background(DefaultCircleView(color: Color(UIColor.tertiarySystemBackground), shadow: false))
 					}
 					.onTapGesture {
 						UISelectionFeedbackGenerator().selectionChanged()

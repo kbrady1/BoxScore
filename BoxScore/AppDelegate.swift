@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		
-		//TODO: Only perform in test code
+		//Only perform in test code
 		
 //		do {
 //			Uncomment to do a dry run and print the CK records it'll make
