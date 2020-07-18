@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-private let SCORE_BOARD_HEIGHT: CGFloat = 125
+//TODO: Add undo option for stats
 
 struct LiveGameCourtView: View {
 	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -26,70 +26,70 @@ struct LiveGameCourtView: View {
 	@State private var positionE: CourtPositionView? = nil
 	
     var body: some View {
-		ZStack(alignment: .top) {
-			ZStack {
-				Rectangle()
-					.stroke(Color.clear, lineWidth: 0)
-					.background(season.team.primaryColor)
-					.frame(minWidth: 0, maxWidth: .infinity)
-					.frame(height: SCORE_BOARD_HEIGHT + 85 + UIApplication.safeAreaOffset)
-					.shadow(radius: 5)
-					.edgesIgnoringSafeArea(.top)
-			}
+		GeometryReader { (geometry) in
 			VStack {
 				VStack {
-					HStack {
-						VStack {
-							Text("\(self.season.team.name)")
-								.font(.caption)
-								.offset(x: 0, y: 10)
-							Text(String(game.game.teamScore))
-								.foregroundColor(self.season.team.primaryColor)
-								.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
-						}
-						Spacer()
-						Text("Game Score")
-							.font(.largeTitle)
-							.scaledToFit()
-						Spacer()
-						VStack {
-							Text(game.game.opponentName)
-								.font(.caption)
-								.offset(x: 0, y: 10)
-							Button(String(game.game.opponentScore)) {
-								self.game.game.opponentScore += 1
+					VStack(spacing: 24) {
+						HStack {
+							VStack {
+								Text("\(self.season.team.name)")
+									.font(.caption)
+									.offset(x: 0, y: 10)
+								Text(String(self.game.game.teamScore))
+									.foregroundColor(self.season.team.primaryColor)
+									.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 							}
-							.contextMenu {
-								ForEach(game.opponentScoreOptions, id: \.1) { (scorePair) in
-									Button(action: {
-										self.game.game.opponentScore += scorePair.1
-									}) {
-										Text(scorePair.0)
+							.frame(width: 90)
+							Spacer()
+							Text("Game Score")
+								.font(.title)
+								.scaledToFit()
+							Spacer()
+							VStack {
+								Text(self.game.game.opponentName)
+									.font(.caption)
+									.offset(x: 0, y: 10)
+								Button(String(self.game.game.opponentScore)) {
+									self.game.game.opponentScore += 1
+								}
+								.contextMenu {
+									ForEach(self.game.opponentScoreOptions, id: \.1) { (scorePair) in
+										Button(action: {
+											self.game.game.opponentScore += scorePair.1
+										}) {
+											Text(scorePair.0)
+										}
 									}
 								}
+								.foregroundColor(self.season.team.primaryColor)
+								.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 							}
-							.foregroundColor(self.season.team.primaryColor)
-							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
+							.frame(width: 90)
 						}
-					}
-					.padding(.horizontal)
-					HStack(spacing: 16) {
-						ForEach(StatType.all.filter { $0 != .shot }) { (stat) in
-							VStack {
-								Text(stat.abbreviation())
-									.font(.callout)
-								Text("\(self.game.game.statCounter[stat] ?? 0)")
-									.bold()
-									.font(.headline)
+						.padding(.horizontal)
+						HStack(spacing: 16) {
+							ForEach(StatType.all.filter { $0 != .shot }) { (stat) in
+								VStack {
+									Text(stat.abbreviation())
+										.font(.callout)
+									Text("\(self.game.game.statCounter[stat] ?? 0)")
+										.bold()
+										.font(.headline)
+								}
 							}
 						}
+						.padding(.bottom)
 					}
+					.background(BlurView(style: .prominent))
+					.background(self.game.team.primaryColor.cornerRadius(18))
+					.cornerRadius(16)
+					.shadow(color: Color.black.opacity(0.2), radius: 6.0)
+					.padding(8.0)
+					
+					self.addCourtView(reader: geometry)
 				}
-				.frame(minWidth: 0, maxWidth: .infinity)
-				.frame(height: SCORE_BOARD_HEIGHT)
-				.background(BlurView(style: .systemChromeMaterial))
+				.offset(x: 0, y: -60)
 				
-				self.addCourtView()
 				Spacer()
 				Bench() { (player) in
 					//Action to perform on double tap of bench item, adds player to game if spot available
@@ -139,11 +139,14 @@ struct LiveGameCourtView: View {
 		}
 	}
 	
-	private func addCourtView() -> some View {
+	private func addCourtView(reader: GeometryProxy) -> some View {
 		let image = Image("BasketballCourt")
 			.resizable()
 			.frame(minWidth: 300, maxWidth: .infinity)
-			.frame(height: 300)
+			.frame(height: 250)
+		
+		print(reader.safeAreaInsets)
+		print(reader.size)
 		
 		return ZStack {
 			//TODO: Add geometry reader here to make sure court position views are not dragged outside of court
@@ -164,6 +167,8 @@ struct LiveGameCourtView: View {
 				positionE
 			}
 		}
+		.frame(minWidth: 300, maxWidth: .infinity)
+		.frame(height: 300)
 	}
 	
 	private func setUpCourtPositions() {
@@ -175,11 +180,11 @@ struct LiveGameCourtView: View {
 			return ObservablePlayer()
 		}
 		
-		positionA = CourtPositionView(position: CGPoint(x: 200, y: 340), player: playerAt(index: 0))
-		positionB = CourtPositionView(position: CGPoint(x: 300, y: 150), player: playerAt(index: 1))
-		positionC = CourtPositionView(position: CGPoint(x: 150, y: 150), player: playerAt(index: 2))
-		positionD = CourtPositionView(position: CGPoint(x: 50, y: 300), player: playerAt(index: 3))
-		positionE = CourtPositionView(position: CGPoint(x: 320, y: 300), player: playerAt(index: 4))
+		positionA = CourtPositionView(position: CGPoint(x: 200, y: 250), player: playerAt(index: 0))
+		positionB = CourtPositionView(position: CGPoint(x: 300, y: 80), player: playerAt(index: 1))
+		positionC = CourtPositionView(position: CGPoint(x: 150, y: 80), player: playerAt(index: 2))
+		positionD = CourtPositionView(position: CGPoint(x: 50, y: 150), player: playerAt(index: 3))
+		positionE = CourtPositionView(position: CGPoint(x: 320, y: 150), player: playerAt(index: 4))
 	}
 	
 	private func reorderLineup() {

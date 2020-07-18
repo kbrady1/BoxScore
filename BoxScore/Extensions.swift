@@ -20,7 +20,17 @@ extension View {
 }
 
 extension UIApplication {
-	static var safeAreaOffset: CGFloat { UIApplication.shared.delegate?.window??.safeAreaInsets.bottom ?? 0 }
+	static var topSafeAreaOffset: CGFloat {
+		let offset = UIApplication.shared.windows.first?.safeAreaInsets.top ?? 0.0
+		print("Top: \(offset)")
+		return offset
+	}
+	
+	static var bottomSafeAreaOffset: CGFloat {
+		let offset = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0.0
+		print("Bottom: \(offset)")
+		return offset
+	}
 }
 
 extension Double {

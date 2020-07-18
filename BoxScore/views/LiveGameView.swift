@@ -18,12 +18,9 @@ struct LiveGameView: View {
 	@State private var opponentName: String = ""
 	@State private var currentPage = 0
 	
-	//TODO: Add undo option for stats
 	var body: some View {
 		VStack {
 			if season.currentGame == nil {
-				Spacer().frame(height: 45)
-				//Present view to put in opponent name and start button
 				HStack {
 					Text("Opponent:")
 						.font(.caption)
@@ -34,7 +31,6 @@ struct LiveGameView: View {
 				.background(BlurView(style: .systemMaterial))
 				.cornerRadius(8)
 				.padding()
-				//TODO: Also include past opponent names here?
 				Spacer()
 				GeometryReader { geometry in
 					self.instructionCards(
@@ -54,7 +50,7 @@ struct LiveGameView: View {
 					.environmentObject(LiveGame(team: season.team, game: season.currentGame!))
 			}
 		}
-		.navigationBarTitle("", displayMode: .inline)
+		.navigationBarTitle("")
 	}
 	
 	func instructionCards(width: CGFloat, height: CGFloat) -> some View {
