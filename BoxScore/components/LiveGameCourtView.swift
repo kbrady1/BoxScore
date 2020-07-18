@@ -11,9 +11,13 @@ import SwiftUI
 private let SCORE_BOARD_HEIGHT: CGFloat = 125
 
 struct LiveGameCourtView: View {
+	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@EnvironmentObject var season: Season
 	@EnvironmentObject var settings: StatSettings
 	@EnvironmentObject var game: LiveGame
+	
+	@State private var showActionSheet: Bool = false
+	@State private var showStatModal: Bool = false
 	
 	@State private var positionA: CourtPositionView? = nil
 	@State private var positionB: CourtPositionView? = nil
@@ -94,6 +98,33 @@ struct LiveGameCourtView: View {
 						.first { $0.player.player == nil }?
 						.addPlayer(DraggablePlayerReference(id: player.id), game: self.game)
 				}
+				
+				HStack {
+					Button(action: {
+						self.showStatModal.toggle()
+					}) {
+						FloatButtonView(text: Binding.constant("Stats"), backgroundColor: self.season.team.primaryColor)
+					}
+					.sheet(isPresented: self.$showStatModal) {
+						LiveGameStatView()
+							.environmentObject(self.game)
+					}
+					Button(action: {
+						//End game
+						self.showActionSheet.toggle()
+					}) {
+						FloatButtonView(text: Binding.constant("End Game"), backgroundColor: self.season.team.secondaryColor)
+					}
+					.actionSheet(isPresented: self.$showActionSheet) {
+						ActionSheet(title: Text("Confirm End Game?"), message: Text("By ending the game you will no longer be able to add stats to this game. This action cannot be undone."), buttons: [
+							ActionSheet.Button.cancel(),
+							ActionSheet.Button.destructive(Text("End Game"), action: {
+								self.season.completeGame()
+								self.presentationMode.wrappedValue.dismiss()
+							})
+						])
+					}
+				}.padding()
 			}
 		}
 		.onDisappear {
@@ -101,6 +132,9 @@ struct LiveGameCourtView: View {
 		}
 		.onAppear {
 			self.setUpCourtPositions()
+			
+			self.game.createOrStart()
+			self.season.currentGame = self.game.game
 		}
 	}
 	

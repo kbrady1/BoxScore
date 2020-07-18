@@ -32,7 +32,6 @@ struct SeasonView: View {
 					Section {
 						NavigationLink(destination:
 							LiveGameView()
-								.environmentObject(LiveGameViewModel(currentGame: currentGame!, team: season.team))
 								.environmentObject(settings)
 								.environmentObject(season)
 						) {

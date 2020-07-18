@@ -102,7 +102,6 @@ struct HomeTeamView: View {
 			}
 			
 			NavigationLink(destination: LiveGameView()
-				.environmentObject(LiveGameViewModel(currentGame: league.currentSeason.currentGame, team: league.currentSeason.team))
 				.environmentObject(settings)
 				.environmentObject(league.currentSeason)
 			) {
