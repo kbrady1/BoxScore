@@ -6,6 +6,7 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="opponentName" optional="YES" attributeType="String"/>
         <attribute name="opponentScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="teamScore" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="playersInGame" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PlayerCD" inverseName="game" inverseEntity="PlayerCD"/>
         <relationship name="stats" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="StatCD" inverseName="game" inverseEntity="StatCD"/>
@@ -41,7 +42,7 @@
         <relationship name="stats" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="StatCD" inverseName="team" inverseEntity="StatCD"/>
     </entity>
     <elements>
-        <element name="GameCD" positionX="-63" positionY="-18" width="128" height="178"/>
+        <element name="GameCD" positionX="-63" positionY="-18" width="128" height="193"/>
         <element name="PlayerCD" positionX="-36" positionY="63" width="128" height="148"/>
         <element name="StatCD" positionX="-18" positionY="72" width="128" height="178"/>
         <element name="TeamCD" positionX="-54" positionY="45" width="128" height="148"/>

@@ -18,7 +18,7 @@ class Team: ObservableObject {
 		self.secondaryColor = secondaryColor
 		self.model = model
 		self.id = id.uuidString
-		self.players = players
+		self.players = players.sorted { $0.number < $1.number }
 		
 		//Set initial values on model
 		self.model.name = self.name

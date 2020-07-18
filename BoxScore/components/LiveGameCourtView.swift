@@ -134,7 +134,7 @@ struct LiveGameCourtView: View {
 		.onAppear {
 			self.setUpCourtPositions()
 			
-			self.game.createOrStart()
+			self.game.setUp()
 			self.season.currentGame = self.game.game
 		}
 	}

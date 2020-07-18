@@ -36,7 +36,7 @@ struct GameTitleView: View {
 						.font(.largeTitle)
 					Spacer()
 					VStack {
-						Text("Opponent")
+						Text(game.opponentName)
 							.font(.caption)
 							.offset(x: 0, y: 10)
 						Text(String(game.opponentScore))

@@ -23,31 +23,30 @@ private let DATE_FORMATTER = DateFormatter.defaultDateFormat("MMM dd, yyyy")
 
 class Game: ObservableObject, Equatable {
 	
-	private var started: Bool = false
-	
 	@Published var teamScore: Int {
 		didSet {
-			saveIfStarted()
+			save()
 		}
 	}
 	@Published var opponentScore: Int {
 		didSet {
-			saveIfStarted()
+			save()
 		}
 	}
 	var opponentName: String {
 		didSet {
-			saveIfStarted()
+			save()
 		}
 	}
 	
 	var playersInGame: [Player] {
 		didSet {
-			saveIfStarted()
+			save()
 		}
 	}
 	
 	var endDate: Date?
+	var startDate: Date?
 	
 	var dateText: String? {
 		guard let endDate = endDate else { return nil }
@@ -59,21 +58,19 @@ class Game: ObservableObject, Equatable {
 			guard isComplete else { return }
 			endDate = Date()
 			playersInGame = []
-			saveIfStarted()
+			save()
 		}
 	}
 	
-	private func saveIfStarted() {
-		if started {
-			model.endDate = endDate
-			model.hasEnded = isComplete
-			model.opponentName = opponentName
-			model.opponentScore = Int16(opponentScore)
-			model.teamScore = Int16(teamScore)
-			model.playersInGame = NSSet(array: playersInGame.map { $0.model })
-			
-			AppDelegate.instance.saveContext()
-		}
+	private func save() {
+		model.endDate = endDate
+		model.hasEnded = isComplete
+		model.opponentName = opponentName
+		model.opponentScore = Int16(opponentScore)
+		model.teamScore = Int16(teamScore)
+		model.playersInGame = NSSet(array: playersInGame.map { $0.model })
+		
+		AppDelegate.instance.saveContext()
 	}
 	
 	//These are used on the live game and live game stat view to keep track of a teams current stats
@@ -89,13 +86,9 @@ class Game: ObservableObject, Equatable {
 		model.opponentName = "Opponent"
 		
 		model.team = team.model
+		model.startDate = Date()
 		
 		return Game(opponentName: "Opponent", model: model, id: id.uuidString)
-	}
-	
-	func start() {
-		started = true
-		AppDelegate.instance.saveContext()
 	}
 	
 	private init(playersInGame: [Player] = [], hasEnded: Bool? = nil, endDate: Date? = nil, opponentName: String, opponentScore: Int? = nil, teamScore: Int? = nil, model: GameCD, id: String) {
@@ -107,6 +100,7 @@ class Game: ObservableObject, Equatable {
 		self.opponentName = opponentName
 		self.id = id
 		self.model = model
+		self.startDate = Date()
 	}
 	
 	let id: String
@@ -119,6 +113,8 @@ class Game: ObservableObject, Equatable {
 		self.opponentScore = Int(model.opponentScore)
 		self.teamScore = Int(model.teamScore)
 		self.playersInGame = try model.playersInGame?.allObjects.compactMap { $0 as? PlayerCD }.map { try Player(model: $0) } ?? []
+		self.startDate = model.startDate
+		self.endDate = model.endDate
 		
 		self.model = model
 		self.id = id.uuidString

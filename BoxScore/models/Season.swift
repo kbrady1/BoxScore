@@ -24,7 +24,7 @@ class Season: ObservableObject {
 	init(team: Team, currentGame: Game? = nil, previousGames: [Game] = []) {
 		self.team = team
 		
-		self.previousGames = previousGames
+		self.previousGames = previousGames.sorted { $0.endDate ?? Date() > $1.endDate ?? Date() }
 		self.currentGame = currentGame
 		self.currentlyInGame = currentGame != nil
 		

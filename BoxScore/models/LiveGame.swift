@@ -53,11 +53,10 @@ class LiveGame: ObservableObject {
 	
 	//MARK: Methods
 	
-	func createOrStart() {
+	func setUp() {
 		self.playersInGame = game.playersInGame
 		self.playersOnBench = team.players.filter { !game.playersInGame.contains($0) }
 		
-		game.start()
 		self.game.statDictionary = statViewModel.fetch().0.stats
 		self.game.statDictionary.keys.forEach {
 			if let count = self.game.statDictionary[$0]?.count, count > 0 {

@@ -12,7 +12,6 @@ struct SeasonView: View {
 	@EnvironmentObject var settings: StatSettings
 	
 	@ObservedObject var season: Season
-	@State var currentGame: Game?
 	
 	@State private var deleteGameConfirmation: Bool = false
 	@State private var gameToDelete: Game? = nil
@@ -21,7 +20,7 @@ struct SeasonView: View {
     var body: some View {
 		ZStack {
 			List {
-				if currentGame != nil {
+				if season.currentGame != nil {
 					Section(header:
 						Text("Current Game")
 							.font(.largeTitle)
@@ -91,9 +90,6 @@ struct SeasonView: View {
 			) {
 			Text("Stats")
 		})
-		.onAppear {
-			self.currentGame = self.season.currentGame
-		}
     }
 	
 	private func deleteRow(at indexSet: IndexSet) {

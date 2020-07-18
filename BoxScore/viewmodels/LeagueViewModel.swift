@@ -28,7 +28,8 @@ class LeagueViewModel: ObservableObject {
 					
 					var currentGame = activeGames.first
 					if activeGames.count > 1 {
-						var extraActives = activeGames.sorted { $0.endDate ?? Date() < $1.endDate ?? Date() }
+						//If somehow extra games were started, take the newest and keep it, and end the other games
+						var extraActives = activeGames.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
 						currentGame = extraActives.popLast()
 						
 						extraActives.forEach { $0.isComplete = true }
