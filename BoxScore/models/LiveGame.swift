@@ -35,12 +35,12 @@ class LiveGame: ObservableObject {
 		].filter { $0.1 + game.opponentScore >= 0 }
 	}
 	
-	init(team: Team, game: Game?) {
-		let createdGame = game ?? Game.createGame(team: team)
+	init(team: Team, game: Game) {
+		let createdGame = game
 		self.game = createdGame
 		self.team = team
 		
-		let playersInGame = game?.playersInGame ?? []
+		let playersInGame = game.playersInGame
 		self.playersInGame = playersInGame
 		self.playersOnBench = team.players.filter { !playersInGame.contains($0) }
 		

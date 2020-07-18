@@ -50,33 +50,3 @@ import Combine
 //	}
 //}
 
-class LiveGameViewModel: ObservableObject {
-	var loadable: Loadable<LiveGame> = .loading {
-		didSet {
-			var value: String = ""
-			switch loadable {
-			case .error: value = "error"
-			case .loading: value = "loading"
-			case .success: value = "success"
-			}
-			print("set to \(value)")
-		}
-	}
-	
-	var currentGame: Game?
-	var team: Team
-	
-	init(currentGame: Game? = nil, team: Team) {
-		self.currentGame = currentGame
-		self.team = team
-	}
-	
-	func fetch(season: Season) {
-		let game = LiveGame(team: self.team, game: self.currentGame)
-		game.createOrStart()
-		season.currentGame = game.game
-		
-		self.loadable = .success(game)
-		self.objectWillChange.send()
-	}
-}

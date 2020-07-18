@@ -19,6 +19,10 @@ extension View {
 	}
 }
 
+extension UIApplication {
+	static var safeAreaOffset: CGFloat { UIApplication.shared.delegate?.window??.safeAreaInsets.bottom ?? 0 }
+}
+
 extension Double {
 	var asString: String { String(self) }
 	

@@ -171,7 +171,8 @@ struct StatInputView: View {
 							.frame(height: 100)
 						}
 					}
-					if shotWasMake {
+					//Until I add predictive shot point analysis, this has to always be shown for statistical accuracy
+//					if shotWasMake {
 						VStack {
 							InstructionView(number: "4", title: "Points", accentColor: game.team.secondaryColor)
 							HStack {
@@ -180,7 +181,7 @@ struct StatInputView: View {
 								pointView(points: 3)
 							}
 						}
-					}
+//					}
 				}
 				if stat.type == .rebound {
 					VStack {
@@ -291,7 +292,7 @@ struct InstructionView: View {
 	@State var number: String
 	@State var title: String
 	@State var accentColor: Color
-	
+
 	var body: some View {
 		HStack {
 			Text(number)
