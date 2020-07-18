@@ -114,25 +114,15 @@ class SeasonViewModel2: ObservableObject {
 //			let players = try AppDelegate.instance.persistentContainer.viewContext.fetch(playersRequest)
 //				.map { try Player(player: $0) }
 			
-			let gamesRequest = NSFetchRequest<GameCD>()
-			gamesRequest.entity = GameCD.entity()
-			gamesRequest.predicate = predicate
-			
-			let games = try AppDelegate.instance.persistentContainer.viewContext.fetch(gamesRequest)
-				.map { try Game(model: $0) }
-			
-			var previousGames = games.filter { $0.isComplete }
-			let activeGames = games.filter { !$0.isComplete }
-			
-			var currentGame = activeGames.first
-			if activeGames.count > 1 {
-				var extraActives = activeGames.sorted { $0.endDate ?? Date() < $1.endDate ?? Date() }
-				currentGame = extraActives.popLast()
-				
-				previousGames.append(contentsOf: extraActives)
-			}
-			
-			loadable = .success(Season(team: team, currentGame: currentGame, previousGames: previousGames))
+//			let gamesRequest = NSFetchRequest<GameCD>()
+//			gamesRequest.entity = GameCD.entity()
+//			gamesRequest.predicate = predicate
+//			
+//			let games = try AppDelegate.instance.persistentContainer.viewContext.fetch(gamesRequest)
+//				.map { try Game(model: $0) }
+//			
+//			
+//			loadable = .success(Season(team: team, currentGame: currentGame, previousGames: previousGames))
 		} catch {
 			loadable = .error(DisplayableError())
 		}

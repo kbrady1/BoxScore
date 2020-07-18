@@ -27,41 +27,41 @@ struct GamesForTeamRequest: FetchRequest2 {
 	}
 }
 
-class TeamGames: CloudCreatable {
-	var games: [Game]
-	
-	init(games: [Game]) {
-		self.games = games
-	}
-	
-	required init(records: [CKRecord]) throws {
-		self.games = try records.map { try Game(record: $0) }
-	}
-}
+//class TeamGames: CloudCreatable {
+//	var games: [Game]
+//
+//	init(games: [Game]) {
+//		self.games = games
+//	}
+//
+//	required init(records: [CKRecord]) throws {
+//		self.games = try records.map { try Game(record: $0) }
+//	}
+//}
 
-class SeasonViewModel: NetworkReadViewModel, ObservableObject {
-	typealias CloudResource = TeamGames
-
-	var loadable: Loadable<CloudResource> = .loading
-	var manager: CloudManager = CloudManager()
-	var request: FetchRequest2
-	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
-	
-	var skipCall: Bool = false
-	
-	var teamId: String
-	
-	init(teamId: String) {
-		self.teamId = teamId
-		self.request = GamesForTeamRequest(teamId: teamId)
-	}
-	
-	func update(teamId: String) {
-		self.loadable = .loading
-		self.teamId = teamId
-		self.request = GamesForTeamRequest(teamId: teamId)
-		self.objectWillChange.send()
-		
-		self.fetch(request: request)
-	}
-}
+//class SeasonViewModel: NetworkReadViewModel, ObservableObject {
+//	typealias CloudResource = TeamGames
+//
+//	var loadable: Loadable<CloudResource> = .loading
+//	var manager: CloudManager = CloudManager()
+//	var request: FetchRequest2
+//	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
+//
+//	var skipCall: Bool = false
+//
+//	var teamId: String
+//
+//	init(teamId: String) {
+//		self.teamId = teamId
+//		self.request = GamesForTeamRequest(teamId: teamId)
+//	}
+//
+//	func update(teamId: String) {
+//		self.loadable = .loading
+//		self.teamId = teamId
+//		self.request = GamesForTeamRequest(teamId: teamId)
+//		self.objectWillChange.send()
+//
+//		self.fetch(request: request)
+//	}
+//}

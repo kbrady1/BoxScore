@@ -78,7 +78,7 @@ struct HomeTeamView: View {
 					}
 				}
 				Section(header: Text("Players")) {
-					ForEach(self.league.currentSeason.team.players, id: \.number) { (player) in
+					ForEach(self.league.currentSeason.team.players) { (player) in
 						NavigationLink(
 							destination: PlayerStatSummaryView(viewModel: StatViewModel(id: player.id, type: .player), useLoadedStats: false, player: player)
 								.environmentObject(GameList(self.league.currentSeason.previousGames))
@@ -102,8 +102,7 @@ struct HomeTeamView: View {
 			}
 			
 			NavigationLink(destination: LiveGameView()
-				//Create a new game if one does not exist
-				.environmentObject(LiveGame(team: league.currentSeason.team, game: league.currentSeason.currentGame))
+				.environmentObject(LiveGameViewModel(currentGame: league.currentSeason.currentGame, team: league.currentSeason.team))
 				.environmentObject(settings)
 				.environmentObject(league.currentSeason)
 			) {

@@ -57,6 +57,7 @@
 		05FA4206246CCB4200B2A2EC /* ColorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05FA4205246CCB4200B2A2EC /* ColorPickerView.swift */; };
 		05FFA22524C224A000AC17B2 /* BoxScore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 05FFA22324C224A000AC17B2 /* BoxScore.xcdatamodeld */; };
 		05FFA22724C234C700AC17B2 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05FFA22624C234C700AC17B2 /* CoreDataManager.swift */; };
+		05FFA22924C28A8B00AC17B2 /* LiveGameCourtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05FFA22824C28A8B00AC17B2 /* LiveGameCourtView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -134,6 +135,7 @@
 		05FA4205246CCB4200B2A2EC /* ColorPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerView.swift; sourceTree = "<group>"; };
 		05FFA22424C224A000AC17B2 /* BoxScore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BoxScore.xcdatamodel; sourceTree = "<group>"; };
 		05FFA22624C234C700AC17B2 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		05FFA22824C28A8B00AC17B2 /* LiveGameCourtView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveGameCourtView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -309,6 +311,7 @@
 				05B140D324B95ED000936738 /* AddPlayerLoadingView.swift */,
 				05DA327024C1551B004E4042 /* DeleteGameLoadingView.swift */,
 				05DA327224C1554F004E4042 /* WriteDeleteLoadingView.swift */,
+				05FFA22824C28A8B00AC17B2 /* LiveGameCourtView.swift */,
 			);
 			path = components;
 			sourceTree = "<group>";
@@ -485,6 +488,7 @@
 				05EF2A58246A0235004F4E09 /* LiveGameView.swift in Sources */,
 				05E1057F24AF913B00F39F0C /* SeasonView.swift in Sources */,
 				05B140C624B8FEE900936738 /* Networking.swift in Sources */,
+				05FFA22924C28A8B00AC17B2 /* LiveGameCourtView.swift in Sources */,
 				05E1057D24AF8FEA00F39F0C /* Season.swift in Sources */,
 				05DA327124C1551B004E4042 /* DeleteGameLoadingView.swift in Sources */,
 				05FA4204246CC8AD00B2A2EC /* AddPlayerView.swift in Sources */,

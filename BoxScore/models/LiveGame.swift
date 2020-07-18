@@ -15,7 +15,7 @@ class LiveGame: ObservableObject {
 	
 	@Published var playersInGame: [Player] {
 		didSet {
-			game.playerIdsInGame = playersInGame.map { $0.id }
+			game.playersInGame = playersInGame
 		}
 	}
 	
@@ -36,13 +36,11 @@ class LiveGame: ObservableObject {
 	}
 	
 	init(team: Team, game: Game?) {
-		let createdGame = game ?? Game.createGame(teamId: team.id)
+		let createdGame = game ?? Game.createGame(team: team)
 		self.game = createdGame
 		self.team = team
 		
-		let playersInGame = game?.playerIdsInGame.compactMap { (id) in
-			team.players.first { $0.id == id }
-		} ?? []
+		let playersInGame = game?.playersInGame ?? []
 		self.playersInGame = playersInGame
 		self.playersOnBench = team.players.filter { !playersInGame.contains($0) }
 		
@@ -56,11 +54,8 @@ class LiveGame: ObservableObject {
 	//MARK: Methods
 	
 	func createOrStart() {
-		let playersInGame = game.playerIdsInGame.compactMap { (id) in
-			team.players.first { $0.id == id }
-		}
-		self.playersInGame = playersInGame
-		self.playersOnBench = team.players.filter { !playersInGame.contains($0) }
+		self.playersInGame = game.playersInGame
+		self.playersOnBench = team.players.filter { !game.playersInGame.contains($0) }
 		
 		game.start()
 		statViewModel.fetch(request: statViewModel.request)

@@ -33,6 +33,7 @@ class Player: Identifiable, Equatable {
 		model.firstName = firstName
 		model.lastName = lastName
 		model.team = team.model
+		model.number = Int16(number)
 		model.id = id
 		
 		try? AppDelegate.context.save()

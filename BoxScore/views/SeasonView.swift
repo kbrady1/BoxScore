@@ -10,7 +10,6 @@ import SwiftUI
 
 struct SeasonView: View {
 	@EnvironmentObject var settings: StatSettings
-	@EnvironmentObject var seasonViewModel: SeasonViewModel
 	
 	@State var season: Season
 	@State var currentGame: Game?
@@ -33,7 +32,7 @@ struct SeasonView: View {
 					Section {
 						NavigationLink(destination:
 							LiveGameView()
-								.environmentObject(LiveGame(team: season.team, game: currentGame!))
+								.environmentObject(LiveGameViewModel(currentGame: currentGame!, team: season.team))
 								.environmentObject(settings)
 								.environmentObject(season)
 						) {
@@ -84,16 +83,17 @@ struct SeasonView: View {
 			.environment(\.horizontalSizeClass, .regular)
 			.listStyle(GroupedListStyle())
 			
-			if showDeleteGameLoadingView && gameToDelete != nil {
-				DeleteGameLoadingView(
-					viewModel: EditGameViewModel(game: gameToDelete!),
-					loadingView: LoadingView(visible: $showDeleteGameLoadingView) { (_) in
-						guard let gameToDelete = self.gameToDelete else { return }
-						
-						self.season.previousGames.removeAll { $0.id == gameToDelete.id }
-					}
-				)
-			}
+//			if showDeleteGameLoadingView && gameToDelete != nil {
+				
+//				DeleteGameLoadingView(
+//					viewModel: EditGameViewModel(game: gameToDelete!),
+//					loadingView: LoadingView(visible: $showDeleteGameLoadingView) { (_) in
+//						guard let gameToDelete = self.gameToDelete else { return }
+//
+//						self.season.previousGames.removeAll { $0.id == gameToDelete.id }
+//					}
+//				)
+//			}
 		}
 		.navigationBarTitle("Season")
 		.navigationBarItems(trailing:
