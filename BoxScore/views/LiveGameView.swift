@@ -54,12 +54,12 @@ struct LiveGameView: View {
 	}
 	
 	func instructionCards(width: CGFloat, height: CGFloat) -> some View {
-		PagerView(pageCount: 10, currentIndex: $currentPage) {
+		PagerView(pageCount: 10, currentIndex: $currentPage, highlightColor: self.season.team.secondaryColor) {
 			InstructionCardView(
 				title: "Choose Opponent Name",
 				content: Image(systemName: "arrow.up.circle.fill")
 					.resizable()
-					.frame(width: width * 0.6, height: width * 0.6)
+					.frame(width: width * 0.4, height: width * 0.4)
 					.foregroundColor(season.team.secondaryColor)
 				,
 				details: "Enter the opponent name above.",
@@ -161,7 +161,7 @@ struct LiveGameView: View {
 				title: "Go! Fight! Win!",
 				content: Image(systemName: "arrow.down.circle.fill")
 					.resizable()
-					.frame(width: width * 0.6, height: width * 0.6)
+					.frame(width: width * 0.4, height: width * 0.4)
 					.foregroundColor(season.team.secondaryColor)
 				,
 				details: "That's it, you know all you need to now. Go get a win!",
