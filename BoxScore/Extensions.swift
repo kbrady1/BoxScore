@@ -9,6 +9,16 @@
 import Foundation
 import SwiftUI
 
+extension UIColor {
+	static var live_court_color: UIColor {
+		return UIColor(named: "live_court_color")!
+	}
+	
+	static var stat_court_color: UIColor {
+		return UIColor(named: "stat_court_color")!
+	}
+}
+
 extension View {
 	func `if`<Content: View>(_ conditional: Bool, content: (Self) -> Content) -> some View {
 		if conditional {

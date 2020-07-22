@@ -20,7 +20,7 @@ struct ShotStatView: View {
 	
     var body: some View {
         VStack {
-			VStack {
+			VStack(spacing: 0) {
 				Picker("Filter Shots", selection: $filterMakes) {
 					Text("All").tag(ShotFilter.all)
 					Text("Makes").tag(ShotFilter.makes)
@@ -28,10 +28,11 @@ struct ShotStatView: View {
 				}.pickerStyle(SegmentedPickerStyle())
 				ZStack {
 					GeometryReader { (geometry) in
-						Image("BasketballCourt")
+						Image("half_court")
 							.resizable()
+							.aspectRatio(contentMode: .fit)
+							.foregroundColor(Color(.stat_court_color))
 							.frame(minWidth: 300, maxWidth: .infinity)
-							.frame(minHeight: 200, maxHeight: 300)
 						ForEach(self.shotsToDisplay.filter {
 							switch (self.filterMakes) {
 							case .all:
@@ -43,13 +44,12 @@ struct ShotStatView: View {
 							}
 						}) {
 							ShotView(make: $0.shotWasMake)
-								.position(CGPoint(x: $0.shotLocation!.x * geometry.size.width, y: $0.shotLocation!.y * geometry.size.height))
+								.position(CGPoint(x: $0.shotLocation!.x * geometry.size.width, y: $0.shotLocation!.y * geometry.size.height * 0.9))
 						}
 						.animation(.default)
 					}
 				}
-				.frame(minWidth: 300, maxWidth: .infinity)
-				.frame(minHeight: 200, maxHeight: 300)
+				.frame(minHeight: 250, idealHeight: 300, maxHeight: 350)
 			}
 			
 			VStack(spacing: 8.0) {
@@ -83,7 +83,7 @@ struct ShotStatView: View {
 			}
 			
 		}
-		.frame(minHeight: 350, idealHeight: 380, maxHeight: 420)
+		.frame(minHeight: 400, maxHeight: 500)
 		.onAppear {
 			self.data = self.calculateData()
 		}
@@ -111,7 +111,7 @@ struct ShotView: View {
 	var make: Bool
 	
 	var body: some View {
-		DefaultCircleView(color: make ? .green : .red, shadow: false)
+		DefaultCircleView(color: make ? .green : .red, shadow: false, style: .systemThinMaterial)
 			.frame(width: 16, height: 16)
 	}
 }

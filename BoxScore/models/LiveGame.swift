@@ -86,6 +86,8 @@ class LiveGame: ObservableObject {
 			playersInGame.remove(at: courtIndex)
 			playersOnBench.insert(playerOnCourt, at: 0)
 		}
+		
+		self.objectWillChange.send()
 	}
 	
 	func recordStat(_ stat: StatInput) {
@@ -99,7 +101,7 @@ class LiveGame: ObservableObject {
 		//Update values
 		game.statCounter[recordedStat.type] = (game.statCounter[recordedStat.type] ?? 0) + 1
 		
-		if recordedStat.type == .shot {
+		if recordedStat.type == .shot && recordedStat.shotWasMake {
 			game.teamScore += recordedStat.pointsOfShot ?? 0
 		}
 		

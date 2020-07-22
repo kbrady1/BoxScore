@@ -26,106 +26,115 @@ struct LiveGameCourtView: View {
 	@State private var positionE: CourtPositionView? = nil
 	
     var body: some View {
-		GeometryReader { (geometry) in
+		ZStack {
 			VStack {
-				VStack {
-					VStack(spacing: 24) {
-						HStack {
-							VStack {
-								Text("\(self.season.team.name)")
-									.font(.caption)
-									.offset(x: 0, y: 10)
-								Text(String(self.game.game.teamScore))
-									.foregroundColor(self.season.team.primaryColor)
-									.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
-							}
-							.frame(width: 90)
-							Spacer()
-							Text("Game Score")
-								.font(.title)
-								.scaledToFit()
-							Spacer()
-							VStack {
-								Text(self.game.game.opponentName)
-									.font(.caption)
-									.offset(x: 0, y: 10)
-								Button(String(self.game.game.opponentScore)) {
-									self.game.game.opponentScore += 1
-								}
-								.contextMenu {
-									ForEach(self.game.opponentScoreOptions, id: \.1) { (scorePair) in
-										Button(action: {
-											self.game.game.opponentScore += scorePair.1
-										}) {
-											Text(scorePair.0)
-										}
-									}
-								}
+				VStack(spacing: 24) {
+					HStack {
+						VStack {
+							Text("\(self.season.team.name)")
+								.font(.caption)
+								.offset(x: 0, y: 10)
+							Text(String(self.game.game.teamScore))
 								.foregroundColor(self.season.team.primaryColor)
 								.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
-							}
-							.frame(width: 90)
 						}
-						.padding(.horizontal)
-						HStack(spacing: 16) {
-							ForEach(StatType.all.filter { $0 != .shot }) { (stat) in
-								VStack {
-									Text(stat.abbreviation())
-										.font(.callout)
-									Text("\(self.game.game.statCounter[stat] ?? 0)")
-										.bold()
-										.font(.headline)
+						.frame(width: 90)
+						Spacer()
+						Text("Game Score")
+							.font(.title)
+							.scaledToFit()
+						Spacer()
+						VStack {
+							Text(self.game.game.opponentName)
+								.font(.caption)
+								.offset(x: 0, y: 10)
+							Button(String(self.game.game.opponentScore)) {
+								self.game.game.opponentScore += 1
+							}
+							.contextMenu {
+								ForEach(self.game.opponentScoreOptions, id: \.1) { (scorePair) in
+									Button(action: {
+										self.game.game.opponentScore += scorePair.1
+									}) {
+										Text(scorePair.0)
+									}
 								}
 							}
+							.foregroundColor(self.season.team.primaryColor)
+							.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 						}
-						.padding(.bottom)
+						.frame(width: 90)
 					}
-					.background(BlurView(style: .prominent))
-					.background(self.game.team.primaryColor.cornerRadius(18))
-					.cornerRadius(16)
-					.shadow(color: Color.black.opacity(0.2), radius: 6.0)
-					.padding(8.0)
-					
-					self.addCourtView(reader: geometry)
+					.padding(.horizontal)
+					HStack(spacing: 16) {
+						ForEach(StatType.all.filter { $0 != .shot }) { (stat) in
+							VStack {
+								Text(stat.abbreviation())
+									.font(.callout)
+								Text("\(self.game.game.statCounter[stat] ?? 0)")
+									.bold()
+									.font(.headline)
+							}
+						}
+					}
+					.padding(.bottom)
 				}
-				.offset(x: 0, y: -60)
+				.background(BlurView(style: .prominent))
+				.background(self.game.team.primaryColor.cornerRadius(18))
+				.cornerRadius(16)
+				.shadow(color: Color.black.opacity(0.2), radius: 6.0)
+				.padding(8.0)
 				
-//				Spacer()
-				Bench() { (player) in
-					//Action to perform on double tap of bench item, adds player to game if spot available
-					[self.positionA, self.positionB, self.positionC, self.positionD, self.positionE]
-						.compactMap { $0 }
-						.first { $0.player.player == nil }?
-						.addPlayer(DraggablePlayerReference(id: player.id), game: self.game)
+				self.addCourtView()
+			}
+			.offset(x: 0, y: -60)
+			.edgesIgnoringSafeArea(.bottom)
+			
+			VStack {
+				Spacer()
+				ZStack {
+					BlurView(style: .systemUltraThinMaterial)
+						.cornerRadius(16.0)
+						.shadow(color: Color.black.opacity(0.2), radius: 6.0)
+						.edgesIgnoringSafeArea(.bottom)
+					VStack(spacing: 0) {
+						Bench() { (player) in
+							[self.positionA, self.positionB, self.positionC, self.positionD, self.positionE]
+								.compactMap { $0 }
+								.first { $0.player.player == nil }?
+								.addPlayer(DraggablePlayerReference(id: player.id), game: self.game)
+						}
+						
+						HStack {
+							Button(action: {
+								self.showStatModal.toggle()
+							}) {
+								FloatButtonView(text: Binding.constant("Stats"), backgroundColor: self.season.team.primaryColor)
+							}
+							.sheet(isPresented: self.$showStatModal) {
+								LiveGameStatView()
+									.environmentObject(self.game)
+									.environmentObject(self.game.team)
+							}
+							Button(action: {
+								//End game
+								self.showActionSheet.toggle()
+							}) {
+								FloatButtonView(text: Binding.constant("End Game"), backgroundColor: self.season.team.secondaryColor)
+							}
+							.actionSheet(isPresented: self.$showActionSheet) {
+								ActionSheet(title: Text("Confirm End Game?"), message: Text("By ending the game you will no longer be able to add stats to this game. This action cannot be undone."), buttons: [
+									ActionSheet.Button.cancel(),
+									ActionSheet.Button.destructive(Text("End Game"), action: {
+										self.season.completeGame()
+										self.presentationMode.wrappedValue.dismiss()
+									})
+								])
+							}
+						}.padding()
+					}
 				}
-				
-				HStack {
-					Button(action: {
-						self.showStatModal.toggle()
-					}) {
-						FloatButtonView(text: Binding.constant("Stats"), backgroundColor: self.season.team.primaryColor)
-					}
-					.sheet(isPresented: self.$showStatModal) {
-						LiveGameStatView()
-							.environmentObject(self.game)
-							.environmentObject(self.game.team)
-					}
-					Button(action: {
-						//End game
-						self.showActionSheet.toggle()
-					}) {
-						FloatButtonView(text: Binding.constant("End Game"), backgroundColor: self.season.team.secondaryColor)
-					}
-					.actionSheet(isPresented: self.$showActionSheet) {
-						ActionSheet(title: Text("Confirm End Game?"), message: Text("By ending the game you will no longer be able to add stats to this game. This action cannot be undone."), buttons: [
-							ActionSheet.Button.cancel(),
-							ActionSheet.Button.destructive(Text("End Game"), action: {
-								self.season.completeGame()
-								self.presentationMode.wrappedValue.dismiss()
-							})
-						])
-					}
-				}.padding()
+					.frame(height: 180)
 			}
 		}
 		.onDisappear {
@@ -139,15 +148,12 @@ struct LiveGameCourtView: View {
 		}
 	}
 	
-	private func addCourtView(reader: GeometryProxy) -> some View {
-		let image = Image("BasketballCourt")
-			.resizable()
-			.frame(minWidth: 300, maxWidth: .infinity)
-//			.frame(height: 250)
-		
+	private func addCourtView() -> some View {
 		return ZStack {
-			//TODO: Add geometry reader here to make sure court position views are not dragged outside of court
-			image
+			Image("full_court")
+				.resizable()
+				.aspectRatio(contentMode: .fit)
+				.foregroundColor(Color(.live_court_color))
 			if positionA != nil {
 				positionA
 			}
@@ -164,8 +170,6 @@ struct LiveGameCourtView: View {
 				positionE
 			}
 		}
-		.frame(minWidth: 300, maxWidth: .infinity)
-//		.frame(height: 300)
 	}
 	
 	private func setUpCourtPositions() {
@@ -215,9 +219,10 @@ struct Bench: View {
 							self.action(player)
 					}
 				}
+				.padding(.vertical, 8.0)
 			}
 			.padding(.leading, 10)
-			.frame(height: 120)
+			.frame(minHeight: 100)
 		}
 	}
 }

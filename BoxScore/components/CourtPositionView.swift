@@ -9,6 +9,7 @@
 import SwiftUI
 
 private let DISTANCE_TO_REGISTER: CGFloat = 60
+private let COURT_PADDING: CGFloat = 32
 
 enum MoveDirection: String {
 	case left, right, up, down
@@ -27,6 +28,8 @@ struct CourtPositionView: View {
 	@EnvironmentObject var settings: StatSettings
 	@State var position: CGPoint
 	
+	var courtWidth: CGFloat { UIScreen.main.bounds.width }
+	
 	@State private var offset = CGSize.zero
 	@State private var offsetPosition = CGSize.zero
 	@State private var size = CGSize.zero
@@ -42,23 +45,33 @@ struct CourtPositionView: View {
 	
 	var hasPlayer: Bool { player.player != nil }
 	var defaultSize: CGSize {
-		self.hasPlayer ? CGSize(width: 80, height: 80) : CGSize(width: 50, height: 50)
+		self.hasPlayer ? CGSize(width: 75, height: 75) : CGSize(width: 45, height: 45)
 	}
 	@State var statType: StatType? = nil
+	
+	/*
+	- position never changes, it is the start position as input.
+	- position - offset position = location in relation to court view
+	- use courtWidth to create a square to calculate the height or width limit
+	*/
 	
 	var body: some View {
 		let moveGesture = DragGesture()
 			.onChanged { (gesture) in
-				self.offset = CGSize(
-					width: gesture.translation.width + self.offsetPosition.width,
-					height: gesture.translation.height + self.offsetPosition.height
-				)
+				if self.canUpdateLocation(for: gesture.translation) {
+					self.offset = CGSize(
+						width: gesture.translation.width + self.offsetPosition.width,
+						height: gesture.translation.height + self.offsetPosition.height
+					)
+				}
 			}
 			.onEnded { (gesture) in
-				self.offset = CGSize(
-					width: gesture.translation.width + self.offsetPosition.width,
-					height: gesture.translation.height + self.offsetPosition.height
-				)
+				if self.canUpdateLocation(for: gesture.translation) {
+					self.offset = CGSize(
+						width: gesture.translation.width + self.offsetPosition.width,
+						height: gesture.translation.height + self.offsetPosition.height
+					)
+				}
 				self.offsetPosition = self.offset
 			}
 		let doubleTap = TapGesture(count: 2)
@@ -97,7 +110,7 @@ struct CourtPositionView: View {
 			if !hasPlayer {
 				Circle()
 					.fill(LinearGradient(gradient: Gradient(colors: [.gray, Color(UIColor.secondarySystemBackground)]), startPoint: .bottom, endPoint: .topTrailing))
-					.frame(width: 50, height: 50)
+					.frame(width: defaultSize.width, height: defaultSize.height)
 			} else {
 				if statType != nil {
 					VStack {
@@ -119,7 +132,7 @@ struct CourtPositionView: View {
 					if dragDirection == .down { Spacer() }
 					HStack {
 						if dragDirection == .right { Spacer() }
-						PlayerInGameView(game: game, player: player.player!)
+						PlayerInGameView(game: game, player: player.player!, height: defaultSize.height)
 							.contextMenu {
 								ForEach(settings.allStats, id: \.0) { (typePair) in
 									Button(action: {
@@ -185,6 +198,20 @@ struct CourtPositionView: View {
 	
 	private func giveFeedback() {
 		UIImpactFeedbackGenerator().impactOccurred()
+	}
+	
+	private func canUpdateLocation(for translation: CGSize) -> Bool {
+		let newWidth = translation.width + self.offsetPosition.width
+		let newHeight = translation.height + self.offsetPosition.height
+		
+		let newX = self.position.x + newWidth
+		let newY = self.position.y + newHeight
+		
+		//Only move the view if within bounds
+		return newX > COURT_PADDING &&
+			newX + COURT_PADDING < self.courtWidth &&
+			newY > COURT_PADDING &&
+			newY + COURT_PADDING < self.courtWidth
 	}
 	
 	private func endDrag() {

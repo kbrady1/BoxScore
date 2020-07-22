@@ -58,11 +58,8 @@ struct StatInputView: View {
 			Spacer().frame(height: 15)
 			VStack(spacing: 24) {
 				VStack {
-					PlayerView(player: player)
+					PlayerView(player: player, color: Color(UIColor.secondarySystemGroupedBackground))
 						.frame(width: 80, height: 80)
-//						.background(Color.white)
-//						.clipShape(Circle())
-//						.shadow(radius: 6)
 					Text("Add \(stat.type.rawValue.capitalized)")
 						.font(.system(size: 45))
 						.bold()
@@ -74,10 +71,11 @@ struct StatInputView: View {
 						InstructionView(number: "1", title: "Tap Shot Location", accentColor: game.team.secondaryColor)
 						ZStack {
 							GeometryReader { geometry in
-								Image("BasketballCourt")
+								Image("half_court")
 								.resizable()
+								.aspectRatio(contentMode: .fit)
+								.foregroundColor(Color(.stat_court_color))
 								.frame(minWidth: 300, maxWidth: .infinity)
-								.frame(minHeight: 200, maxHeight: 200)
 								.gesture(DragGesture(minimumDistance: 0)
 									.onEnded { (gesture) in
 										//Save the shot location for use on this screen
@@ -89,8 +87,8 @@ struct StatInputView: View {
 									}
 								)
 							}
-							.frame(minHeight: 200, maxHeight: 200)
-								
+							.frame(minHeight: 200, idealHeight: 300, maxHeight: 350)
+
 							if shotLocation != .zero {
 								CircleView(color: $game.team.primaryColor)
 									.frame(width: 20, height: 20)
@@ -146,14 +144,14 @@ struct StatInputView: View {
 							HStack(spacing: 16) {
 								Text("None")
 									.frame(width: 80, height: 80)
-								.if(self.otherPlayer == nil) {
-									$0.background(CircleView(color: self.$game.team.primaryColor, shadow: false))
-								}
-								.if(self.otherPlayer != nil) {
-									$0.background(DefaultCircleView(shadow: false))
-								}
-								.onTapGesture { self.otherPlayer = nil }
-								.animation(.default)
+									.if(self.otherPlayer == nil) {
+										$0.background(CircleView(color: self.$game.team.primaryColor, shadow: false))
+									}
+									.if(self.otherPlayer != nil) {
+										$0.background(DefaultCircleView(color: Color(UIColor.secondarySystemGroupedBackground), shadow: false))
+									}
+									.onTapGesture { self.otherPlayer = nil }
+									.animation(.default)
 								
 								ForEach(game.playersInGame, id: \.number) { (player) in
 									PlayerView(player: player, shadow: false)
@@ -161,7 +159,7 @@ struct StatInputView: View {
 											$0.background(CircleView(color: self.$game.team.primaryColor, shadow: false))
 										}
 										.if(self.otherPlayer != player) {
-											$0.background(DefaultCircleView(color: .clear, shadow: false))
+											$0.background(DefaultCircleView(color: Color(UIColor.tertiarySystemGroupedBackground), shadow: false))
 										}
 										.onTapGesture { self.otherPlayer = player }
 										.animation(.default)
@@ -175,7 +173,7 @@ struct StatInputView: View {
 //					if shotWasMake {
 						VStack(spacing: 8.0) {
 							InstructionView(number: "4", title: "Points", accentColor: game.team.secondaryColor)
-							HStack {
+							HStack(spacing: 16.0) {
 								pointView(points: 1)
 								pointView(points: 2)
 								pointView(points: 3)
@@ -279,7 +277,7 @@ struct StatInputView: View {
 			$0.background(CircleView(color: $game.team.primaryColor, shadow: false))
 		}
 		.if(self.pointsOfShot != points) {
-			$0.background(DefaultCircleView(shadow: false))
+			$0.background(DefaultCircleView(color: Color(UIColor.secondarySystemGroupedBackground), shadow: false))
 		}
 		.animation(.default)
 		.onTapGesture {
