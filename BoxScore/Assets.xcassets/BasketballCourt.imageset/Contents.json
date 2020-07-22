@@ -1,18 +1,8 @@
 {
   "images" : [
     {
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "435px-Basketball_court_dimensions_no_label.svg.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "BasketballCourt.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "court.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

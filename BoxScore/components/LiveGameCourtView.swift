@@ -90,7 +90,7 @@ struct LiveGameCourtView: View {
 				}
 				.offset(x: 0, y: -60)
 				
-				Spacer()
+//				Spacer()
 				Bench() { (player) in
 					//Action to perform on double tap of bench item, adds player to game if spot available
 					[self.positionA, self.positionB, self.positionC, self.positionD, self.positionE]
@@ -143,10 +143,7 @@ struct LiveGameCourtView: View {
 		let image = Image("BasketballCourt")
 			.resizable()
 			.frame(minWidth: 300, maxWidth: .infinity)
-			.frame(height: 250)
-		
-		print(reader.safeAreaInsets)
-		print(reader.size)
+//			.frame(height: 250)
 		
 		return ZStack {
 			//TODO: Add geometry reader here to make sure court position views are not dragged outside of court
@@ -168,7 +165,7 @@ struct LiveGameCourtView: View {
 			}
 		}
 		.frame(minWidth: 300, maxWidth: .infinity)
-		.frame(height: 300)
+//		.frame(height: 300)
 	}
 	
 	private func setUpCourtPositions() {

@@ -31,7 +31,7 @@ struct ShotStatView: View {
 						Image("BasketballCourt")
 							.resizable()
 							.frame(minWidth: 300, maxWidth: .infinity)
-							.frame(minHeight: 200, maxHeight: 200)
+							.frame(minHeight: 200, maxHeight: 300)
 						ForEach(self.shotsToDisplay.filter {
 							switch (self.filterMakes) {
 							case .all:
@@ -49,7 +49,7 @@ struct ShotStatView: View {
 					}
 				}
 				.frame(minWidth: 300, maxWidth: .infinity)
-				.frame(minHeight: 200, maxHeight: 200)
+				.frame(minHeight: 200, maxHeight: 300)
 			}
 			
 			VStack(spacing: 8.0) {
