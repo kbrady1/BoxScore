@@ -17,10 +17,10 @@ struct InstructionCardView<Content: View>: View {
 	var width: CGFloat
 	var height: CGFloat
 	
-    var body: some View {
-		VStack(spacing: 16) {
+	var body: some View {
+		VStack(spacing: 0) {
 			Text(title)
-				.font(.largeTitle)
+				.font(.title)
 				.bold()
 				.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
 			
@@ -29,7 +29,7 @@ struct InstructionCardView<Content: View>: View {
 				if image != nil {
 					image!
 						.resizable()
-						.frame(width: width * 0.6, height: width * 0.6)
+						.frame(width: width * 0.5, height: width * 0.5)
 						.cornerRadius(16)
 						.shadow(color: Color.black.opacity(0.1), radius: 6)
 				}
@@ -39,7 +39,7 @@ struct InstructionCardView<Content: View>: View {
 			Spacer()
 			Text(details)
 				.font(.headline)
-			.foregroundColor(Color(UIColor.secondaryLabel))
+				.foregroundColor(Color(UIColor.secondaryLabel))
 			Spacer()
 		}
 		.frame(width: width, height: height)
@@ -48,7 +48,7 @@ struct InstructionCardView<Content: View>: View {
 		.cornerRadius(36)
 		.shadow(color: Color.black.opacity(0.15), radius: 12)
 		.padding()
-    }
+	}
 }
 
 struct InstructionCardView_Previews: PreviewProvider {

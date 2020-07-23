@@ -42,6 +42,7 @@ struct RootNavigationView: View {
 			}
 			.navigationBarTitle("BoxScore")
 		}
+		.navigationViewStyle(StackNavigationViewStyle())
 		.onAppear(perform: viewModel.fetch)
 	}
 }

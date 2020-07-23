@@ -69,6 +69,7 @@ struct LiveGameStatView: View {
 					.bold()
 			})
 		}
+		.navigationViewStyle(StackNavigationViewStyle())
     }
 	
 	private func totals(for player: Player, dict: [StatType: [Stat]]) -> [StatRow] {

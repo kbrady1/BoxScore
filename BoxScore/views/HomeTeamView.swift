@@ -132,8 +132,6 @@ struct HomeTeamView: View {
 							 rightGesture: self.settings.rightGesture,
 							 upGesture: self.settings.upGesture,
 							 downGesture: self.settings.downGesture)
-//					.environmentObject(self.playersViewModel)
-//					.environmentObject(self.seasonViewModel)
 			},
 			trailing:
 			Button(action: {

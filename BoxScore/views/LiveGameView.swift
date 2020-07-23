@@ -30,7 +30,7 @@ struct LiveGameView: View {
 				}
 				.background(BlurView(style: .systemMaterial))
 				.cornerRadius(8)
-				.padding()
+				.padding(.horizontal)
 				Spacer()
 				GeometryReader { geometry in
 					self.instructionCards(
@@ -42,6 +42,9 @@ struct LiveGameView: View {
 				Button(action: {
 					self.season.currentGame = Game.createGame(team: self.season.team)
 					self.season.currentGame?.opponentName = self.opponentName
+					if self.season.currentGame?.opponentName.isEmpty ?? false {
+						self.season.currentGame?.opponentName =  "Opponent"
+					}
 				}) {
 					FloatButtonView(text: Binding.constant("Create New Game"), backgroundColor: season.team.primaryColor)
 				}.padding()

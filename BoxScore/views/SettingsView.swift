@@ -103,6 +103,7 @@ struct SettingsView: View {
 					.bold()
 			})
 		}
+		.navigationViewStyle(StackNavigationViewStyle())
 	}
 	
 	private func deleteRow(at indexSet: IndexSet) {

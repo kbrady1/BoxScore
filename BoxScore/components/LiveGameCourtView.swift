@@ -28,7 +28,7 @@ struct LiveGameCourtView: View {
     var body: some View {
 		ZStack {
 			VStack {
-				VStack(spacing: 24) {
+				VStack {
 					HStack {
 						VStack {
 							Text("\(self.season.team.name)")
@@ -42,7 +42,8 @@ struct LiveGameCourtView: View {
 						Spacer()
 						Text("Game Score")
 							.font(.title)
-							.scaledToFit()
+							.allowsTightening(true)
+							.minimumScaleFactor(4.0)
 						Spacer()
 						VStack {
 							Text(self.game.game.opponentName)
@@ -77,7 +78,7 @@ struct LiveGameCourtView: View {
 							}
 						}
 					}
-					.padding(.bottom)
+					.padding(.bottom, 4.0)
 				}
 				.background(BlurView(style: .prominent))
 				.background(self.game.team.primaryColor.cornerRadius(18))
@@ -180,12 +181,14 @@ struct LiveGameCourtView: View {
 			
 			return ObservablePlayer()
 		}
+		let width = UIScreen.main.bounds.width
+		let height = width * 0.75
 		
-		positionA = CourtPositionView(position: CGPoint(x: 200, y: 250), player: playerAt(index: 0))
-		positionB = CourtPositionView(position: CGPoint(x: 300, y: 80), player: playerAt(index: 1))
-		positionC = CourtPositionView(position: CGPoint(x: 150, y: 80), player: playerAt(index: 2))
-		positionD = CourtPositionView(position: CGPoint(x: 50, y: 150), player: playerAt(index: 3))
-		positionE = CourtPositionView(position: CGPoint(x: 320, y: 150), player: playerAt(index: 4))
+		positionA = CourtPositionView(position: CGPoint(x: width * 0.3, y: height * 0.7), player: playerAt(index: 0))
+		positionB = CourtPositionView(position: CGPoint(x: width * 0.8, y: height * 0.2), player: playerAt(index: 1))
+		positionC = CourtPositionView(position: CGPoint(x: width * 0.5, y: height * 0.3), player: playerAt(index: 2))
+		positionD = CourtPositionView(position: CGPoint(x: width * 0.15, y: height * 0.2), player: playerAt(index: 3))
+		positionE = CourtPositionView(position: CGPoint(x: width * 0.7, y: height * 0.6), player: playerAt(index: 4))
 	}
 	
 	private func reorderLineup() {

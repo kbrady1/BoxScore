@@ -105,6 +105,7 @@ struct ColorPickerView: View {
 					.bold()
 			}))
 		}
+		.navigationViewStyle(StackNavigationViewStyle())
 		.onAppear {
 			let components = self.chosenColor.hueSatBrightAlpha()
 			self.startLocationLeft = LINEAR_GRADIENT_HEIGHT - (components.s * LINEAR_GRADIENT_HEIGHT)
