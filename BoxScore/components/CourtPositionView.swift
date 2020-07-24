@@ -28,7 +28,7 @@ struct CourtPositionView: View {
 	@EnvironmentObject var settings: StatSettings
 	@State var position: CGPoint
 	
-	var courtWidth: CGFloat { UIScreen.main.bounds.width }
+	var courtWidth: CGFloat { UIApplication.width }
 	
 	@State private var offset = CGSize.zero
 	@State private var offsetPosition = CGSize.zero

@@ -75,7 +75,7 @@ struct StatInputView: View {
 								.resizable()
 								.aspectRatio(contentMode: .fit)
 								.foregroundColor(Color(.stat_court_color))
-								.frame(minWidth: 300, maxWidth: .infinity)
+								.frame(minWidth: 100, maxWidth: .infinity)
 								.gesture(DragGesture(minimumDistance: 0)
 									.onEnded { (gesture) in
 										//Save the shot location for use on this screen

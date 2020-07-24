@@ -41,6 +41,14 @@ extension UIApplication {
 		print("Bottom: \(offset)")
 		return offset
 	}
+	
+	static var width: CGFloat {
+		UIApplication.shared.windows.first?.frame.width ?? UIScreen.main.bounds.width
+	}
+	
+	static var height: CGFloat {
+		UIApplication.shared.windows.first?.frame.height ?? UIScreen.main.bounds.height
+	}
 }
 
 extension Double {

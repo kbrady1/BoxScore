@@ -32,7 +32,7 @@ struct ShotStatView: View {
 							.resizable()
 							.aspectRatio(contentMode: .fit)
 							.foregroundColor(Color(.stat_court_color))
-							.frame(minWidth: 300, maxWidth: .infinity)
+							.frame(minWidth: 100, maxWidth: .infinity)
 						ForEach(self.shotsToDisplay.filter {
 							switch (self.filterMakes) {
 							case .all:

@@ -105,7 +105,7 @@ struct HomeTeamView: View {
 				Text(league.currentSeason.currentGame == nil ? "New Game" : "Continue Game")
 					.bold()
 					.font(.system(size: 28))
-					.frame(minWidth: 300, maxWidth: .infinity)
+					.frame(minWidth: 100, maxWidth: .infinity)
 					.padding(.vertical, 6.0)
 					.background(league.currentSeason.team.primaryColor)
 					.foregroundColor(Color.white)
