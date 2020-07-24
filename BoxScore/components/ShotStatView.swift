@@ -46,7 +46,6 @@ struct ShotStatView: View {
 							ShotView(make: $0.shotWasMake)
 								.position(CGPoint(x: $0.shotLocation!.x * geometry.size.width, y: $0.shotLocation!.y * geometry.size.height * 0.9))
 						}
-						.animation(.default)
 					}
 				}
 				.frame(minHeight: 250, idealHeight: 300, maxHeight: 350)
@@ -61,17 +60,17 @@ struct ShotStatView: View {
 						.bold()
 					Spacer()
 					Text("TAKEN")
-					.bold()
+						.bold()
 					Spacer()
 					Text("%")
-					.bold()
+						.bold()
 					Spacer()
 				}
 				ForEach(data) { (row) in
 					HStack {
 						ForEach(row.cells) { (cell) in
 							Text(cell)
-								.frame(width: 60)
+								.frame(width: 70)
 								.font(.system(size: 18))
 							Spacer()
 						}

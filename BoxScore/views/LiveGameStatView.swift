@@ -18,17 +18,44 @@ struct LiveGameStatView: View {
 	
     var body: some View {
 		NavigationView {
-			List {
-				Section(header: Text("Team Totals")) {
-					totalScrollView(list: getTeamTotals(dict: game.game.statDictionary))
+			Group {
+				if #available(iOS 14.0, *) {
+					List {
+						sections()
+					}
+					.listStyle(InsetGroupedListStyle())
+				} else {
+					List {
+						sections()
+					}
+					.listStyle(GroupedListStyle())
+					.environment(\.horizontalSizeClass, .regular)
 				}
-				
-				Section(header: Text("Shot Chart")) {
-					ShotStatView(shotsToDisplay: game.game.statDictionary[.shot] ?? [])
-						.environmentObject(game.team)
-				}
-				
-				Section(header: Text("Player Stats")) {
+			}
+			.navigationBarTitle("Game Stats")
+			.navigationBarItems(trailing: Button(action: {
+				self.presentationMode.wrappedValue.dismiss()
+			}) {
+				Text("Done")
+					.bold()
+			})
+		}
+		.navigationViewStyle(StackNavigationViewStyle())
+    }
+	
+	private func sections() -> some View {
+		Group {
+			Section(header: Text("Team Totals")) {
+				totalScrollView(list: getTeamTotals(dict: game.game.statDictionary))
+			}
+			
+			Section(header: Text("Shot Chart")) {
+				ShotStatView(shotsToDisplay: game.game.statDictionary[.shot] ?? [])
+					.environmentObject(game.team)
+			}
+			
+			Section(header: Text("Player Stats")) {
+				VStack {
 					ScrollView(.horizontal, showsIndicators: false) {
 						HStack() {
 							ForEach(game.team.players) { (player) in
@@ -56,21 +83,12 @@ struct LiveGameStatView: View {
 					if highlightedPlayer != nil {
 						//Once a player is selected, show their personal stats here
 						statView(for: highlightedPlayer!)
+							.animation(.easeIn)
 					}
 				}
 			}
-			.environment(\.horizontalSizeClass, .regular)
-			.listStyle(GroupedListStyle())
-			.navigationBarTitle("Game Stats")
-			.navigationBarItems(trailing: Button(action: {
-				self.presentationMode.wrappedValue.dismiss()
-			}) {
-				Text("Done")
-					.bold()
-			})
 		}
-		.navigationViewStyle(StackNavigationViewStyle())
-    }
+	}
 	
 	private func totals(for player: Player, dict: [StatType: [Stat]]) -> [StatRow] {
 		let statDict = dict.mapValues { $0.filter { $0.player.id?.uuidString == player.id } }
@@ -112,7 +130,7 @@ struct LiveGameStatView: View {
 				HStack {
 					Spacer()
 					ForEach(row.cells) {
-						self.cell(stat: $0)
+						StatBlock(stat: $0, extraPadding: false)
 						Spacer()
 					}
 				}
@@ -120,36 +138,11 @@ struct LiveGameStatView: View {
 		}
 	}
 
-	private func cell(stat: StatCount) -> some View {
-		VStack {
-			Text(stat.stat.abbreviation())
-				.font(.headline)
-				.padding([.top])
-			Text(stat.totalText)
-				.font(.system(size: 40))
-		}
-		.frame(minWidth: 55, maxWidth: .infinity)
-		.background(TeamGradientBackground())
-		.cornerRadius(4)
-		.padding(8.0)
-	}
-
 	private func totalScrollView(list: [StatCount]) -> some View {
 		ScrollView(.horizontal, showsIndicators: false) {
 			HStack() {
 				ForEach(list) { stat in
-					VStack {
-						Text(stat.stat == .shot ? "PTS" : stat.stat.abbreviation())
-							.font(.headline)
-						Text(stat.totalText)
-							.font(.system(size: 40))
-
-					}
-					.frame(width: 60)
-					.padding()
-					.background(TeamGradientBackground())
-					.cornerRadius(4)
-					.padding(8.0)
+					StatBlock(stat: stat)
 				}
 			}
 		}

@@ -26,75 +26,20 @@ struct SettingsView: View {
 	
 	var body: some View {
 		NavigationView {
-			List {
-				Section(header:
-					Text("Teams")
-						.font(Font.system(size: 32))
-						.bold()
-				) {
-					ForEach(league.seasons, id: \.team.id) { (season) in
-						Button(action: {
-							self.league.currentSeason = season
-						}) {
-							HStack {
-								Text(season.team.name)
-									.bold()
-									.foregroundColor(season.team.name == self.league.currentSeason.team.name ? season.team.primaryColor : Color.gray)
-								Spacer()
-								if season.team.name == self.league.currentSeason.team.name {
-									Image(systemName: "checkmark.circle.fill")
-										.foregroundColor(season.team.secondaryColor)
-								}
-							}
-						}
+			Group {
+				if #available(iOS 14.0, *) {
+					List {
+						sections()
 					}
-					.onDelete(perform: self.deleteRow)
-					.actionSheet(isPresented: $deleteTeamConfirmation) {
-						ActionSheet(title: Text("Confirm Delete Team?"), message: Text("Deleting this team will delete all players, games and stats associated with the team. This action cannot be undone."), buttons: [
-							ActionSheet.Button.cancel(),
-							ActionSheet.Button.destructive(Text("Delete Team"), action: {
-								if let team = self.teamToDelete {
-									self.league.deleteTeam(team)
-								}
-							})
-						])
+					.listStyle(InsetGroupedListStyle())
+				} else {
+					List {
+						sections()
 					}
-					Button(action: {
-						self.league.newTeam(setToCurrent: true)
-						self.presentationMode.wrappedValue.dismiss()
-					}) {
-						Text("Add Team")
-					}
-				}
-				Section(header:
-					Text("Stat Gestures")
-						.font(Font.system(size: 32))
-						.bold()
-				) {
-					gestureButton(for: .up, selection: $settings.upGesture)
-					gestureButton(for: .left, selection: $leftGesture)
-					gestureButton(for: .right, selection: $settings.rightGesture)
-					gestureButton(for: .down, selection: $settings.downGesture)
-				}
-				
-				Button(action: {
-					self.deleteAllDataConfirmation.toggle()
-					self.league.deleteAll()
-				}) {
-					Text("Delete Data")
-						.foregroundColor(.red)
-				}
-				.actionSheet(isPresented: $deleteTeamConfirmation) {
-					ActionSheet(title: Text("Confirm Delete All Data?"), message: Text("All teams, games, players and stats will be deleted. This action cannot be undone."), buttons: [
-						ActionSheet.Button.cancel(),
-						ActionSheet.Button.destructive(Text("Delete Team"), action: {
-							self.league.deleteAll()
-						})
-					])
+					.listStyle(GroupedListStyle())
+					.environment(\.horizontalSizeClass, .regular)
 				}
 			}
-			.listStyle(GroupedListStyle())
-			.environment(\.horizontalSizeClass, .regular)
 			.navigationBarTitle("Settings")
 			.navigationBarItems(trailing: Button(action: {
 				self.presentationMode.wrappedValue.dismiss()
@@ -104,6 +49,94 @@ struct SettingsView: View {
 			})
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
+	}
+	
+	private func sections() -> some View {
+		Group {
+			Section(header:
+						VStack {
+							if #available(iOS 14.0, *) {
+								Text("Teams")
+									.font(.title)
+									.fontWeight(.bold)
+									.textCase(.none)
+							} else {
+								Text("Teams")
+									.font(.title)
+									.fontWeight(.bold)
+							}
+						}
+			) {
+				ForEach(league.seasons, id: \.team.id) { (season) in
+					Button(action: {
+						self.league.currentSeason = season
+					}) {
+						HStack {
+							Text(season.team.name)
+								.bold()
+								.foregroundColor(season.team.name == self.league.currentSeason.team.name ? season.team.primaryColor : Color.gray)
+							Spacer()
+							if season.team.name == self.league.currentSeason.team.name {
+								Image(systemName: "checkmark.circle.fill")
+									.foregroundColor(season.team.secondaryColor)
+							}
+						}
+					}
+				}
+				.onDelete(perform: self.deleteRow)
+				.actionSheet(isPresented: $deleteTeamConfirmation) {
+					ActionSheet(title: Text("Confirm Delete Team?"), message: Text("Deleting this team will delete all players, games and stats associated with the team. This action cannot be undone."), buttons: [
+						ActionSheet.Button.cancel(),
+						ActionSheet.Button.destructive(Text("Delete Team"), action: {
+							if let team = self.teamToDelete {
+								self.league.deleteTeam(team)
+							}
+						})
+					])
+				}
+				Button(action: {
+					self.league.newTeam(setToCurrent: true)
+					self.presentationMode.wrappedValue.dismiss()
+				}) {
+					Text("Add Team")
+				}
+			}
+			Section(header:
+					VStack {
+						if #available(iOS 14.0, *) {
+							Text("Stat Gestures")
+								.font(.title)
+								.fontWeight(.bold)
+								.textCase(.none)
+						} else {
+							Text("Stat Gestures")
+								.font(.title)
+								.fontWeight(.bold)
+						}
+					}
+			) {
+				gestureButton(for: .up, selection: $settings.upGesture)
+				gestureButton(for: .left, selection: $leftGesture)
+				gestureButton(for: .right, selection: $settings.rightGesture)
+				gestureButton(for: .down, selection: $settings.downGesture)
+			}
+			
+			Button(action: {
+				self.deleteAllDataConfirmation.toggle()
+				self.league.deleteAll()
+			}) {
+				Text("Delete Data")
+					.foregroundColor(.red)
+			}
+			.actionSheet(isPresented: $deleteTeamConfirmation) {
+				ActionSheet(title: Text("Confirm Delete All Data?"), message: Text("All teams, games, players and stats will be deleted. This action cannot be undone."), buttons: [
+					ActionSheet.Button.cancel(),
+					ActionSheet.Button.destructive(Text("Delete Team"), action: {
+						self.league.deleteAll()
+					})
+				])
+			}
+		}
 	}
 	
 	private func deleteRow(at indexSet: IndexSet) {

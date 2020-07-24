@@ -28,106 +28,6 @@ struct LiveGameCourtView: View {
 	@State private var positionD: CourtPositionView? = nil
 	@State private var positionE: CourtPositionView? = nil
 	
-	func scoreBoard() -> some View {
-		VStack {
-			HStack {
-				VStack {
-					Text("\(self.season.team.name)")
-						.font(.caption)
-						.offset(x: 0, y: 10)
-					Text(String(self.game.game.teamScore))
-						.foregroundColor(self.season.team.primaryColor)
-						.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
-				}
-				.frame(width: 90)
-				Spacer()
-				Text("Game Score")
-					.font(.title)
-					.allowsTightening(true)
-					.minimumScaleFactor(4.0)
-				Spacer()
-				VStack {
-					Text(self.game.game.opponentName)
-						.font(.caption)
-						.offset(x: 0, y: 10)
-					Button(String(self.game.game.opponentScore)) {
-						self.game.game.opponentScore += 1
-					}
-					.contextMenu {
-						ForEach(self.game.opponentScoreOptions, id: \.1) { (scorePair) in
-							Button(action: {
-								self.game.game.opponentScore += scorePair.1
-							}) {
-								Text(scorePair.0)
-							}
-						}
-					}
-					.foregroundColor(self.season.team.primaryColor)
-					.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
-				}
-				.frame(width: 90)
-			}
-			.padding(.horizontal)
-			HStack(spacing: 16) {
-				ForEach(StatType.all.filter { $0 != .shot }) { (stat) in
-					VStack {
-						Text(stat.abbreviation())
-							.font(.callout)
-						Text("\(self.game.game.statCounter[stat] ?? 0)")
-							.bold()
-							.font(.headline)
-					}
-				}
-			}
-			.padding(.bottom, 4.0)
-		}
-		.background(BlurView(style: .prominent))
-		.background(self.game.team.primaryColor.cornerRadius(18))
-		.cornerRadius(16)
-		.shadow(color: Color.black.opacity(0.2), radius: 6.0)
-		.padding(8.0)
-	}
-	
-	func statsButton() -> some View {
-		Button(action: {
-			self.showStatModal.toggle()
-		}) {
-			FloatButtonView(text: Binding.constant("Stats"), backgroundColor: self.season.team.primaryColor)
-		}
-		.sheet(isPresented: self.$showStatModal) {
-			LiveGameStatView()
-				.environmentObject(self.game)
-				.environmentObject(self.game.team)
-		}
-	}
-	
-	func endGameButton() -> some View {
-		Button(action: {
-			//End game
-			self.showActionSheet.toggle()
-		}) {
-			FloatButtonView(text: Binding.constant("End Game"), backgroundColor: self.season.team.secondaryColor)
-		}
-		.actionSheet(isPresented: self.$showActionSheet) {
-			ActionSheet(title: Text("Confirm End Game?"), message: Text("By ending the game you will no longer be able to add stats to this game. This action cannot be undone."), buttons: [
-				ActionSheet.Button.cancel(),
-				ActionSheet.Button.destructive(Text("End Game"), action: {
-					self.season.completeGame()
-					self.presentationMode.wrappedValue.dismiss()
-				})
-			])
-		}
-	}
-	
-	func benchView(horizontal: Bool) -> some View {
-		Bench(horizontal: horizontal) { (player) in
-			[self.positionA, self.positionB, self.positionC, self.positionD, self.positionE]
-				.compactMap { $0 }
-				.first { $0.player.player == nil }?
-				.addPlayer(DraggablePlayerReference(id: player.id), game: self.game)
-		}
-	}
-	
     var body: some View {
 		GeometryReader { reader in
 			if reader.size.width > reader.size.height {
@@ -185,6 +85,107 @@ struct LiveGameCourtView: View {
 			
 			self.game.setUp()
 			self.season.currentGame = self.game.game
+		}
+	}
+	
+	private func scoreBoard() -> some View {
+		VStack {
+			HStack {
+				VStack {
+					Text("\(self.season.team.name)")
+						.font(.caption)
+						.offset(x: 0, y: 10)
+					Text(String(self.game.game.teamScore))
+						.foregroundColor(self.season.team.primaryColor)
+						.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
+				}
+				.frame(width: 90)
+				Spacer()
+				Text("Game Score")
+					.font(.title)
+					.allowsTightening(true)
+					.minimumScaleFactor(4.0)
+				Spacer()
+				VStack {
+					Text(self.game.game.opponentName)
+						.font(.caption)
+						.offset(x: 0, y: 10)
+					Button(String(self.game.game.opponentScore)) {
+						self.game.game.opponentScore += 1
+					}
+					.contextMenu {
+						ForEach(self.game.opponentScoreOptions, id: \.1) { (scorePair) in
+							Button(action: {
+								self.game.game.opponentScore += scorePair.1
+							}) {
+								Text(scorePair.0)
+							}
+						}
+					}
+					.foregroundColor(self.season.team.primaryColor)
+					.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
+				}
+				.frame(width: 90)
+			}
+			.padding(.horizontal)
+			HStack(spacing: 16) {
+				ForEach(StatType.all.filter { $0 != .shot }) { (stat) in
+					VStack {
+						Text(stat.abbreviation())
+							.font(.callout)
+						Text("\(self.game.game.statCounter[stat] ?? 0)")
+							.bold()
+							.font(.headline)
+					}
+					.frame(minWidth: 20)
+				}
+			}
+			.padding(.bottom, 4.0)
+		}
+		.background(BlurView(style: .prominent))
+		.background(self.game.team.primaryColor.cornerRadius(18))
+		.cornerRadius(16)
+		.shadow(color: Color.black.opacity(0.2), radius: 6.0)
+		.padding(8.0)
+	}
+	
+	private func statsButton() -> some View {
+		Button(action: {
+			self.showStatModal.toggle()
+		}) {
+			FloatButtonView(text: Binding.constant("Stats"), backgroundColor: self.season.team.primaryColor)
+		}
+		.sheet(isPresented: self.$showStatModal) {
+			LiveGameStatView()
+				.environmentObject(self.game)
+				.environmentObject(self.game.team)
+		}
+	}
+	
+	private func endGameButton() -> some View {
+		Button(action: {
+			//End game
+			self.showActionSheet.toggle()
+		}) {
+			FloatButtonView(text: Binding.constant("End Game"), backgroundColor: self.season.team.secondaryColor)
+		}
+		.actionSheet(isPresented: self.$showActionSheet) {
+			ActionSheet(title: Text("Confirm End Game?"), message: Text("By ending the game you will no longer be able to add stats to this game. This action cannot be undone."), buttons: [
+				ActionSheet.Button.cancel(),
+				ActionSheet.Button.destructive(Text("End Game"), action: {
+					self.season.completeGame()
+					self.presentationMode.wrappedValue.dismiss()
+				})
+			])
+		}
+	}
+	
+	private func benchView(horizontal: Bool) -> some View {
+		Bench(horizontal: horizontal) { (player) in
+			[self.positionA, self.positionB, self.positionC, self.positionD, self.positionE]
+				.compactMap { $0 }
+				.first { $0.player.player == nil }?
+				.addPlayer(DraggablePlayerReference(id: player.id), game: self.game)
 		}
 	}
 	

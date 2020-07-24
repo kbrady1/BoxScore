@@ -16,6 +16,7 @@ struct RootNavigationView: View {
 	
 	init() {
 		UINavigationBar.appearance().shadowImage = UIImage()
+		UITableView.appearance().separatorColor = .none
 	}
 	
 	var body: some View {

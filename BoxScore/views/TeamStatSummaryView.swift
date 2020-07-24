@@ -44,7 +44,28 @@ struct TeamStatSummaryView: View {
     var body: some View {
 		//Show shot chart, filter by misses and make
 		
-		List {
+		Group {
+			if #available(iOS 14.0, *) {
+				List {
+					sections()
+				}
+				.listStyle(InsetGroupedListStyle())
+			} else {
+				List {
+					sections()
+				}
+				.listStyle(GroupedListStyle())
+				.environment(\.horizontalSizeClass, .regular)
+			}
+		}
+		.navigationBarTitle(getText("Game Summary", "Season Summary"))
+		.onAppear {
+			(self.stats, self.error) = self.viewModel.fetch()
+		}
+    }
+	
+	private func sections() -> some View {
+		Group {
 			if gameList.games.count == 1 {
 				Section {
 					GameTitleView()
@@ -63,13 +84,8 @@ struct TeamStatSummaryView: View {
 			} else {
 				self.setup(with: stats)
 			}
-		}.listStyle(GroupedListStyle())
-		.environment(\.horizontalSizeClass, .regular)
-		.navigationBarTitle(getText("Game Summary", "Season Summary"))
-		.onAppear {
-			(self.stats, self.error) = self.viewModel.fetch()
 		}
-    }
+	}
 	
 	private func setup(with stats: StatGroup) -> some View {
 		//Set up stat details here
@@ -132,18 +148,7 @@ struct TeamStatSummaryView: View {
 		ScrollView(.horizontal, showsIndicators: false) {
 			HStack() {
 				ForEach(list) { stat in
-					VStack {
-						Text(stat.stat == .shot ? "PTS" : stat.stat.abbreviation())
-							.font(.headline)
-						Text(stat.totalText)
-							.font(.system(size: 40))
-							
-					}
-					.frame(width: 60)
-					.padding()
-					.background(TeamGradientBackground())
-				.cornerRadius(4)
-					.padding(8.0)
+					StatBlock(stat: stat)
 				}
 			}
 		}

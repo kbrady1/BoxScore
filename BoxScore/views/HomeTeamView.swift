@@ -94,9 +94,6 @@ struct HomeTeamView: View {
 				
 			}
 			.listStyle(GroupedListStyle())
-			.onAppear {
-				UITableView.appearance().separatorColor = .clear
-			}
 			
 			NavigationLink(destination: LiveGameView()
 				.environmentObject(settings)
