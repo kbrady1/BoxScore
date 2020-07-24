@@ -13,6 +13,21 @@ import CoreData
 class LeagueViewModel: ObservableObject {
 	var loadable: Loadable<League> = .loading
 	
+	init() {
+		//Register for remote notifications when store updates via cloudkit
+		NotificationCenter.default.addObserver(
+			self,
+			selector: #selector(fetchChanges),
+			name: NSNotification.Name(
+				rawValue: "NSPersistentStoreRemoteChangeNotification"),
+			object: AppDelegate.instance.persistentContainer.persistentStoreCoordinator
+		)
+	}
+	
+	func fetchOnCloudUpdate() {
+		loadable = .loading
+	}
+	
 	func fetch() {
 		do {
 			//Create two teams
@@ -46,5 +61,11 @@ class LeagueViewModel: ObservableObject {
 			loadable = .error(DisplayableError())
 		}
 		objectWillChange.send()
+	}
+	
+	@objc func fetchChanges() {
+		DispatchQueue.main.async {
+			self.fetch()
+		}
 	}
 }

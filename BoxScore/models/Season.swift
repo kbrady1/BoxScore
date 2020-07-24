@@ -20,6 +20,7 @@ class Season: ObservableObject {
 	@Published var currentlyInGame: Bool = false
 	
 	var cancellable: AnyCancellable?
+	var bag: Set<AnyCancellable> = Set()
 	
 	init(team: Team, currentGame: Game? = nil, previousGames: [Game] = []) {
 		self.team = team
@@ -28,8 +29,20 @@ class Season: ObservableObject {
 		self.currentGame = currentGame
 		self.currentlyInGame = currentGame != nil
 		
-		cancellable = team.objectWillChange.sink { (_) in
+		bag.insert(team.objectWillChange.sink { (_) in
 			self.objectWillChange.send()
+		})
+		if let currentGame = currentGame {
+			bag.insert(currentGame.objectWillChange.sink { (_) in
+				self.objectWillChange.send()
+			})
+		}
+		previousGames.map {
+			$0.objectWillChange.sink { (_) in
+				self.objectWillChange.send()
+			}
+		}.forEach {
+			bag.insert($0)
 		}
 	}
 	

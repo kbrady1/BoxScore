@@ -142,8 +142,7 @@ struct LiveGameCourtView: View {
 			}
 			.padding(.bottom, 4.0)
 		}
-		.background(BlurView(style: .prominent))
-		.background(self.game.team.primaryColor.cornerRadius(18))
+		.background(TeamGradientBackground(blur: .prominent, cornerRadius: 18).environmentObject(game.team))
 		.cornerRadius(16)
 		.shadow(color: Color.black.opacity(0.2), radius: 6.0)
 		.padding(8.0)

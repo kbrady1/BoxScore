@@ -23,7 +23,7 @@ class League: ObservableObject, Equatable {
 	}
 	var id = UUID().uuidString
 	
-	var cancellable: AnyCancellable?
+	var bag: Set<AnyCancellable> = Set<AnyCancellable>()
 	
 	init(seasons: [Season]) {
 		self.seasons = seasons
@@ -40,9 +40,15 @@ class League: ObservableObject, Equatable {
 		}
 		
 		//Observable objects don't publish changes when nested in another, so manually push up the changes
-		cancellable = currentSeason.objectWillChange.sink { (_) in
+		bag.insert(currentSeason.objectWillChange.sink { (_) in
 			self.objectWillChange.send()
+		})
+		seasons.map { $0.objectWillChange.sink { (_) in
+			self.objectWillChange.send()
+		} }.forEach {
+			bag.insert($0)
 		}
+		
 	}
 	
 	var teams: [Team] { seasons.map { $0.team }}

@@ -25,7 +25,9 @@ struct RootNavigationView: View {
 				viewModel.loadable.isLoading {
 					Group  {
 						Spacer()
-						Text("Loading")
+						Text("Refreshing Content")
+							.font(.title)
+							.foregroundColor(Color(UIColor.secondaryLabel))
 						Spacer()
 					}
 				}
@@ -44,6 +46,6 @@ struct RootNavigationView: View {
 			.navigationBarTitle("BoxScore")
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
-		.onAppear(perform: viewModel.fetch)
+		.onAppear(perform: viewModel.fetchOnCloudUpdate)
 	}
 }

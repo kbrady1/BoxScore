@@ -89,6 +89,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let options = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.BoxScore")
 		cloudDescription.cloudKitContainerOptions = options
 		
+		cloudDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+		
 		container.persistentStoreDescriptions = [
 			cloudDescription
 		]
