@@ -137,8 +137,10 @@ struct LiveGameCourtView: View {
 					VStack {
 						self.scoreBoard()
 						self.benchView(horizontal: false)
-						self.statsButton()
-						self.endGameButton()
+						VStack(spacing: 16) {
+							self.statsButton()
+							self.endGameButton()
+						}.padding()
 					}
 						.frame(width: reader.size.width * LANDSCAPE_WIDTH_LEFT_BAR_FACTOR)
 					self.addCourtView()

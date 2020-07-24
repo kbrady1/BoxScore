@@ -233,7 +233,7 @@ struct StatInputView: View {
 					}) {
 						Text("Confirm")
 							.bold()
-							.frame(minWidth: 0, maxWidth: .infinity)
+							.frame(minWidth: 0, maxWidth: 500)
 							.font(.system(size: 28))
 							.padding(.vertical, 8)
 							.background(game.team.primaryColor)

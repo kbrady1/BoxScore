@@ -78,7 +78,7 @@ struct AddPlayerView: View {
 					Text(editView ? "Update Player" : "Add Player")
 						.bold()
 						.font(.system(size: 28))
-						.frame(minWidth: 0, maxWidth: .infinity)
+						.frame(minWidth: 0, maxWidth: 500)
 						.padding(.vertical, 6.0)
 						.background(firstName.isEmpty || lastName.isEmpty ? Color.gray : team.primaryColor)
 						.foregroundColor(Color.white)
