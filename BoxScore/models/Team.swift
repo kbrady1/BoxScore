@@ -31,7 +31,7 @@ class Team: ObservableObject {
 	static func createNewRecord() -> Team {
 		let team = Team(name: "",
 					primaryColor: .brandBlue,
-					secondaryColor: .brandBeige,
+					secondaryColor: .brandGreen,
 					model: TeamCD(context: AppDelegate.context),
 					id: UUID(),
 					players: []
@@ -107,11 +107,11 @@ extension Color {
 	typealias HueSatBrightAlphaComponents = (h: CGFloat, s: CGFloat, b: CGFloat, a: CGFloat)
 	
 	static var brandBlue: Color {
-		Color(components: (r: 0.50688, g: 0.667794, b: 0.768, a: 1.0))
+		Color(components: (r: 0.2196, g: 0.4902, b: 0.9333, a: 1.0))
 	}
 	
-	static var brandBeige: Color {
-		Color(components: (r: 0.624, g: 0.639, b: 0.529, a: 1.0))
+	static var brandGreen: Color {
+		Color(components: (r: 0.5019, g: 0.8196, b: 0.4353, a: 1.0))
 	}
 	
 	var stringRepresentation: String {
