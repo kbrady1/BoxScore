@@ -45,18 +45,18 @@ struct TeamStatSummaryView: View {
 		//Show shot chart, filter by misses and make
 		
 		Group {
-			if #available(iOS 14.0, *) {
-				List {
-					sections()
-				}
-				.listStyle(InsetGroupedListStyle())
-			} else {
+//			if #available(iOS 14.0, *) {
+//				List {
+//					sections()
+//				}
+//				.listStyle(InsetGroupedListStyle())
+//			} else {
 				List {
 					sections()
 				}
 				.listStyle(GroupedListStyle())
 				.environment(\.horizontalSizeClass, .regular)
-			}
+//			}
 		}
 		.navigationBarTitle(getText("Game Summary", "Season Summary"))
 		.onAppear {

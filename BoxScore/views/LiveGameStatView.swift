@@ -19,18 +19,18 @@ struct LiveGameStatView: View {
     var body: some View {
 		NavigationView {
 			Group {
-				if #available(iOS 14.0, *) {
-					List {
-						sections()
-					}
-					.listStyle(InsetGroupedListStyle())
-				} else {
+//				if #available(iOS 14.0, *) {
+//					List {
+//						sections()
+//					}
+//					.listStyle(InsetGroupedListStyle())
+//				} else {
 					List {
 						sections()
 					}
 					.listStyle(GroupedListStyle())
 					.environment(\.horizontalSizeClass, .regular)
-				}
+//				}
 			}
 			.navigationBarTitle("Game Stats")
 			.navigationBarItems(trailing: Button(action: {

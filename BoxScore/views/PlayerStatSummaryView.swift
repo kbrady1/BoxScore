@@ -28,18 +28,18 @@ struct PlayerStatSummaryView: View {
 	
 	var body: some View {
 		Group {
-			if #available(iOS 14.0, *) {
-				List {
-					sections()
-				}
-				.listStyle(InsetGroupedListStyle())
-			} else {
+//			if #available(iOS 14.0, *) {
+//				List {
+//					sections()
+//				}
+//				.listStyle(InsetGroupedListStyle())
+//			} else {
 				List {
 					sections()
 				}
 				.listStyle(GroupedListStyle())
 				.environment(\.horizontalSizeClass, .regular)
-			}
+//			}
 		}
 			.navigationBarTitle("\(player.nameFirstLast)'s Stats")
 			.if(!self.useLoadedStats) {

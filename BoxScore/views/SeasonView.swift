@@ -20,18 +20,18 @@ struct SeasonView: View {
     var body: some View {
 		ZStack {
 			Group {
-				if #available(iOS 14.0, *) {
-					List {
-						sections()
-					}
-					.listStyle(InsetGroupedListStyle())
-				} else {
+//				if #available(iOS 14.0, *) {
+//					List {
+//						sections()
+//					}
+//					.listStyle(InsetGroupedListStyle())
+//				} else {
 					List {
 						sections()
 					}
 					.listStyle(GroupedListStyle())
 					.environment(\.horizontalSizeClass, .regular)
-				}
+//				}
 			}
 		}
 		.navigationBarTitle("Season")
@@ -50,16 +50,16 @@ struct SeasonView: View {
 			if season.currentGame != nil {
 				Section(header:
 							VStack {
-								if #available(iOS 14.0, *) {
+//								if #available(iOS 14.0, *) {
+//									Text("Current Game")
+//										.font(.title)
+//										.fontWeight(.bold)
+//										.textCase(.none)
+//								} else {
 									Text("Current Game")
 										.font(.title)
 										.fontWeight(.bold)
-										.textCase(.none)
-								} else {
-									Text("Current Game")
-										.font(.title)
-										.fontWeight(.bold)
-								}
+//								}
 							}
 				) {
 					EmptyView()
@@ -79,16 +79,16 @@ struct SeasonView: View {
 			
 			Section(header:
 						VStack {
-							if #available(iOS 14.0, *) {
+//							if #available(iOS 14.0, *) {
+//								Text("Past Games")
+//									.font(.title)
+//									.fontWeight(.bold)
+//									.textCase(.none)
+//							} else {
 								Text("Past Games")
 									.font(.title)
 									.fontWeight(.bold)
-									.textCase(.none)
-							} else {
-								Text("Past Games")
-									.font(.title)
-									.fontWeight(.bold)
-							}
+//							}
 						}
 			) {
 				if season.previousGames.isEmpty {

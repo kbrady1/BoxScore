@@ -36,8 +36,8 @@ struct InfoView: View {
 			VStack {
 				Spacer()
 				GeometryReader { geometry in
-					PagerView(pageCount: whatsNewInfo.cards.count, currentIndex: $currentIndex, highlightColor: Color.brandGreen) {
-						whatsNewCards(size: cardSize(geometry.size))
+					PagerView(pageCount: self.whatsNewInfo.cards.count, currentIndex: self.$currentIndex, highlightColor: Color.brandGreen) {
+						self.whatsNewCards(size: self.cardSize(geometry.size))
 					}
 				}
 			}

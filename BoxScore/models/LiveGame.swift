@@ -23,7 +23,6 @@ class LiveGame: ObservableObject {
 	@Published var statViewModel: StatViewModel
 	
 	var cancellable: AnyCancellable?
-	var receivable: AnyCancellable?
 	
 	var opponentScoreOptions: [(String, Int)] {
 		//Return -1, 1

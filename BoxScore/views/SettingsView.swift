@@ -27,18 +27,18 @@ struct SettingsView: View {
 	var body: some View {
 		NavigationView {
 			Group {
-				if #available(iOS 14.0, *) {
-					List {
-						sections()
-					}
-					.listStyle(InsetGroupedListStyle())
-				} else {
+//				if #available(iOS 14.0, *) {
+//					List {
+//						sections()
+//					}
+//					.listStyle(InsetGroupedListStyle())
+//				} else {
 					List {
 						sections()
 					}
 					.listStyle(GroupedListStyle())
 					.environment(\.horizontalSizeClass, .regular)
-				}
+//				}
 			}
 			.navigationBarTitle("Settings")
 			.navigationBarItems(trailing: Button(action: {
@@ -55,16 +55,16 @@ struct SettingsView: View {
 		Group {
 			Section(header:
 						VStack {
-							if #available(iOS 14.0, *) {
+//							if #available(iOS 14.0, *) {
+//								Text("Teams")
+//									.font(.title)
+//									.fontWeight(.bold)
+//									.textCase(.none)
+//							} else {
 								Text("Teams")
 									.font(.title)
 									.fontWeight(.bold)
-									.textCase(.none)
-							} else {
-								Text("Teams")
-									.font(.title)
-									.fontWeight(.bold)
-							}
+//							}
 						}
 			) {
 				ForEach(league.seasons, id: \.team.id) { (season) in
@@ -103,16 +103,16 @@ struct SettingsView: View {
 			}
 			Section(header:
 					VStack {
-						if #available(iOS 14.0, *) {
+//						if #available(iOS 14.0, *) {
+//							Text("Stat Gestures")
+//								.font(.title)
+//								.fontWeight(.bold)
+//								.textCase(.none)
+//						} else {
 							Text("Stat Gestures")
 								.font(.title)
 								.fontWeight(.bold)
-								.textCase(.none)
-						} else {
-							Text("Stat Gestures")
-								.font(.title)
-								.fontWeight(.bold)
-						}
+//						}
 					}
 			) {
 				gestureButton(for: .up, selection: $settings.upGesture)
