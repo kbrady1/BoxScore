@@ -29,6 +29,7 @@ struct InstructionCardView<Content: View>: View {
 				if image != nil {
 					image!
 						.resizable()
+						.aspectRatio(contentMode: .fit)
 						.frame(width: width * 0.5, height: width * 0.5)
 						.cornerRadius(16)
 						.shadow(color: Color.black.opacity(0.1), radius: 6)

@@ -72,20 +72,20 @@ struct StatInputView: View {
 						ZStack {
 							GeometryReader { geometry in
 								Image("half_court")
-								.resizable()
-								.aspectRatio(contentMode: .fit)
-								.foregroundColor(Color(.stat_court_color))
-								.frame(minWidth: 100, maxWidth: .infinity)
-								.gesture(DragGesture(minimumDistance: 0)
-									.onEnded { (gesture) in
-										//Save the shot location for use on this screen
-										self.shotLocation = gesture.predictedEndLocation
-										
-										//Save the adjust shot location to standardize these coordinates
-										self.adjustedShotLocation = CGPoint(x: (gesture.predictedEndLocation.x / geometry.size.width),
-																			y: (gesture.predictedEndLocation.y / geometry.size.height))
-									}
-								)
+									.resizable()
+									.aspectRatio(contentMode: .fit)
+									.foregroundColor(Color(.stat_court_color))
+									.frame(minWidth: 100, maxWidth: .infinity)
+									.gesture(DragGesture(minimumDistance: 0)
+												.onEnded { (gesture) in
+													//Save the shot location for use on this screen
+													self.shotLocation = gesture.predictedEndLocation
+													
+													//Save the adjust shot location to standardize these coordinates
+													self.adjustedShotLocation = CGPoint(x: (gesture.predictedEndLocation.x / geometry.size.width),
+																						y: (gesture.predictedEndLocation.y / geometry.size.height))
+												}
+									)
 							}
 							.frame(minHeight: 200, idealHeight: 300, maxHeight: 350)
 

@@ -10,9 +10,25 @@ import SwiftUI
 import CoreFoundation
 import CoreData
 
+class InfoViewChecker: ObservableObject {
+	static let NEW_USER_KEY = "newUserKey"
+	static let LAST_VERSION_KEY = "lastVersionKey"
+	@Published var showInfoScreen: Bool
+	
+	init () {
+		showInfoScreen = UserDefaults.standard.value(forKey: Self.LAST_VERSION_KEY) as? String != Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+		
+		//Update last saved version
+		if let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+			UserDefaults.standard.setValue(currentVersion, forKey: InfoViewChecker.LAST_VERSION_KEY)
+		}
+	}
+}
+
 struct RootNavigationView: View {
 	@Environment(\.managedObjectContext) var context: NSManagedObjectContext
 	@ObservedObject var viewModel = LeagueViewModel()
+	@ObservedObject var popupChecker = InfoViewChecker()
 	
 	init() {
 		UINavigationBar.appearance().shadowImage = UIImage()
@@ -44,6 +60,7 @@ struct RootNavigationView: View {
 				}
 			}
 			.navigationBarTitle("BoxScore")
+			.sheet(isPresented: $popupChecker.showInfoScreen) { InfoView() }
 		}
 		.navigationViewStyle(StackNavigationViewStyle())
 		.onAppear(perform: viewModel.fetchOnCloudUpdate)
