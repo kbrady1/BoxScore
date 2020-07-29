@@ -13,13 +13,38 @@ class LiveGame: ObservableObject {
 	@Published var game: Game
 	@Published var team: Team
 	
-	@Published var playersInGame: [Player] {
+	@Published var posA: Player? {
 		didSet {
-			game.playersInGame = playersInGame
+//			updatePlayersOnBench()
+			game.positionA = posA
+		}
+	}
+	@Published var posB: Player? {
+		didSet {
+//			updatePlayersOnBench()
+			game.positionB = posB
+		}
+	}
+	@Published var posC: Player? {
+		didSet {
+//			updatePlayersOnBench()
+			game.positionC = posC
+		}
+	}
+	@Published var posD: Player? {
+		didSet {
+//			updatePlayersOnBench()
+			game.positionD = posD
+		}
+	}
+	@Published var posE: Player? {
+		didSet {
+//			updatePlayersOnBench()
+			game.positionE = posE
 		}
 	}
 	
-	@Published var playersOnBench: [Player]
+	@Published var playersOnBench: [Player] = []
 	@Published var statViewModel: StatViewModel
 	
 	var cancellable: AnyCancellable?
@@ -33,28 +58,23 @@ class LiveGame: ObservableObject {
 			("+3", 3)
 		].filter { $0.1 + game.opponentScore >= 0 }
 	}
-	
+		
 	init(team: Team, game: Game) {
-		let createdGame = game
-		self.game = createdGame
+		self.game = game
 		self.team = team
 		
-		let playersInGame = game.playersInGame
-		self.playersInGame = playersInGame
-		self.playersOnBench = team.players.filter { !playersInGame.contains($0) }
+		posA = game.positionA
+		posB = game.positionB
+		posC = game.positionC
+		posD = game.positionD
+		posE = game.positionE
+		playersOnBench = team.players.filter { !game.playersInGame.contains($0) }
 		
-		self.statViewModel = StatViewModel(game: createdGame.model)
+		statViewModel = StatViewModel(game: game.model)
 		
 		cancellable = self.game.objectWillChange.sink(receiveValue: { (_) in
 			self.objectWillChange.send()
 		})
-	}
-	
-	//MARK: Methods
-	
-	func setUp() {
-		self.playersInGame = game.playersInGame
-		self.playersOnBench = team.players.filter { !game.playersInGame.contains($0) }
 		
 		self.game.statDictionary = statViewModel.fetch().0.stats
 		self.game.statDictionary.keys.forEach {
@@ -62,31 +82,16 @@ class LiveGame: ObservableObject {
 				self.game.statCounter[$0] = count
 			}
 		}
+		
+		if let score = self.game.statDictionary[.shot]?.sumPoints() {
+			self.game.teamScore = score
+		}
 	}
 	
-	func swapPlayers(fromBench benchPlayer: Player?, toLineUp playerOnCourt: Player?) {
-		if let benchPlayer = benchPlayer,
-			let benchIndex = playersOnBench.firstIndex(of: benchPlayer),
-			(playersInGame.count < 5 || playerOnCourt != nil) {
-			
-			playersOnBench.remove(at: benchIndex)
-			playersInGame.append(benchPlayer)
-			
-			if let playerOnCourt = playerOnCourt {
-				playersOnBench.insert(playerOnCourt, at: benchIndex)
-				
-				if let courtIndex = playersInGame.firstIndex(of: playerOnCourt) {
-					playersInGame.remove(at: courtIndex)
-				}
-			}
-		} else if let playerOnCourt = playerOnCourt,
-			let courtIndex = playersInGame.firstIndex(of: playerOnCourt) {
-			//If benchPlayer was nil and playerOnCourt isn't
-			playersInGame.remove(at: courtIndex)
-			playersOnBench.insert(playerOnCourt, at: 0)
-		}
-		
-		self.objectWillChange.send()
+	//MARK: Methods
+	
+	func updatePlayersOnBench() {
+		playersOnBench = team.players.filter { !game.playersInGame.contains($0) }
 	}
 	
 	func recordStat(_ stat: StatInput) {
@@ -106,5 +111,4 @@ class LiveGame: ObservableObject {
 		
 		AppDelegate.instance.saveContext()
 	}
-	
 }

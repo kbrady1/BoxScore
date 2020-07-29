@@ -39,10 +39,34 @@ class Game: ObservableObject, Equatable {
 		}
 	}
 	
+	var positionA: Player? {
+		   didSet {
+			   save()
+		   }
+	   }
+	var positionB: Player? {
+		   didSet {
+			   save()
+		   }
+	   }
+	var positionC: Player? {
+		   didSet {
+			   save()
+		   }
+	   }
+	var positionD: Player? {
+		   didSet {
+			   save()
+		   }
+	   }
+	var positionE: Player? {
+		   didSet {
+			   save()
+		   }
+	   }
+	
 	var playersInGame: [Player] {
-		didSet {
-			save()
-		}
+		[positionA, positionB, positionC, positionD, positionE].compactMap { $0 }
 	}
 	
 	var endDate: Date?
@@ -57,7 +81,11 @@ class Game: ObservableObject, Equatable {
 		didSet {
 			guard isComplete else { return }
 			endDate = Date()
-			playersInGame = []
+			positionA = nil
+			positionB = nil
+			positionC = nil
+			positionD = nil
+			positionE = nil
 			save()
 		}
 	}
@@ -68,7 +96,11 @@ class Game: ObservableObject, Equatable {
 		model.opponentName = opponentName
 		model.opponentScore = Int16(opponentScore)
 		model.teamScore = Int16(teamScore)
-		model.playersInGame = NSSet(array: playersInGame.map { $0.model })
+		model.positionA = positionA?.model
+		model.positionE = positionE?.model
+		model.positionD = positionD?.model
+		model.positionC = positionC?.model
+		model.positionB = positionB?.model
 		
 		AppDelegate.instance.saveContext()
 	}
@@ -91,8 +123,7 @@ class Game: ObservableObject, Equatable {
 		return Game(opponentName: "Opponent", model: model, id: id.uuidString)
 	}
 	
-	private init(playersInGame: [Player] = [], hasEnded: Bool? = nil, endDate: Date? = nil, opponentName: String, opponentScore: Int? = nil, teamScore: Int? = nil, model: GameCD, id: String) {
-		self.playersInGame = playersInGame
+	private init(hasEnded: Bool? = nil, endDate: Date? = nil, opponentName: String, opponentScore: Int? = nil, teamScore: Int? = nil, model: GameCD, id: String, posA: Player? = nil, posB: Player? = nil, posC: Player? = nil, posD: Player? = nil, posE: Player? = nil) {
 		self.isComplete = hasEnded ?? false
 		self.endDate = endDate
 		self.teamScore = teamScore ?? 0
@@ -101,6 +132,11 @@ class Game: ObservableObject, Equatable {
 		self.id = id
 		self.model = model
 		self.startDate = Date()
+		positionA = posA
+		positionB = posB
+		positionC = posC
+		positionD = posD
+		positionE = posE
 	}
 	
 	let id: String
@@ -112,12 +148,25 @@ class Game: ObservableObject, Equatable {
 		self.opponentName = model.opponentName ?? "Opponent"
 		self.opponentScore = Int(model.opponentScore)
 		self.teamScore = Int(model.teamScore)
-		self.playersInGame = try model.playersInGame?.allObjects.compactMap { $0 as? PlayerCD }.map { try Player(model: $0) } ?? []
 		self.startDate = model.startDate
 		self.endDate = model.endDate
 		
 		self.model = model
 		self.id = id.uuidString
+		
+		func position(for model: PlayerCD?) -> Player? {
+			if let model = model {
+				return try? Player(model: model)
+			}
+			
+			return nil
+		}
+		
+		positionA = position(for: model.positionA)
+		positionB = position(for: model.positionB)
+		positionC = position(for: model.positionC)
+		positionD = position(for: model.positionD)
+		positionE = position(for: model.positionE)
 	}
 	
 	//MARK: Equatable

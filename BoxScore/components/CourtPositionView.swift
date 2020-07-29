@@ -49,11 +49,8 @@ struct CourtPositionView: View {
 	}
 	@State var statType: StatType? = nil
 	
-	/*
-	- position never changes, it is the start position as input.
-	- position - offset position = location in relation to court view
-	- use courtWidth to create a square to calculate the height or width limit
-	*/
+	var addPlayer: (Player) -> Void
+	var removePlayer: () -> Void
 	
 	var body: some View {
 		let moveGesture = DragGesture()
@@ -77,7 +74,7 @@ struct CourtPositionView: View {
 		let doubleTap = TapGesture(count: 2)
 			.onEnded { (gesture) in
 				DispatchQueue.main.async {
-					self.game.swapPlayers(fromBench: nil, toLineUp: self.player.player)
+					self.removePlayer()
 					self.player.player = nil
 				}
 			}
@@ -159,8 +156,8 @@ struct CourtPositionView: View {
 						  stat: StatInput(type: self.statType ?? .shot,
 										  player: self.player.player!.model,
 										  game: self.game.game.model,
-										  team: self.game.team.model),
-						  game: self.game)
+										  team: self.game.team.model)
+						  ).environmentObject(self.game)
 		}
 		.frame(width: size.width, height: size.height)
 		.background(game.team.secondaryColor.cornerRadius(60))
@@ -182,7 +179,7 @@ struct CourtPositionView: View {
 	
 	func addPlayer(_ playerReference: DraggablePlayerReference?, game: LiveGame) {
 		if let player = game.playersOnBench.first(where: { $0.id == playerReference?.id }) {
-			game.swapPlayers(fromBench: player, toLineUp: self.player.player)
+			self.addPlayer(player)
 			self.player.player = player
 		}
 	}

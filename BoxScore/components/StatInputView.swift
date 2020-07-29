@@ -14,7 +14,7 @@ struct StatInputView: View {
 	//TODO: These should be observed objects
 	@State var player: Player
 	@State var stat: StatInput
-	@ObservedObject var game: LiveGame
+	@EnvironmentObject var game: LiveGame
 	
 	@State private var shotWasMake: Bool = false {
 		didSet {
@@ -153,7 +153,7 @@ struct StatInputView: View {
 									.onTapGesture { self.otherPlayer = nil }
 									.animation(.default)
 								
-								ForEach(game.playersInGame, id: \.number) { (player) in
+								ForEach(game.game.playersInGame, id: \.number) { (player) in
 									PlayerView(player: player, shadow: false)
 										.if(self.otherPlayer == player) {
 											$0.background(CircleView(color: self.$game.team.primaryColor, shadow: false))

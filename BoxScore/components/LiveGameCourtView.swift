@@ -22,12 +22,6 @@ struct LiveGameCourtView: View {
 	@State private var showActionSheet: Bool = false
 	@State private var showStatModal: Bool = false
 	
-	@State private var positionA: CourtPositionView? = nil
-	@State private var positionB: CourtPositionView? = nil
-	@State private var positionC: CourtPositionView? = nil
-	@State private var positionD: CourtPositionView? = nil
-	@State private var positionE: CourtPositionView? = nil
-	
     var body: some View {
 		GeometryReader { reader in
 			if reader.size.width > reader.size.height {
@@ -36,7 +30,19 @@ struct LiveGameCourtView: View {
 					//Put court view along right side and scoreboard/buttons along left
 					VStack {
 						self.scoreBoard()
-						self.benchView(horizontal: false)
+						ScrollView(.vertical, showsIndicators: false) {
+							VStack(spacing: 16) {
+								ForEach(self.game.playersOnBench) { (player) in
+									PlayerInGameView(game: self.game, player: player)
+										.onTapGesture(count: 2) {
+											self.benchDoubleTapAction(player: player)
+									}
+								}
+								.padding(.vertical, 8.0)
+							}
+							.padding(.vertical, 10)
+							.frame(minWidth: 100)
+						}
 						VStack(spacing: 16) {
 							self.statsButton()
 							self.endGameButton()
@@ -50,7 +56,6 @@ struct LiveGameCourtView: View {
 				ZStack {
 					VStack {
 						self.scoreBoard()
-						
 						self.addCourtView()
 					}
 					.offset(x: 0, y: -60)
@@ -64,7 +69,19 @@ struct LiveGameCourtView: View {
 								.shadow(color: Color.black.opacity(0.2), radius: 6.0)
 								.edgesIgnoringSafeArea(.bottom)
 							VStack(spacing: 0) {
-								self.benchView(horizontal: true)
+								ScrollView(.horizontal, showsIndicators: false) {
+								HStack(spacing: 16) {
+									ForEach(self.game.playersOnBench) { (player) in
+										PlayerInGameView(game: self.game, player: player)
+											.onTapGesture(count: 2) {
+												self.benchDoubleTapAction(player: player)
+										}
+									}
+									.padding(.vertical, 8.0)
+								}
+								.padding(.leading, 10)
+								.frame(minHeight: 100)
+								}
 								
 								HStack {
 									self.statsButton()
@@ -77,13 +94,7 @@ struct LiveGameCourtView: View {
 				}
 			}
 		}
-		.onDisappear {
-			self.reorderLineup()
-		}
 		.onAppear {
-			self.setUpCourtPositions()
-			
-			self.game.setUp()
 			self.season.currentGame = self.game.game
 		}
 	}
@@ -99,7 +110,7 @@ struct LiveGameCourtView: View {
 						.foregroundColor(self.season.team.primaryColor)
 						.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 				}
-				.frame(width: 90)
+				.frame(minWidth: 90)
 				Spacer()
 				Text("Game Score")
 					.font(.title)
@@ -125,7 +136,7 @@ struct LiveGameCourtView: View {
 					.foregroundColor(self.season.team.primaryColor)
 					.font(.system(size: 60, weight: .bold, design: Font.Design.rounded))
 				}
-				.frame(width: 90)
+				.frame(minWidth: 90)
 			}
 			.padding(.horizontal)
 			HStack(spacing: 16) {
@@ -178,44 +189,27 @@ struct LiveGameCourtView: View {
 			])
 		}
 	}
-	
-	private func benchView(horizontal: Bool) -> some View {
-		Bench(horizontal: horizontal) { (player) in
-			[self.positionA, self.positionB, self.positionC, self.positionD, self.positionE]
-				.compactMap { $0 }
-				.first { $0.player.player == nil }?
-				.addPlayer(DraggablePlayerReference(id: player.id), game: self.game)
+		
+	private func benchDoubleTapAction(player: Player) {
+		if game.posA == nil {
+			game.posA = player
+		} else if game.posB == nil {
+			game.posB = player
+		} else if game.posC == nil {
+			game.posC = player
+		} else if game.posD == nil {
+			game.posD = player
+		} else if game.posE == nil {
+			game.posE = player
 		}
+		
+		game.updatePlayersOnBench()
 	}
 	
 	private func addCourtView() -> some View {
-		return ZStack {
-			Image("full_court")
-				.resizable()
-				.aspectRatio(contentMode: .fit)
-				.foregroundColor(Color(.live_court_color))
-			if positionA != nil {
-				positionA
-			}
-			if positionB != nil {
-				positionB
-			}
-			if positionC != nil {
-				positionC
-			}
-			if positionD != nil {
-				positionD
-			}
-			if positionE != nil {
-				positionE
-			}
-		}
-	}
-	
-	private func setUpCourtPositions() {
-		func playerAt(index: Int) -> ObservablePlayer {
-			if game.playersInGame.count - 1 >= index {
-				return ObservablePlayer(player: game.playersInGame[index])
+		func observablePlayer(_ player: Player?) -> ObservablePlayer {
+			if let player = player {
+				return ObservablePlayer(player: player)
 			}
 			
 			return ObservablePlayer()
@@ -227,66 +221,45 @@ struct LiveGameCourtView: View {
 		}
 		let height = width * 0.75
 		
-		positionA = CourtPositionView(position: CGPoint(x: width * 0.3, y: height * 0.7), player: playerAt(index: 0))
-		positionB = CourtPositionView(position: CGPoint(x: width * 0.8, y: height * 0.2), player: playerAt(index: 1))
-		positionC = CourtPositionView(position: CGPoint(x: width * 0.5, y: height * 0.3), player: playerAt(index: 2))
-		positionD = CourtPositionView(position: CGPoint(x: width * 0.15, y: height * 0.2), player: playerAt(index: 3))
-		positionE = CourtPositionView(position: CGPoint(x: width * 0.7, y: height * 0.6), player: playerAt(index: 4))
-	}
-	
-	private func reorderLineup() {
-		var updatedLineup = [Player]()
-		
-		func addIfThere(view: CourtPositionView?) {
-			if let player = view?.player.player {
-				updatedLineup.append(player)
+		return ZStack {
+			Image("full_court")
+				.resizable()
+				.aspectRatio(contentMode: .fit)
+				.foregroundColor(Color(.live_court_color))
+			CourtPositionView(position: CGPoint(x: width * 0.3, y: height * 0.7), player: observablePlayer(game.posA), addPlayer: { (player) in
+				self.game.posA = player
+				self.game.updatePlayersOnBench()
+			}) {
+				self.game.posA = nil
+				self.game.updatePlayersOnBench()
 			}
-		}
-		
-		[positionA, positionB, positionC, positionD, positionE].forEach {
-			addIfThere(view: $0)
-		}
-		
-		season.currentGame?.playersInGame = updatedLineup
-	}
-}
-
-struct Bench: View {
-	@EnvironmentObject var game: LiveGame
-	@State var horizontal: Bool
-	
-	var action: (Player) -> ()
-	
-	var body: some View {
-		Group {
-			if horizontal {
-				ScrollView(.horizontal, showsIndicators: false) {
-					HStack(spacing: 16) {
-						ForEach(game.playersOnBench) { (player) in
-							PlayerInGameView(game: self.game, player: player)
-								.onTapGesture(count: 2) {
-									self.action(player)
-							}
-						}
-						.padding(.vertical, 8.0)
-					}
-					.padding(.leading, 10)
-					.frame(minHeight: 100)
-				}
-			} else {
-				ScrollView(.vertical, showsIndicators: false) {
-					VStack(spacing: 16) {
-						ForEach(game.playersOnBench) { (player) in
-							PlayerInGameView(game: self.game, player: player)
-								.onTapGesture(count: 2) {
-									self.action(player)
-							}
-						}
-						.padding(.vertical, 8.0)
-					}
-					.padding(.vertical, 10)
-					.frame(minWidth: 100)
-				}
+			CourtPositionView(position: CGPoint(x: width * 0.8, y: height * 0.2), player: observablePlayer(game.posB), addPlayer: { (player) in
+				self.game.posB = player
+				self.game.updatePlayersOnBench()
+			}) {
+				self.game.posB = nil
+				self.game.updatePlayersOnBench()
+			}
+			CourtPositionView(position: CGPoint(x: width * 0.5, y: height * 0.3), player: observablePlayer(game.posC), addPlayer: { (player) in
+				self.game.posC = player
+				self.game.updatePlayersOnBench()
+			}) {
+				self.game.posC = nil
+				self.game.updatePlayersOnBench()
+			}
+			CourtPositionView(position: CGPoint(x: width * 0.15, y: height * 0.2), player: observablePlayer(game.posD), addPlayer: { (player) in
+				self.game.posD = player
+				self.game.updatePlayersOnBench()
+			}) {
+				self.game.posD = nil
+				self.game.updatePlayersOnBench()
+			}
+			CourtPositionView(position: CGPoint(x: width * 0.7, y: height * 0.6), player: observablePlayer(game.posE), addPlayer: { (player) in
+				self.game.posE = player
+				self.game.updatePlayersOnBench()
+			}) {
+				self.game.posE = nil
+				self.game.updatePlayersOnBench()
 			}
 		}
 	}
