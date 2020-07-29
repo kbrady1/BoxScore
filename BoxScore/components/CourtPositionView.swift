@@ -48,6 +48,7 @@ struct CourtPositionView: View {
 		self.hasPlayer ? CGSize(width: 75, height: 75) : CGSize(width: 45, height: 45)
 	}
 	@State var statType: StatType? = nil
+	var key: String
 	
 	var addPlayer: (Player) -> Void
 	var removePlayer: () -> Void
@@ -68,6 +69,12 @@ struct CourtPositionView: View {
 						width: gesture.translation.width + self.offsetPosition.width,
 						height: gesture.translation.height + self.offsetPosition.height
 					)
+					
+					let dict = [
+						"x": (self.position.x + self.offset.width) / 100,
+						"y": (self.position.y + self.offset.height) / 100
+					]
+					UserDefaults.standard.set(dict, forKey: self.key)
 				}
 				self.offsetPosition = self.offset
 			}

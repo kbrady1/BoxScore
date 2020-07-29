@@ -15,31 +15,26 @@ class LiveGame: ObservableObject {
 	
 	@Published var posA: Player? {
 		didSet {
-//			updatePlayersOnBench()
 			game.positionA = posA
 		}
 	}
 	@Published var posB: Player? {
 		didSet {
-//			updatePlayersOnBench()
 			game.positionB = posB
 		}
 	}
 	@Published var posC: Player? {
 		didSet {
-//			updatePlayersOnBench()
 			game.positionC = posC
 		}
 	}
 	@Published var posD: Player? {
 		didSet {
-//			updatePlayersOnBench()
 			game.positionD = posD
 		}
 	}
 	@Published var posE: Player? {
 		didSet {
-//			updatePlayersOnBench()
 			game.positionE = posE
 		}
 	}

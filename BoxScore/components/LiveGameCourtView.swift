@@ -8,6 +8,11 @@
 
 import SwiftUI
 
+private let KEY_FOR_A_POSITION = "keyAPosition"
+private let KEY_FOR_B_POSITION = "keyBPosition"
+private let KEY_FOR_C_POSITION = "keyCPosition"
+private let KEY_FOR_D_POSITION = "keyDPosition"
+private let KEY_FOR_E_POSITION = "keyEPosition"
 private let LANDSCAPE_WIDTH_LEFT_BAR_FACTOR: CGFloat = 0.4
 
 //TODO: Add undo option for stats
@@ -220,47 +225,71 @@ struct LiveGameCourtView: View {
 			width = width * LANDSCAPE_WIDTH_LEFT_BAR_FACTOR
 		}
 		let height = width * 0.75
+		let size = CGSize(width: width, height: height)
+		let positionA = cachedPosition(for: KEY_FOR_A_POSITION, default: CGPoint(x: width * 0.3, y: height * 0.7), size: size)
+		let positionB = cachedPosition(for: KEY_FOR_B_POSITION, default: CGPoint(x: width * 0.8, y: height * 0.2), size: size)
+		let positionC = cachedPosition(for: KEY_FOR_C_POSITION, default: CGPoint(x: width * 0.5, y: height * 0.3), size: size)
+		let positionD = cachedPosition(for: KEY_FOR_D_POSITION, default: CGPoint(x: width * 0.15, y: height * 0.2), size: size)
+		let positionE = cachedPosition(for: KEY_FOR_E_POSITION, default: CGPoint(x: width * 0.7, y: height * 0.6), size: size)
 		
 		return ZStack {
 			Image("full_court")
 				.resizable()
 				.aspectRatio(contentMode: .fit)
 				.foregroundColor(Color(.live_court_color))
-			CourtPositionView(position: CGPoint(x: width * 0.3, y: height * 0.7), player: observablePlayer(game.posA), addPlayer: { (player) in
+			
+			CourtPositionView(position: positionA, player: observablePlayer(game.posA), key: KEY_FOR_A_POSITION, addPlayer: { (player) in
 				self.game.posA = player
 				self.game.updatePlayersOnBench()
 			}) {
 				self.game.posA = nil
 				self.game.updatePlayersOnBench()
 			}
-			CourtPositionView(position: CGPoint(x: width * 0.8, y: height * 0.2), player: observablePlayer(game.posB), addPlayer: { (player) in
+			CourtPositionView(position: positionB, player: observablePlayer(game.posB), key: KEY_FOR_B_POSITION, addPlayer: { (player) in
 				self.game.posB = player
 				self.game.updatePlayersOnBench()
 			}) {
 				self.game.posB = nil
 				self.game.updatePlayersOnBench()
 			}
-			CourtPositionView(position: CGPoint(x: width * 0.5, y: height * 0.3), player: observablePlayer(game.posC), addPlayer: { (player) in
+			CourtPositionView(position: positionC, player: observablePlayer(game.posC), key: KEY_FOR_C_POSITION, addPlayer: { (player) in
 				self.game.posC = player
 				self.game.updatePlayersOnBench()
 			}) {
 				self.game.posC = nil
 				self.game.updatePlayersOnBench()
 			}
-			CourtPositionView(position: CGPoint(x: width * 0.15, y: height * 0.2), player: observablePlayer(game.posD), addPlayer: { (player) in
+			CourtPositionView(position: positionD, player: observablePlayer(game.posD), key: KEY_FOR_D_POSITION, addPlayer: { (player) in
 				self.game.posD = player
 				self.game.updatePlayersOnBench()
 			}) {
 				self.game.posD = nil
 				self.game.updatePlayersOnBench()
 			}
-			CourtPositionView(position: CGPoint(x: width * 0.7, y: height * 0.6), player: observablePlayer(game.posE), addPlayer: { (player) in
+			CourtPositionView(position: positionE, player: observablePlayer(game.posE), key: KEY_FOR_E_POSITION, addPlayer: { (player) in
 				self.game.posE = player
 				self.game.updatePlayersOnBench()
 			}) {
 				self.game.posE = nil
 				self.game.updatePlayersOnBench()
 			}
+		}
+	}
+	
+	private func cachedPosition(for key: String, default point: CGPoint, size: CGSize) -> CGPoint {
+		if let dict = UserDefaults.standard.dictionary(forKey: key), let x = dict["x"] as? CGFloat, let y = dict["y"] as? CGFloat {
+			var x = x * 100
+			var y = y * 100
+			
+			if x < 0 || x > size.width * 0.85 {
+				x = point.x
+			}
+			if y < 0 || y > size.width * 0.85 {
+				y = point.y
+			}
+			return CGPoint(x: x, y: y)
+		} else {
+			return point
 		}
 	}
 }
