@@ -241,11 +241,10 @@ struct StatInputView: View {
 							.cornerRadius(16)
 							.shadow(radius: 4)
 					}
-						.padding(.horizontal)
-						.padding(.top, 8)
-						.disabled(self.shotLocation == .zero && self.stat.type == .shot)
-						.saturation(self.shotLocation == .zero && self.stat.type == .shot ? 0.1 : 1.0)
-					
+					.padding(.horizontal)
+					.padding(.top, 8)
+					.disabled((self.shotLocation == .zero || self.pointsOfShot == nil) && self.stat.type == .shot)
+					.saturation((self.shotLocation == .zero || self.pointsOfShot == nil) && self.stat.type == .shot ? 0.1 : 1.0)
 				}
 			}
 			.padding(8.0)

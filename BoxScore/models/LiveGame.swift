@@ -13,27 +13,42 @@ class LiveGame: ObservableObject {
 	@Published var game: Game
 	@Published var team: Team
 	
-	@Published var posA: Player? {
+	@Published var posA: Player? = nil {
+		willSet {
+			checkForDuplicates(player: newValue)
+		}
 		didSet {
 			game.positionA = posA
 		}
 	}
-	@Published var posB: Player? {
+	@Published var posB: Player? = nil {
+		willSet {
+			checkForDuplicates(player: newValue)
+		}
 		didSet {
 			game.positionB = posB
 		}
 	}
-	@Published var posC: Player? {
+	@Published var posC: Player? = nil {
+		willSet {
+			checkForDuplicates(player: newValue)
+		}
 		didSet {
 			game.positionC = posC
 		}
 	}
-	@Published var posD: Player? {
+	@Published var posD: Player? = nil {
+		willSet {
+			checkForDuplicates(player: newValue)
+		}
 		didSet {
 			game.positionD = posD
 		}
 	}
-	@Published var posE: Player? {
+	@Published var posE: Player? = nil {
+		willSet {
+			checkForDuplicates(player: newValue)
+		}
 		didSet {
 			game.positionE = posE
 		}
@@ -105,5 +120,24 @@ class LiveGame: ObservableObject {
 		}
 		
 		AppDelegate.instance.saveContext()
+	}
+	
+	private func checkForDuplicates(player: Player?) {
+		guard let player = player else { return }
+		if posA == player {
+			posA = nil
+		}
+		if posB == player {
+			posB = nil
+		}
+		if posC == player {
+			posC = nil
+		}
+		if posD == player {
+			posD = nil
+		}
+		if posE == player {
+			posE = nil
+		}
 	}
 }
