@@ -66,9 +66,9 @@ class LiveGame: ObservableObject {
 			("+1", 1),
 			("+2", 2),
 			("+3", 3)
-		].filter { $0.1 + game.opponentScore >= 0 }
+			].filter { $0.1 + game.opponentScore >= 0 }
 	}
-		
+	
 	init(team: Team, game: Game) {
 		self.game = game
 		self.team = team
@@ -93,7 +93,7 @@ class LiveGame: ObservableObject {
 			}
 		}
 		
-		if let score = self.game.statDictionary[.shot]?.sumPoints() {
+		if let score = self.game.statDictionary[.shot]?.sumPoints(), self.game.teamScore != score {
 			self.game.teamScore = score
 		}
 	}

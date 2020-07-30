@@ -23,7 +23,7 @@ private let DATE_FORMATTER = DateFormatter.defaultDateFormat("MMM dd, yyyy")
 
 class Game: ObservableObject, Equatable {
 	
-	@Published var teamScore: Int {
+	var teamScore: Int {
 		didSet {
 			save()
 		}
@@ -107,7 +107,7 @@ class Game: ObservableObject, Equatable {
 	
 	//These are used on the live game and live game stat view to keep track of a teams current stats
 	var statDictionary = [StatType: [Stat]]()
-	@Published var statCounter = [StatType: Int]()
+	var statCounter = [StatType: Int]()
 	
 	//MARK: RecordModel
 	

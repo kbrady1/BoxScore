@@ -29,21 +29,21 @@ class Season: ObservableObject {
 		self.currentGame = currentGame
 		self.currentlyInGame = currentGame != nil
 		
-//		bag.insert(team.objectWillChange.sink { (_) in
-//			self.objectWillChange.send()
-//		})
-//		if let currentGame = currentGame {
-//			bag.insert(currentGame.objectWillChange.sink { (_) in
-//				self.objectWillChange.send()
-//			})
-//		}
-//		previousGames.map {
-//			$0.objectWillChange.sink { (_) in
-//				self.objectWillChange.send()
-//			}
-//		}.forEach {
-//			bag.insert($0)
-//		}
+		bag.insert(team.objectWillChange.sink { (_) in
+			self.objectWillChange.send()
+		})
+		if let currentGame = currentGame {
+			bag.insert(currentGame.objectWillChange.sink { (_) in
+				self.objectWillChange.send()
+			})
+		}
+		previousGames.map {
+			$0.objectWillChange.sink { (_) in
+				self.objectWillChange.send()
+			}
+		}.forEach {
+			bag.insert($0)
+		}
 	}
 	
 	func completeGame() {
