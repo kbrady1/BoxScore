@@ -74,17 +74,17 @@ struct LiveGameView: View {
 				content: Circle()
 				.fill(LinearGradient(gradient: Gradient(colors: [.gray, .white]), startPoint: .bottom, endPoint: .topTrailing))
 				.frame(width: 50, height: 50),
-				details: "The Game tracking screen has a basketball court layout with 5 gray circles. When no player is active, you can drag these around on the court.",
+				details: "The Game tracking screen has a basketball court layout with 5 circles. When no player is active, you can drag these around the court.",
 				width: width,
 				height: height
 			)
 			InstructionCardView(
-				title: "Your Bench",
+				title: "The Bench",
 				content: HStack(spacing: 24) {
 					PlayerView(player: self.season.team.players[0])
 					PlayerView(player: self.season.team.players[0])
 				},
-				details: "Drag players from the bench to one of the court positions. Or double-tap on the player to automatically place them on the court.",
+				details: "Drag players from the bench to a position on the court. Alternatively, double tap on the player to automatically place them on the court.",
 				width: width,
 				height: height
 			)
@@ -126,7 +126,7 @@ struct LiveGameView: View {
 						Spacer()
 					}
 				},
-				details: "Active players can be swiped in different directions to record different stats. You can change them in settings at any time.",
+				details: "Swipe active players in different directions to record stats. Change the stat type for each direction in settings at any time.",
 				width: width,
 				height: height
 			)
@@ -134,7 +134,7 @@ struct LiveGameView: View {
 				title: "Additional Stats",
 				image: Image("StatMenuImage"),
 				content: EmptyView(),
-				details: "To record a stat that is not set as one of the four directions, long press the active player and a menu will pop up.",
+				details: "To record a stat that is not set as one of the four directions, long press on a player and a menu will appear.",
 				width: width,
 				height: height
 			)
@@ -142,14 +142,14 @@ struct LiveGameView: View {
 				title: "Stat Details",
 				image: Image("StatInputImage"),
 				content: EmptyView(),
-				details: "After choosing a stat, you will be prompted for details.  Dismiss that pop-up with a swipe to cancel a stat, or hit record to save it.",
+				details: "After choosing a stat, you will be prompted for details.  Swipe down to cancel a stat, or hit record to save it.",
 				width: width,
 				height: height
 			)
 			InstructionCardView(
 				title: "Score Board",
 				content: EmptyView(),
-				details: "The scoreboard along the top will automatically update for at-a-glance information. Increment the opponent score with a tap. Long press for a menu to subtract points.",
+				details: "The score board along the top provides at-a-glance information. Increment the opponent score with a tap. Long press for a menu to subtract points.",
 				width: width,
 				height: height
 			)

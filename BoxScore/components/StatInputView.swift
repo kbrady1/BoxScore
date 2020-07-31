@@ -95,6 +95,7 @@ struct StatInputView: View {
 									.position(shotLocation)
 							}
 						}
+						.frame(minWidth: 100, maxWidth: 380)
 					}
 					VStack(spacing: 8.0) {
 						InstructionView(number: "2", title: "Make or Miss", accentColor: game.team.secondaryColor)

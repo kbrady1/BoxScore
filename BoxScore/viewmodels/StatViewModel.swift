@@ -44,16 +44,15 @@ class StatViewModel {
 	func fetch() -> (StatGroup, DisplayableError?) {
 		do {
 			var stats = [StatCD]()
+			
 			if let team = team,
-				let newCD = try AppDelegate.context.existingObject(with: team.objectID) as? TeamCD {
-				
+				let newCD = AppDelegate.context.object(with: team.objectID) as? TeamCD {
 				stats = newCD.stats?.compactMap { $0 as? StatCD } ?? []
-				
 			} else if let game = game,
-				let newCD = try AppDelegate.context.existingObject(with: game.objectID) as? GameCD {
+				let newCD = AppDelegate.context.object(with: game.objectID) as? GameCD {
 				stats = newCD.stats?.compactMap { $0 as? StatCD } ?? []
 			} else if let player = player,
-				let newCD = try AppDelegate.context.existingObject(with: player.objectID) as? PlayerCD {
+				let newCD = AppDelegate.context.object(with: player.objectID) as? PlayerCD {
 				stats = newCD.stats?.compactMap { $0 as? StatCD } ?? []
 			} else {
 				return (StatGroup(stats: [:]), DisplayableError())

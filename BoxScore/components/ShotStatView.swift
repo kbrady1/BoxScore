@@ -20,7 +20,7 @@ struct ShotStatView: View {
 	
     var body: some View {
         VStack {
-			VStack(spacing: 0) {
+			VStack(alignment: .center, spacing: 0) {
 				Picker("Filter Shots", selection: $filterMakes) {
 					Text("All").tag(ShotFilter.all)
 					Text("Makes").tag(ShotFilter.makes)
@@ -32,7 +32,6 @@ struct ShotStatView: View {
 							.resizable()
 							.aspectRatio(contentMode: .fit)
 							.foregroundColor(Color(.stat_court_color))
-							.frame(minWidth: 100, maxWidth: .infinity)
 						ForEach(self.shotsToDisplay.filter {
 							switch (self.filterMakes) {
 							case .all:
@@ -47,8 +46,9 @@ struct ShotStatView: View {
 								.position(CGPoint(x: $0.shotLocation!.x * geometry.size.width, y: $0.shotLocation!.y * geometry.size.height * 0.9))
 						}
 					}
+					.frame(minHeight: 250, idealHeight: 300, maxHeight: 350)
 				}
-				.frame(minHeight: 250, idealHeight: 300, maxHeight: 350)
+				.frame(minWidth: 100, maxWidth: 380)
 			}
 			
 			VStack(spacing: 8.0) {

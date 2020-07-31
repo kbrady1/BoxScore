@@ -48,8 +48,8 @@ struct InfoView: View {
 				Text("Done")
 					.bold()
 			})
-			.navigationViewStyle(StackNavigationViewStyle())
 		}
+		.navigationViewStyle(StackNavigationViewStyle())
 	}
 	
 	private func cardSize(_ size: CGSize) -> CGSize {
