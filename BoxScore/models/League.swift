@@ -91,6 +91,16 @@ class League: ObservableObject, Equatable {
 		newTeam(setToCurrent: true)
 	}
 	
+	func applyChanges(models: [TeamCD]) throws {
+		try models.forEach { (model) in
+			if !seasons.contains(where: { $0.team.model.objectID == model.objectID }) {
+				//If this is a new season add it
+				seasons.append(try Season(model: model))
+				self.objectWillChange.send()
+			}
+		}
+	}
+	
 	//MARK: Equatable
 	
 	static func == (lhs: League, rhs: League) -> Bool {

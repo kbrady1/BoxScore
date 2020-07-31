@@ -46,6 +46,30 @@ class Season: ObservableObject {
 		}
 	}
 	
+	convenience init(model: TeamCD) throws {
+		let team = try Team(model: model)
+		let games = team.model.game?.compactMap { $0 as? GameCD }.compactMap { try? Game(model: $0) } ?? []
+		var previousGames = games.filter { $0.isComplete }
+		let activeGames = games.filter { !$0.isComplete }
+		
+		var currentGame = activeGames.first
+		if activeGames.count > 1 {
+			//If somehow extra games were started, take the newest and keep it, and end the other games
+			var extraActives = activeGames.sorted { $0.startDate ?? Date() < $1.startDate ?? Date() }
+			currentGame = extraActives.popLast()
+			
+			extraActives.forEach { $0.isComplete = true }
+			
+			previousGames.append(contentsOf: extraActives)
+		}
+		
+		self.init(
+			team: team,
+			currentGame: currentGame,
+			previousGames: previousGames
+		)
+	}
+	
 	func completeGame() {
 		guard let currentGame = currentGame else { return }
 		
