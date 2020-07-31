@@ -98,7 +98,7 @@ struct TeamStatSummaryView: View {
 			
 			Section(header: Text("Top Performers")) {
 				ScrollView(.horizontal, showsIndicators: false) {
-					HStack(spacing: 12) {
+					HStack {
 						ForEach(self.getTopPerfomers(dict: stats.stats)) { topPlayer in
 							VStack {
 								Text(topPlayer.title)
@@ -109,10 +109,11 @@ struct TeamStatSummaryView: View {
 									PlayerView(player: topPlayer.player, shadow: true, height: 60)
 								}
 								.padding()
-								.background(TeamGradientBackground(cornerRadius: 8.0))
+								.background(TeamGradientBackground())
 								.cornerRadius(8)
 							}
-							.padding(8.0)
+							.padding(.vertical)
+							.padding(.horizontal, 6.0)
 						}
 					}
 				}
@@ -124,7 +125,7 @@ struct TeamStatSummaryView: View {
 			
 			Section(header: Text("Individual Stats")) {
 				ScrollView(.horizontal, showsIndicators: false) {
-					HStack() {
+					HStack {
 						ForEach(self.team.players) { (player) in
 							NavigationLink(destination:
 								PlayerStatSummaryView(viewModel: StatViewModel(player: player.model), useLoadedStats: true, player: player)
@@ -146,7 +147,7 @@ struct TeamStatSummaryView: View {
 	
 	private func totalScrollView(list: [StatCount]) -> some View {
 		ScrollView(.horizontal, showsIndicators: false) {
-			HStack() {
+			HStack {
 				ForEach(list) { stat in
 					StatBlock(stat: stat)
 				}

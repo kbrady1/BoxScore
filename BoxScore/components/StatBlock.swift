@@ -17,10 +17,9 @@ struct StatBlock: View {
 		VStack {
 			Text(stat.stat == .shot ? "PTS" : stat.stat.abbreviation())
 				.font(.headline)
-				.frame(minWidth: 50, idealWidth: 60, maxWidth: 90)
+				.frame(minWidth: 50)
 			Text(stat.totalText)
 				.font(.system(size: 40))
-			
 		}
 		.padding()
 		.background(TeamGradientBackground())
