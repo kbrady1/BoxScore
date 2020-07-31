@@ -57,7 +57,6 @@ class LeagueViewModel: ObservableObject {
 			
 			loadable = .success(League(seasons: seasons))
 		} catch {
-			print(error)
 			loadable = .error(DisplayableError())
 		}
 		objectWillChange.send()
@@ -65,7 +64,9 @@ class LeagueViewModel: ObservableObject {
 	
 	@objc func fetchChanges() {
 		DispatchQueue.main.async {
-			self.fetch()
+			if self.loadable.value == nil {
+				self.fetch()
+			}
 		}
 	}
 }

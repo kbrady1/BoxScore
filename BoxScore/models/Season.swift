@@ -52,7 +52,7 @@ class Season: ObservableObject {
 		currentGame.isComplete = true
 		previousGames.insert(currentGame, at: 0)
 		self.currentGame = nil
-		
+
 		AppDelegate.instance.saveContext()
 	}
 	
