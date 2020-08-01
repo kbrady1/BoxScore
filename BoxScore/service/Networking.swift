@@ -13,6 +13,7 @@ enum Loadable<T> {
 	case loading
 	case success(T)
 	case error(DisplayableError)
+	case empty
 	
 	var loading: Bool {
 
@@ -22,6 +23,14 @@ enum Loadable<T> {
 
         return false
     }
+	
+	var empty: Bool {
+		if case .empty = self {
+			return true
+		}
+		
+		return false
+	}
 
     var error: DisplayableError? {
         switch self {
@@ -66,6 +75,14 @@ enum Loadable<T> {
 
         return nil
     }
+	
+	func isEmpty<Content: View>(@ViewBuilder content: @escaping () -> Content) -> Content? {
+		if empty {
+			return content()
+		}
+		
+		return nil
+	}
 }
 
 struct DisplayableError {

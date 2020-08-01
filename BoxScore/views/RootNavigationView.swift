@@ -29,6 +29,7 @@ struct RootNavigationView: View {
 	@Environment(\.managedObjectContext) var context: NSManagedObjectContext
 	@ObservedObject var viewModel = LeagueViewModel()
 	@ObservedObject var popupChecker = InfoViewChecker()
+	@State var currentIndex: Int = 0
 	
 	init() {
 		UINavigationBar.appearance().shadowImage = UIImage()
@@ -58,6 +59,22 @@ struct RootNavigationView: View {
 				viewModel.loadable.hasLoaded { league in
 					HomeTeamView(league: league)
 				}
+				viewModel.loadable.isEmpty {
+					VStack {
+						GeometryReader { geometry in
+							PagerView(pageCount: NewUserCards.cards.count, currentIndex: self.$currentIndex, highlightColor: Color.brandGreen) {
+								self.newUserCards(size: CGSize(width: geometry.size.width * 0.9, height: geometry.size.height * 0.9))
+							}
+						}
+						Spacer()
+						Button(action: {
+							self.viewModel.loadable = .success(League(seasons: [Season]()))
+							self.viewModel.objectWillChange.send()
+						}) {
+							FloatButtonView(text: Binding.constant("Create New Team"), backgroundColor: Color.brandBlue)
+						}
+					}.padding()
+				}
 			}
 			.navigationBarTitle("BoxScore")
 			.sheet(isPresented: $popupChecker.showInfoScreen) { InfoView() }
@@ -65,4 +82,20 @@ struct RootNavigationView: View {
 		.navigationViewStyle(StackNavigationViewStyle())
 		.onAppear(perform: viewModel.fetchOnCloudUpdate)
 	}
+	
+	private func newUserCards(size: CGSize) -> some View {
+		Group {
+			ForEach(NewUserCards.cards) { content in
+				InstructionCardView(title: content.title, image: content.image, content: content.content, details: content.details, width: size.width, height: size.height)
+			}
+		}
+	}
+}
+
+fileprivate struct NewUserCards {
+	static var cards = [
+		InstructionCardContent(title: "Welcome!",
+							   content: EmptyView(),
+							   details: "Get started by creating a new team. Once you've done that, add players, record games and even add multiple teams.")
+	]
 }

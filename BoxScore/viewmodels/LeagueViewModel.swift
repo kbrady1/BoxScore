@@ -25,7 +25,7 @@ class LeagueViewModel: ObservableObject {
 	}
 	
 	func fetchOnCloudUpdate() {
-		loadable = .loading
+		fetch()
 	}
 	
 	func fetch() {
@@ -38,14 +38,12 @@ class LeagueViewModel: ObservableObject {
 			
 			if let league = loadable.value {
 				try league.applyChanges(models: models)
+			} else if models.isEmpty {
+				loadable = .empty
+				objectWillChange.send()
 			} else {
-				let seasons = try models.map { try Season(model: $0) }
-				
-				//This prevents new teams from being created unneccessarily
-				if seasons.count > 0 {
-					loadable = .success(League(seasons: seasons))
-					objectWillChange.send()
-				}
+				loadable = .success(League(seasons: try models.map { try Season(model: $0) }))
+				objectWillChange.send()
 			}
 		} catch {
 			loadable = .error(DisplayableError())
