@@ -33,16 +33,16 @@ struct PlayerView: View {
 	
     var body: some View {
 		return ZStack {
+			DefaultCircleView(color: color, shadow: shadow)
 			VStack {
 				Text(String(player.number))
-					.font(.largeTitle)
+					.font(.system(size: 32, weight: .bold, design: .rounded))
 				Text(player.lastName)
-					.font(.caption)
+					.font(.system(size: 11, weight: .light, design: .rounded))
 			}
 			.background(Color.clear)
 		}
 		.frame(width: height, height: height, alignment: .center)
-		.background(DefaultCircleView(color: color, shadow: shadow))
 	}
 }
 
