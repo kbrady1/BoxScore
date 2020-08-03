@@ -108,10 +108,10 @@ struct HomeTeamView: View {
 					.foregroundColor(Color.white)
 					.cornerRadius(8.0)
 					.shadow(radius: 4.0)
-					.disabled(league.currentSeason.team.players.isEmpty)
 					.opacity(league.currentSeason.team.players.isEmpty ? 0.5 : 1.0)
 					.animation(.default)
 			}
+			.disabled(league.currentSeason.team.players.isEmpty)
 			.padding([.horizontal, .bottom])
 		}
 		.navigationBarItems(

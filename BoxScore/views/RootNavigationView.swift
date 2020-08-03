@@ -63,7 +63,7 @@ struct RootNavigationView: View {
 					VStack {
 						GeometryReader { geometry in
 							PagerView(pageCount: NewUserCards.cards.count, currentIndex: self.$currentIndex, highlightColor: Color.brandGreen) {
-								self.newUserCards(size: CGSize(width: geometry.size.width * 0.9, height: geometry.size.height * 0.9))
+								self.newUserCards(size: CGSize(width: geometry.size.width * 0.8, height: geometry.size.height * 0.8))
 							}
 						}
 						Spacer()

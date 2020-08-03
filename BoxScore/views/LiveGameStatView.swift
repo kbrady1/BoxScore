@@ -96,7 +96,12 @@ struct LiveGameStatView: View {
 		var tempTotals = [StatCount]()
 		statDict.keys.forEach {
 			if let stats = statDict[$0]?.filter({ $0.player.id?.uuidString == player.id }) {
-				tempTotals.append(StatCount(stat: $0, total: stats.count.asDouble))
+				if $0 == .shot {
+					tempTotals.append(StatCount(stat: $0, total: stats.sumPoints().asDouble))
+				} else {
+					tempTotals.append(StatCount(stat: $0, total: stats.count.asDouble))
+				}
+				
 			}
 		}
 		
@@ -121,7 +126,7 @@ struct LiveGameStatView: View {
 			}
 			
 			return StatCount(stat: type, total: (dict[type]?.count ?? 0).asDouble)
-		}
+		}.sorted { $0.stat.abbreviation() < $1.stat.abbreviation() }
 	}
 
 	private func statView(for player: Player) -> some View {

@@ -194,7 +194,7 @@ struct TeamStatSummaryView: View {
 			}
 			
 			return StatCount(stat: type, total: (dict[type]?.count ?? 0).safeDivide(by: gameList.games.count))
-		}
+		}.sorted { $0.stat.abbreviation() < $1.stat.abbreviation() }
 	}
 	
 	private func getText(_ single: String, _ season: String) -> String {

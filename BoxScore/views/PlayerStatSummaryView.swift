@@ -172,6 +172,7 @@ struct PlayerStatSummaryView: View {
 			tempTotals.append(StatCount(stat: $0, total: 0))
 		}
 		
+		tempTotals.sort { $0.stat.abbreviation() < $1.stat.abbreviation() }
 		while !tempTotals.isEmpty {
 			let toRemove = tempTotals.prefix(3)
 			tempTotals = Array(tempTotals.dropFirst(toRemove.count))
