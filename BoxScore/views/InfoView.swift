@@ -18,10 +18,10 @@ struct InstructionCardContent<Content: View>: Identifiable {
 }
 
 struct WhatsNewCards {
-	var cards = [
-		InstructionCardContent(title: "Added iPad Support",
+	let cards = [
+		InstructionCardContent(title: "Undo Stats",
 							   content: EmptyView(),
-							   details: "You can now use BoxScore on the iPad in portrait and horizontal orientations.")
+							   details: "BoxScore now keeps track of the order of every single stat you record enabling the ability to undo any stats you mis-record.")
 	]
 }
 
