@@ -13,6 +13,8 @@ class LiveGame: ObservableObject {
 	@Published var game: Game
 	@Published var team: Team
 	
+	@Published var recordedStatQueue: [Stat] = []
+	
 	@Published var posA: Player? = nil {
 		willSet {
 			checkForDuplicates(player: newValue)
@@ -92,6 +94,9 @@ class LiveGame: ObservableObject {
 				self.game.statCounter[$0] = count
 			}
 		}
+		recordedStatQueue = self.game.statDictionary.values
+			.flatMap { $0 }
+			.sorted { $0.dateCreated ?? Date() < $1.dateCreated ?? Date() }
 		
 		if let score = self.game.statDictionary[.shot]?.sumPoints(), self.game.teamScore != score {
 			self.game.teamScore = score
@@ -100,16 +105,36 @@ class LiveGame: ObservableObject {
 	
 	//MARK: Methods
 	
+	func undoLastRecordedStat() {
+		if let lastStat = recordedStatQueue.popLast() {
+			if let count = game.statCounter[lastStat.type] {
+				game.statCounter[lastStat.type] = max(count - 1, 0)
+			}
+			if var list = game.statDictionary[lastStat.type] {
+				list.removeAll { $0.id == lastStat.id }
+				game.statDictionary[lastStat.type] = list
+			}
+			
+			if lastStat.type == .shot && lastStat.shotWasMake {
+				game.teamScore -= lastStat.pointsOfShot ?? 0
+			}
+			
+			AppDelegate.context.delete(lastStat.model)
+			AppDelegate.instance.saveContext()
+		}
+	}
+	
 	func updatePlayersOnBench() {
 		playersOnBench = team.players.filter { !game.playersInGame.contains($0) }
 	}
 	
 	func recordStat(_ stat: StatInput) {
+		let recordedStat = stat.toStat()
+		recordedStatQueue.append(recordedStat)
+		
 		stat.joinedStats.forEach {
 			self.recordStat($0)
 		}
-		
-		let recordedStat = stat.toStat()
 		
 		game.statDictionary[recordedStat.type] = (game.statDictionary[recordedStat.type] ?? []) + [recordedStat]
 		//Update values

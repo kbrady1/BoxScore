@@ -30,6 +30,7 @@
         <relationship name="team" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TeamCD" inverseName="players" inverseEntity="TeamCD"/>
     </entity>
     <entity name="StatCD" representedClassName="StatCD" syncable="YES" codeGenerationType="class">
+        <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="reboundTypeOffensive" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="shotTypeLocation" optional="YES" attributeType="String"/>
@@ -52,7 +53,7 @@
     <elements>
         <element name="GameCD" positionX="-63" positionY="-18" width="128" height="253"/>
         <element name="PlayerCD" positionX="-36" positionY="63" width="128" height="208"/>
-        <element name="StatCD" positionX="-18" positionY="72" width="128" height="178"/>
+        <element name="StatCD" positionX="-18" positionY="72" width="128" height="193"/>
         <element name="TeamCD" positionX="-54" positionY="45" width="128" height="148"/>
     </elements>
 </model>

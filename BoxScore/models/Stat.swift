@@ -105,6 +105,7 @@ class StatInput {
 		model.shotTypeMake = shotWasMake
 		model.shotTypePoints = Int16(pointsOfShot ?? 0)
 		model.statType = type.rawValue
+		model.dateCreated = Date()
 		
 		return Stat(player: player,
 					statType: type,
@@ -125,6 +126,7 @@ class Stat: Identifiable {
 	var shotLocation: CGPoint?
 	var pointsOfShot: Int?
 	var offensiveRebound: Bool = false
+	var dateCreated: Date?
 	
 	let id: String
 	let model: StatCD
@@ -140,6 +142,7 @@ class Stat: Identifiable {
 		self.shotLocation = shotLocation
 		self.shotWasMake = shotMake ?? false
 		self.pointsOfShot = shotPoints
+		self.dateCreated = model.dateCreated
 		
 		self.id = id
 		self.model = model

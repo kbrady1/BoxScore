@@ -23,9 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		//Only perform in test code
 		
 //		do {
-////			Uncomment to do a dry run and print the CK records it'll make
-////			try persistentContainer.initializeCloudKitSchema(options: [.dryRun, .printSchema])
-////			Uncomment to initialize your schema
+///			Uncomment to do a dry run and print the CK records it'll make
+///			try persistentContainer.initializeCloudKitSchema(options: [.dryRun, .printSchema])
+///			Uncomment to initialize your schema
 //			try persistentContainer.initializeCloudKitSchema()
 //		} catch {
 //			print("Unable to initialize CloudKit schema: \(error.localizedDescription)")

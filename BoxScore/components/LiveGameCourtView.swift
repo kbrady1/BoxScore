@@ -35,6 +35,8 @@ struct LiveGameCourtView: View {
 					//Put court view along right side and scoreboard/buttons along left
 					VStack {
 						self.scoreBoard()
+						self.undoButton()
+						
 						ScrollView(.vertical, showsIndicators: false) {
 							VStack(spacing: 16) {
 								ForEach(self.game.playersOnBench) { (player) in
@@ -59,8 +61,9 @@ struct LiveGameCourtView: View {
 			} else {
 				//Standard View
 				ZStack {
-					VStack {
+					VStack(spacing: 0) {
 						self.scoreBoard()
+						self.undoButton()
 						self.addCourtView()
 					}
 					.offset(x: 0, y: -60)
@@ -194,6 +197,31 @@ struct LiveGameCourtView: View {
 					self.presentationMode.wrappedValue.dismiss()
 				})
 			])
+		}
+	}
+	
+	private func undoButton() -> some View {
+		VStack {
+			if self.game.recordedStatQueue.last != nil {
+				Button(action: {
+					self.game.undoLastRecordedStat()
+				}) {
+					HStack {
+						Image(systemName: "arrow.uturn.left.circle.fill")
+							.font(.headline)
+						Text("Undo add \(self.game.recordedStatQueue.last!.type.abbreviation())")
+							.font(.caption)
+					}
+					.foregroundColor(.white)
+					.padding(4.0)
+					.frame(height: 30, alignment: .center)
+					.background(Color.blue.cornerRadius(15.0))
+					.cornerRadius(15)
+					.shadow(color: Color.black.opacity(0.2), radius: 5.0)
+				}
+			} else {
+				EmptyView()
+			}
 		}
 	}
 		
