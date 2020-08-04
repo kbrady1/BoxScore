@@ -82,19 +82,21 @@ struct LiveGameCourtView: View {
 												self.benchDoubleTapAction(player: player)
 										}
 									}
-									.padding(.vertical, 8.0)
+									.padding(.top, 8.0)
+									.padding(.bottom, 12.0)
 								}
 								.padding(.leading, 10)
-								.frame(minHeight: 100)
+								.frame(minHeight: 90)
 								}
 								
 								HStack {
 									self.statsButton()
 									self.endGameButton()
-								}.padding()
+								}
+								.padding([.bottom, .horizontal])
 							}
 						}
-							.frame(height: 180)
+							.frame(height: 166)
 					}
 				}
 			}
@@ -237,6 +239,7 @@ struct LiveGameCourtView: View {
 				.resizable()
 				.aspectRatio(contentMode: .fit)
 				.foregroundColor(Color(.live_court_color))
+				.offset(x: 0, y: -16)
 			
 			CourtPositionView(position: positionA, player: observablePlayer(game.posA), key: KEY_FOR_A_POSITION, addPlayer: { (player) in
 				self.game.posA = player

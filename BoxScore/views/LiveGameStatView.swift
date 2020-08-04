@@ -135,7 +135,7 @@ struct LiveGameStatView: View {
 				HStack {
 					Spacer()
 					ForEach(row.cells) {
-						StatBlock(stat: $0, extraPadding: false)
+						StatBlock(stat: $0, compressIfNeeded: true)
 						Spacer()
 					}
 				}

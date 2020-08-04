@@ -11,20 +11,24 @@ import SwiftUI
 struct StatBlock: View {
 	@EnvironmentObject var team: Team
 	@State var stat: StatCount
-	var extraPadding: Bool = true
+	var compressIfNeeded: Bool = false
+	
+	var shouldCompress: Bool {
+		return UIScreen.main.bounds.width <= 320
+	}
 	
     var body: some View {
 		VStack {
 			Text(stat.stat == .shot ? "PTS" : stat.stat.abbreviation())
-				.font(.headline)
-				.frame(minWidth: 50)
+				.font(shouldCompress ? .caption : .headline)
+				.frame(minWidth: 35, idealWidth: 50, maxWidth: 60)
 			Text(stat.totalText)
-				.font(.system(size: 40))
+				.font(.system(size: shouldCompress ? 30 : 40))
 		}
 		.padding()
 		.background(TeamGradientBackground())
 		.cornerRadius(4)
-		.padding(8.0)
+		.padding(shouldCompress ? 4.0 : 8.0)
 	}
 }
 

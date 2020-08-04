@@ -70,13 +70,13 @@ struct ShotStatView: View {
 					HStack {
 						ForEach(row.cells) { (cell) in
 							Text(cell)
-								.frame(width: 70)
+								.frame(minWidth: 45, maxWidth: 70)
 								.font(.system(size: 18))
 							Spacer()
 						}
 						.padding(.vertical, 2.0)
 					}
-				.background(TeamGradientBackground())
+					.background(TeamGradientBackground())
 					.padding(.horizontal, 4.0)
 				}
 			}
