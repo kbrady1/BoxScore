@@ -21,7 +21,10 @@ struct WhatsNewCards {
 	let cards = [
 		InstructionCardContent(title: "Undo Stats",
 							   content: EmptyView(),
-							   details: "BoxScore now keeps track of the order of every single stat you record enabling the ability to undo any stats you mis-record.")
+							   details: "BoxScore now keeps track of the order of every single stat you record enabling the ability to undo any stats you mis-record."),
+		InstructionCardContent(title: "iPad Support",
+							   content: EmptyView(),
+							   details: "You can now use BoxScore on the iPad in portrait and horizontal orientations.")
 	]
 }
 
